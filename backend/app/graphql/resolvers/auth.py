@@ -222,6 +222,7 @@ class AuthMutation:
     async def assign_user_role(self, user_id: uuid.UUID, new_role: str) -> UserType:
         """
         Super Admin assigns/changes any user's role to:
+        - 👑 Super Admin (SUPER_ADMIN)
         - 🛡️ Operations Admin (ADMIN)
         - 📦 Warehouse Staff (WAREHOUSE)
         - 🛵 Delivery Boy (DELIVERY)

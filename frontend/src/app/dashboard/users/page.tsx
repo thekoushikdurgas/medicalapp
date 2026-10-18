@@ -44,7 +44,7 @@ export default function UsersPage() {
     phone: "",
     email: "",
     password: "admin123",
-    role: "ADMIN" as "ADMIN" | "WAREHOUSE" | "DELIVERY" | "SHOPKEEPER",
+    role: "ADMIN" as UserItem["role"],
     shopName: "",
     vehicleType: "Two-Wheeler",
   });
@@ -163,7 +163,7 @@ export default function UsersPage() {
             Role-Based Access Control (RBAC)
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
-            Super Admin Role Management: Assign any user to <strong>🛡️ Operations Admin</strong> or <strong>📦 Warehouse Staff</strong>
+            Super Admin Role Management: Assign any user to <strong>👑 Super Admin</strong>, <strong>🛡️ Operations Admin</strong>, or <strong>📦 Warehouse Staff</strong>
           </p>
         </div>
         <button
@@ -299,36 +299,32 @@ export default function UsersPage() {
                       </span>
                     </td>
                     <td>
-                      {u.role === "SUPER_ADMIN" ? (
-                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontStyle: "italic" }}>
-                          Root Super Admin
-                        </span>
-                      ) : (
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                          <select
-                            className="input"
-                            style={{
-                              padding: "0.3rem 0.5rem",
-                              fontSize: "0.75rem",
-                              height: "auto",
-                              width: "185px",
-                            }}
-                            value={u.role}
-                            disabled={assigningId === u.id}
-                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                          >
-                            <option value="ADMIN">🛡️ Operations Admin</option>
-                            <option value="WAREHOUSE">📦 Warehouse Staff</option>
-                            <option value="DELIVERY">🛵 Delivery Boy</option>
-                            <option value="SHOPKEEPER">🏪 Retail Shopkeeper</option>
-                          </select>
-                          {assigningId === u.id && (
-                            <span style={{ fontSize: "0.75rem", color: "var(--color-primary-600)" }}>
-                              Saving...
-                            </span>
-                          )}
-                        </div>
-                      )}
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <select
+                          className="input"
+                          style={{
+                            padding: "0.3rem 0.5rem",
+                            fontSize: "0.75rem",
+                            height: "auto",
+                            width: "195px",
+                            fontWeight: 600,
+                          }}
+                          value={u.role}
+                          disabled={assigningId === u.id}
+                          onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                        >
+                          <option value="SUPER_ADMIN">👑 Super Admin</option>
+                          <option value="ADMIN">🛡️ Operations Admin</option>
+                          <option value="WAREHOUSE">📦 Warehouse Staff</option>
+                          <option value="DELIVERY">🛵 Delivery Boy</option>
+                          <option value="SHOPKEEPER">🏪 Retail Shopkeeper</option>
+                        </select>
+                        {assigningId === u.id && (
+                          <span style={{ fontSize: "0.75rem", color: "var(--color-primary-600)" }}>
+                            Saving...
+                          </span>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -388,6 +384,7 @@ export default function UsersPage() {
                     value={newUser.role}
                     onChange={(e) => setNewUser({ ...newUser, role: e.target.value as any })}
                   >
+                    <option value="SUPER_ADMIN">👑 Super Admin</option>
                     <option value="ADMIN">🛡️ Operations Admin</option>
                     <option value="WAREHOUSE">📦 Warehouse Staff</option>
                     <option value="DELIVERY">🛵 Delivery Boy</option>
