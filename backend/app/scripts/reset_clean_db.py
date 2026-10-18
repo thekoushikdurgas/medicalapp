@@ -18,7 +18,7 @@ from app.db.session import engine, async_session_factory
 
 
 async def reset_and_seed():
-    admin_email = os.getenv("SUPERADMIN_EMAIL", "thekoushikdurgas@gmail.com")
+    admin_email = os.getenv("SUPERADMIN_EMAIL")
     admin_password = os.getenv("SUPERADMIN_PASSWORD", "admin123")
     admin_name = os.getenv("SUPERADMIN_NAME", "Super Admin")
 
@@ -26,7 +26,7 @@ async def reset_and_seed():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    print("[*] Truncating all data tables (removing all demo users and records)...")
+    print("[*] Truncating all data tables (removing all users and records)...")
     tables_to_truncate = [
         "payments",
         "delivery_assignments",
@@ -45,31 +45,35 @@ async def reset_and_seed():
     async with engine.begin() as conn:
         truncate_sql = f"TRUNCATE TABLE {', '.join(tables_to_truncate)} RESTART IDENTITY CASCADE;"
         await conn.execute(text(truncate_sql))
-    print("    -> All demo tables truncated cleanly.")
+    print("    -> All data tables truncated cleanly.")
 
-    print(f"[*] Provisioning Super Admin: {admin_email}...")
-    async with async_session_factory() as session:
-        super_admin = User(
-            id=uuid.uuid4(),
-            email=admin_email,
-            phone="9614081313",
-            password_hash=hash_password(admin_password),
-            full_name=admin_name,
-            role=UserRole.SUPER_ADMIN,
-            is_active=True,
-        )
-        session.add(super_admin)
-        await session.commit()
+    if admin_email:
+        print(f"[*] Provisioning Super Admin: {admin_email}...")
+        async with async_session_factory() as session:
+            super_admin = User(
+                id=uuid.uuid4(),
+                email=admin_email,
+                phone=os.getenv("SUPERADMIN_PHONE", "9614081313"),
+                password_hash=hash_password(admin_password),
+                full_name=admin_name,
+                role=UserRole.SUPER_ADMIN,
+                is_active=True,
+            )
+            session.add(super_admin)
+            await session.commit()
 
-        # Verification query
-        user_count = await session.scalar(select(func.count()).select_from(User))
+            # Verification query
+            user_count = await session.scalar(select(func.count()).select_from(User))
+            print("\n" + "=" * 50)
+            print("✅ DATABASE CLEANUP & SUPER ADMIN INITIALIZED")
+            print("=" * 50)
+            print(f"• Active Users in DB: {user_count}")
+            print(f"• Super Admin Email:  {admin_email}")
+            print(f"• Super Admin Role:   {UserRole.SUPER_ADMIN.value}")
+            print("=" * 50 + "\n")
+    else:
         print("\n" + "=" * 50)
-        print("✅ DATABASE CLEANUP & SUPER ADMIN INITIALIZED")
-        print("=" * 50)
-        print(f"• Active Users in DB: {user_count}")
-        print(f"• Super Admin Email:  {admin_email}")
-        print(f"• Super Admin Role:   {UserRole.SUPER_ADMIN.value}")
-        print(f"• Password:           {admin_password}")
+        print("✅ DATABASE PURGED — 0 USERS REMAINING")
         print("=" * 50 + "\n")
 
 

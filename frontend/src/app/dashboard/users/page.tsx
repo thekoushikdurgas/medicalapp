@@ -17,17 +17,7 @@ export default function UsersPage() {
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const [users, setUsers] = useState<UserRecord[]>([
-    {
-      id: "u1",
-      name: "Super Admin",
-      email: "thekoushikdurgas@gmail.com",
-      phone: "+91 96140 81313",
-      role: "SUPER_ADMIN",
-      status: "ACTIVE",
-      details: "Headquarters System Controller • Full Privileges",
-    },
-  ]);
+  const [users, setUsers] = useState<UserRecord[]>([]);
 
   const [newUser, setNewUser] = useState({
     name: "",

@@ -64038,7 +64038,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/app/scripts/reset_clean_db.py",
-      "source_location": "L52",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -64050,7 +64050,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/app/scripts/reset_clean_db.py",
-      "source_location": "L56",
+      "source_location": "L57",
       "weight": 1.0
     },
     {
@@ -64218,7 +64218,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/app/scripts/seed_superadmin.py",
-      "source_location": "L32",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -64230,7 +64230,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "backend/app/scripts/seed_superadmin.py",
-      "source_location": "L34",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -109841,7 +109841,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.95,
       "source_file": "backend/app/scripts/reset_clean_db.py",
-      "source_location": "L58",
+      "source_location": "L59",
       "weight": 0.8
     },
     {
@@ -109907,7 +109907,7 @@
       "confidence": "INFERRED",
       "confidence_score": 0.95,
       "source_file": "backend/app/scripts/seed_superadmin.py",
-      "source_location": "L36",
+      "source_location": "L41",
       "weight": 0.8
     },
     {
@@ -110033,5 +110033,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "b4bae7d7428da0985ecca908ecd8229a64763897"
+  "built_at_commit": "ba12592a31529003acbc1919258ba5abaebb36fb"
 }
