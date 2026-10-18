@@ -49,7 +49,7 @@ async def seed_all():
             return
 
         print("[*] Seeding system users...")
-        now = datetime.now(timezone.utc)
+        now = datetime.utcnow()
 
         # 1. Users
         superadmin = User(
