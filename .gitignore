@@ -1,5 +1,6 @@
 # ── Environment & Secrets ────────────────────────────────────
 .env
+.env.*
 .env.local
 .env.*.local
 *.pem
@@ -7,6 +8,7 @@
 *.cert
 *.crt
 contact360app.pem
+deploy-nginx.conf
 error.txt
 graphify-out/cache/
 
