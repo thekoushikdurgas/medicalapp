@@ -47,7 +47,7 @@ export default function ForgotPasswordPage() {
               <input
                 id="contact"
                 className="input"
-                placeholder="e.g. superadmin@pharmacyfantasy.com or +91 98765..."
+                placeholder="e.g. name@example.com or +91 98765..."
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
                 required

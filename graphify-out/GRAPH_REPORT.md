@@ -1,24 +1,24 @@
 # Graph Report - pharmacyfantasy  (2026-10-19)
 
 ## Corpus Check
-- 333 files · ~331,688 words
+- 334 files · ~331,534 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 15 file(s) not represented in the graph (top: (none) 6, .gz 2, .bak 1)
 
 ## Summary
-- 3647 nodes · 5769 edges · 304 communities (272 shown, 17 thin omitted)
-- Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 438 edges (avg confidence: 0.86)
+- 3650 nodes · 5781 edges · 300 communities (269 shown, 16 thin omitted)
+- Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 440 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e68b4863`
+- Built from commit: `47f7b8b2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - search.mjs
 - n
-- execute
+- dispose
 - types.py
 - get
 - auth.py
@@ -26,7 +26,7 @@
 - runKernelFunc
 - f
 - Accessibility Coding Guidelines
-- orders.py
+- type
 - modern-web.mjs
 - dashboard/page.tsx
 - mapNode
@@ -41,26 +41,22 @@
 - delivery.py
 - 🔬 Pharmacy Fantasy — Elite UI/UX Audit Report
 - Forms
-- env.py
-- toString
-- save
-- has
+- index.ts
+- concat
 - frontend/package.json
-- pop
+- _sift_down
 - graphql-queries.ts
 - Mandatory Rules
 - main.py
-- processStack
 - render_html_invoice
 - Companion policies (deploy in parallel)
 - dependencies
 - main.js
-- je
-- loadWithWeightMap
+- $t
 - Dos and Don'ts
 - Dos and Don'ts
 - HTML
-- breadcrumb.tsx
+- lucide-react
 - auth.ts
 - modern-web-guidance/package.json
 - Detailed Guidelines
@@ -319,89 +315,89 @@
 10. `a()` - 45 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `InvoiceType` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/types.py → .agents/skills/modern-web-guidance/package.json
+- `OrderItemType` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/types.py → .agents/skills/modern-web-guidance/package.json
+- `PaymentType` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/types.py → .agents/skills/modern-web-guidance/package.json
+- `ShopkeeperProfileType` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/types.py → .agents/skills/modern-web-guidance/package.json
 - `AuthMutation` --references--> `type`  [EXTRACTED]
   backend/app/graphql/resolvers/auth.py → .agents/skills/modern-web-guidance/package.json
-- `DeliveryMutation` --references--> `type`  [EXTRACTED]
-  backend/app/graphql/resolvers/delivery.py → .agents/skills/modern-web-guidance/package.json
-- `DeliveryQuery` --references--> `type`  [EXTRACTED]
-  backend/app/graphql/resolvers/delivery.py → .agents/skills/modern-web-guidance/package.json
-- `OrderMutation` --references--> `type`  [EXTRACTED]
-  backend/app/graphql/resolvers/orders.py → .agents/skills/modern-web-guidance/package.json
-- `OrderQuery` --references--> `type`  [EXTRACTED]
-  backend/app/graphql/resolvers/orders.py → .agents/skills/modern-web-guidance/package.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (304 total, 17 thin omitted)
+## Communities (300 total, 16 thin omitted)
 
 ### Community 0 - "search.mjs"
 Cohesion: 0.02
-Nodes (99): $a(), ad(), applyGradients(), array(), arraySync(), assign(), backend(), bd() (+91 more)
+Nodes (108): $a(), ad(), array(), arraySync(), backend(), bd(), bl(), Ck() (+100 more)
 
 ### Community 1 - "n"
-Cohesion: 0.13
-Nodes (60): a0(), As(), aw(), b(), bb(), a(), ci(), i() (+52 more)
+Cohesion: 0.10
+Nodes (69): a0(), As(), aw(), b(), bb(), a(), ci(), a() (+61 more)
 
-### Community 2 - "execute"
-Cohesion: 0.17
-Nodes (19): addStructuredOutputNames(), checkInputs(), checkInputShapeAndType(), checkOutputs(), cloneTensorList(), cloneTensorMap(), disposeIntermediateTensors(), execute() (+11 more)
+### Community 2 - "dispose"
+Cohesion: 0.08
+Nodes (48): addStructuredOutputNames(), al(), b1(), checkInputs(), checkInputShapeAndType(), checkOutputs(), checkTensorForDisposal(), checkTensorForDisposalWithNodeLiveUntilInfo() (+40 more)
 
 ### Community 3 - "types.py"
-Cohesion: 0.09
-Nodes (39): type, AuthQuery, _product_to_type(), ProductMutation, ProductQuery, field, mutation, UUID (+31 more)
+Cohesion: 0.10
+Nodes (33): Product, _product_to_type(), ProductMutation, ProductQuery, field, mutation, UUID, Product & inventory resolvers. (+25 more)
 
 ### Community 4 - "get"
-Cohesion: 0.06
-Nodes (57): Ae(), ao(), ay(), bk(), buffer(), bufferSync(), common_prefix_search(), createTensorFromGPUData() (+49 more)
+Cohesion: 0.08
+Nodes (46): Ae(), ao(), ay(), bk(), buffer(), bufferSync(), common_prefix_search(), disposeIntermediateTensorInfo() (+38 more)
 
 ### Community 5 - "auth.py"
-Cohesion: 0.09
-Nodes (30): Application configuration — loaded from environment variables., Settings, get_current_user_id(), FastAPI dependencies — database session, current user extraction., Extract user ID from JWT bearer token., create_access_token(), create_refresh_token(), decode_token() (+22 more)
+Cohesion: 0.11
+Nodes (26): get_current_user_id(), FastAPI dependencies — database session, current user extraction., Extract user ID from JWT bearer token., create_access_token(), create_refresh_token(), decode_token(), JWT token creation and verification + password hashing., Decode and verify a JWT token. Raises jwt.PyJWTError on failure. (+18 more)
 
 ### Community 6 - "order_service.py"
 Cohesion: 0.16
 Nodes (24): Order, OrderStatus, create_invoice_for_order(), generate_invoice_number(), AsyncSession, Invoice Service — Handles legal GST invoice creation, calculations, and…, Generate sequential invoice number: INV-YYYYMMDD-XXXX., Generate and save an Invoice record for a confirmed wholesale order. (+16 more)
 
 ### Community 7 - "runKernelFunc"
-Cohesion: 0.12
-Nodes (24): addTapeNode(), checkKernelForMemLeak(), En(), getTensorsForGradient(), ii(), isTapeOn(), keep(), makeOutput() (+16 more)
+Cohesion: 0.10
+Nodes (25): addTapeNode(), checkKernelForMemLeak(), computeGradients(), customGrad(), endTape(), getTensorsForGradient(), gradients(), isTapeOn() (+17 more)
 
 ### Community 8 - "f"
-Cohesion: 0.04
-Nodes (122): _0(), ab(), aN(), at(), b0(), be(), bi(), Bw() (+114 more)
+Cohesion: 0.05
+Nodes (108): _0(), ab(), aN(), at(), b0(), bi(), Bw(), cb() (+100 more)
 
 ### Community 9 - "Accessibility Coding Guidelines"
 Cohesion: 0.04
 Nodes (46): 10. Typography, 11. Motion and Preferences, 12. Modals and Native Dialogs, 13. Testing Validations, 1. Content Navigability and Structure, 2. Semantic HTML and ARIA, 3. Accessible Names and Descriptions, 4. Document Metadata and Language (+38 more)
 
-### Community 10 - "orders.py"
-Cohesion: 0.14
-Nodes (21): _generate_order_number(), _order_to_type(), OrderMutation, OrderQuery, field, mutation, UUID, Order resolvers — place, confirm, update status, cancel. (+13 more)
+### Community 10 - "type"
+Cohesion: 0.11
+Nodes (28): type, AuthQuery, _generate_order_number(), _order_to_type(), OrderMutation, OrderQuery, field, mutation (+20 more)
 
 ### Community 11 - "modern-web.mjs"
 Cohesion: 0.17
 Nodes (23): bucketizeLatency(), constructor(), detectOS(), determineAgent(), #ensureProcess(), getCLISkillVersion(), getGuide(), getOurCLIAdjacentSkillIDs() (+15 more)
 
 ### Community 12 - "dashboard/page.tsx"
-Cohesion: 0.07
-Nodes (18): DEMO_ORDERS, REVENUE_DATA, EmptyStateProps, DataPoint, FLOW_STEPS, FlowStep, OrderFlowTimeline(), OrderFlowTimelineProps (+10 more)
+Cohesion: 0.09
+Nodes (13): DEMO_ORDERS, REVENUE_DATA, DataPoint, FLOW_STEPS, FlowStep, OrderFlowTimeline(), OrderFlowTimelineProps, TrendAreaChart() (+5 more)
 
 ### Community 13 - "mapNode"
-Cohesion: 0.15
-Nodes (18): ea(), getAttr(), mapArgsToSignature(), mapArgToTensorInfo(), mapFunction(), mapNode(), mapSignatureEntries(), na() (+10 more)
+Cohesion: 0.12
+Nodes (21): convertTensorMapToTensorsMap(), ea(), getAttr(), loadSync(), loadWithWeightMap(), mapArgsToSignature(), mapArgToTensorInfo(), mapFunction() (+13 more)
 
 ### Community 14 - "constructor"
-Cohesion: 0.06
-Nodes (51): Aa(), ax(), Bt(), _build_trie(), checkKeyAndValueTensor(), cloneAndKeepTensor(), Co(), concat() (+43 more)
+Cohesion: 0.07
+Nodes (46): Aa(), ax(), be(), Bn(), Bt(), _build_trie(), cd(), cloneAndKeepTensor() (+38 more)
 
 ### Community 15 - "compilerOptions"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
 ### Community 16 - "push"
-Cohesion: 0.04
-Nodes (84): add_node(), Ah(), al(), bpe(), Bs(), C_(), _call(), cd() (+76 more)
+Cohesion: 0.05
+Nodes (67): add_node(), Ah(), bpe(), Bs(), C_(), _call(), checkManifestAndWeightFiles(), clean_text() (+59 more)
 
 ### Community 17 - "react"
 Cohesion: 0.06
@@ -413,7 +409,7 @@ Nodes (26): asyncio, PurchaseEntry, PurchaseItem, StockBatch, allocate_batch_fef
 
 ### Community 19 - "models.py"
 Cohesion: 0.10
-Nodes (32): hash_password(), Base, Declarative base for all SQLAlchemy models., DeliveryProfile, DeliveryStatus, Invoice, OrderItem, Payment (+24 more)
+Nodes (34): hash_password(), Base, Declarative base for all SQLAlchemy models., DeliveryProfile, DeliveryStatus, Invoice, OrderItem, Payment (+26 more)
 
 ### Community 20 - "Performance"
 Cohesion: 0.05
@@ -435,29 +431,21 @@ Nodes (44): 10. 🎨 Color System Critique, 11. 📱 Device-Specific Issues Summ
 Cohesion: 0.05
 Nodes (36): 10. Usability Testing and Analytics, 11. Multi-Page Forms, 1. Semantic Structure and Form Element, 2. Accessible Labeling and State, 3. Autofill and Input Hints, 4. Constraints and Validation, 5. Responsive Design and Typography, 6. Styling Form Controls (+28 more)
 
-### Community 25 - "env.py"
-Cohesion: 0.47
-Nodes (4): do_run_migrations(), Alembic env.py — configured for async SQLAlchemy., run_async_migrations(), run_migrations_online()
+### Community 25 - "index.ts"
+Cohesion: 0.22
+Nodes (8): AuthState, DashboardStats, DeliveryStatus, Order, OrderStatus, PaymentMethod, Product, User
 
-### Community 26 - "toString"
-Cohesion: 0.12
-Nodes (26): bl(), Bn(), bytes(), cast(), dataSync(), dataToGPU(), de(), el() (+18 more)
-
-### Community 27 - "save"
-Cohesion: 0.10
-Nodes (28): cl(), databaseAction(), delete(), fi(), fl(), ge(), getHandlers(), getInstance() (+20 more)
-
-### Community 28 - "has"
-Cohesion: 0.24
-Nodes (14): b1(), checkTensorForDisposal(), checkTensorForDisposalWithNodeLiveUntilInfo(), clearAndClose(), compile(), f1(), h1(), has() (+6 more)
+### Community 26 - "concat"
+Cohesion: 0.06
+Nodes (48): applyGradients(), assign(), bytes(), cast(), checkKeyAndValueTensor(), concat(), cp(), createTensorFromGPUData() (+40 more)
 
 ### Community 29 - "frontend/package.json"
 Cohesion: 0.08
 Nodes (24): devDependencies, eslint, eslint-config-next, @types/node, @types/react, @types/react-dom, typescript, name (+16 more)
 
-### Community 30 - "pop"
-Cohesion: 0.21
-Nodes (12): extend(), _greater(), _left(), _parent(), peek(), pop(), _right(), _sift_down() (+4 more)
+### Community 30 - "_sift_down"
+Cohesion: 0.24
+Nodes (10): extend(), _greater(), _left(), _parent(), _right(), _sift_down(), _sift_up(), _sift_up_from() (+2 more)
 
 ### Community 31 - "graphql-queries.ts"
 Cohesion: 0.10
@@ -468,12 +456,8 @@ Cohesion: 0.06
 Nodes (34): 10. Prompt API: available in service workers, popup, and side panel, 11. `chrome.action` API requires `action` in manifest, 12. `activeTab` only works on direct user gestures — not from side panels, 13. DevTools panel URLs are relative to the extension root, 14. Offscreen documents have NO access to most chrome.* APIs, 15. Notifications and badge icons must reference real image files, 16. Tab capture: guard against double-start with state locking, 17. `chrome.desktopCapture` requires a target tab with URL access (+26 more)
 
 ### Community 33 - "main.py"
-Cohesion: 0.22
-Nodes (9): get_logger(), Structured logging configuration for Pharmacy Fantasy backend., setup_logging(), health_check(), lifespan(), Pharmacy Fantasy — FastAPI Application Entrypoint, FastAPI, get (+1 more)
-
-### Community 34 - "processStack"
-Cohesion: 0.33
-Nodes (7): cp(), executeWithControlFlow(), getFrozenTensorIds(), Js(), le(), processChildNodes(), processStack()
+Cohesion: 0.12
+Nodes (16): do_run_migrations(), Alembic env.py — configured for async SQLAlchemy., run_async_migrations(), run_migrations_online(), Application configuration — loaded from environment variables., Settings, get_logger(), Structured logging configuration for Pharmacy Fantasy backend. (+8 more)
 
 ### Community 35 - "render_html_invoice"
 Cohesion: 0.22
@@ -491,13 +475,9 @@ Nodes (7): dependencies, @apollo/client, graphql, lucide-react, next, react, rea
 Cohesion: 0.42
 Nodes (7): enqueueEvent(), logger(), main(), onParentDeath(), parseWatchdogArgs(), #sendBatch(), sendShutdownEvent()
 
-### Community 39 - "je"
-Cohesion: 0.60
-Nodes (6): Ep(), ie(), ja(), je(), te(), vp()
-
-### Community 40 - "loadWithWeightMap"
-Cohesion: 0.50
-Nodes (4): convertTensorMapToTensorsMap(), loadStreaming(), loadSync(), loadWithWeightMap()
+### Community 39 - "$t"
+Cohesion: 0.12
+Nodes (35): c0(), Co(), dr(), eh(), En(), Ep(), Et(), Go() (+27 more)
 
 ### Community 41 - "Dos and Don'ts"
 Cohesion: 0.06
@@ -511,9 +491,13 @@ Nodes (30): 1. Getting Started and Hardware Requirements, 2. Core Prompting Capa
 Cohesion: 0.06
 Nodes (30): 1. Fundamental Semantics and Validation, 2. Content Grouping and Attribution, 3. Resource Prioritization and Performance, 4. Native Overlays: Dialogs and Popovers, 5. Disclosures: Details and Summary, 6. Focus Boundaries and Visibility, 7. HTML APIs and Forms Grouping, 8. Native Media Elements (+22 more)
 
+### Community 44 - "lucide-react"
+Cohesion: 0.17
+Nodes (7): BreadcrumbItem, BreadcrumbProps, EmptyStateProps, StatusBadge(), StatusBadgeProps, StatusType, lucide-react
+
 ### Community 46 - "auth.ts"
-Cohesion: 0.10
-Nodes (24): DashboardPage(), DashboardProps, styles, AuthGuard(), Props, Sidebar(), SidebarProps, AuthState (+16 more)
+Cohesion: 0.13
+Nodes (16): DashboardPage(), DashboardProps, styles, AuthGuard(), Props, Sidebar(), SidebarProps, AUTH_KEYS (+8 more)
 
 ### Community 47 - "modern-web-guidance/package.json"
 Cohesion: 0.40
@@ -1425,17 +1409,17 @@ Nodes (3): 🗂️ Documentation Overview, 🏛️ Engineering Playbooks & Guide
 
 ## Knowledge Gaps
 - **1680 isolated node(s):** `name`, `version`, `modern-web-guidance`, `require`, `nextConfig` (+1675 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2157 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **17 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2158 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `StockBatch` connect `StockBatch` to `types.py`, `orders.py`, `models.py`?**
+- **Why does `react` connect `react` to `dashboard/page.tsx`, `lucide-react`, `auth.ts`, `app/page.tsx`, `index.ts`, `frontend/package.json`, `graphql-queries.ts`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `react` connect `react` to `dashboard/page.tsx`, `breadcrumb.tsx`, `auth.ts`, `app/page.tsx`, `frontend/package.json`, `graphql-queries.ts`?**
+- **Why does `StockBatch` connect `StockBatch` to `types.py`, `type`, `models.py`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `type` connect `types.py` to `orders.py`, `auth.py`, `delivery.py`, `modern-web-guidance/package.json`?**
+- **Why does `type` connect `type` to `types.py`, `auth.py`, `delivery.py`, `modern-web-guidance/package.json`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `push()` (e.g. with `n()` and `r()`) actually correct?**
   _`push()` has 2 INFERRED edges - model-reasoned connections that need verification._
@@ -1444,4 +1428,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **What connects `name`, `version`, `modern-web-guidance` to the rest of the system?**
   _1680 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `search.mjs` be split into smaller, more focused modules?**
-  _Cohesion score 0.01627497062279671 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.01597136905079857 - nodes in this community are weakly interconnected._

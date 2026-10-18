@@ -262,3 +262,9 @@ Guidelines:
 4. Goal-driven execution: create a numbered checklist, execute step by step, and verify with tests.
 Learn, understand, and analyze deeply, breaking tasks into smaller steps."
 ==============================================================================
+
+👑 Super Admin
+🛡️ Operations Admin
+📦 Warehouse Staff
+🛵 Delivery Boy
+🏪 Retail Shopkeeper

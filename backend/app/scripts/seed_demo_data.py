@@ -40,12 +40,12 @@ async def seed_all():
         await conn.run_sync(Base.metadata.create_all)
 
     async with async_session_factory() as session:
-        # Check if already seeded
-        existing_user = await session.execute(
-            select(User).where(User.email == "superadmin@pharmacyfantasy.com")
+        # Check if already seeded or admin configured
+        existing_admin = await session.execute(
+            select(User).where(User.role == UserRole.SUPER_ADMIN)
         )
-        if existing_user.scalar_one_or_none():
-            print("[INFO] Database already has demo data. Skipping seeding.")
+        if existing_admin.scalar_one_or_none():
+            print("[INFO] Database already has an active Super Admin. Skipping demo seeding.")
             return
 
         print("[*] Seeding system users...")

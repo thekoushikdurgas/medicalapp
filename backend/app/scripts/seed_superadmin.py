@@ -6,6 +6,7 @@ Usage:
 """
 
 import asyncio
+import os
 
 from sqlalchemy import select
 
@@ -15,25 +16,29 @@ from app.db.session import async_session_factory
 
 
 async def seed():
+    admin_email = os.getenv("SUPERADMIN_EMAIL", "thekoushikdurgas@gmail.com")
+    admin_password = os.getenv("SUPERADMIN_PASSWORD", "admin123")
+    admin_name = os.getenv("SUPERADMIN_NAME", "Super Admin")
+
     async with async_session_factory() as session:
         # Check if super admin already exists
         result = await session.execute(
-            select(User).where(User.role == UserRole.SUPER_ADMIN)
+            select(User).where(User.email == admin_email)
         )
         if result.scalar_one_or_none():
-            print("Super Admin already exists. Skipping.")
+            print(f"Super Admin ({admin_email}) already exists. Skipping.")
             return
 
         admin = User(
-            email="admin@pharmacyfantasy.com",
-            password_hash=hash_password("admin123"),
-            full_name="Super Admin",
+            email=admin_email,
+            password_hash=hash_password(admin_password),
+            full_name=admin_name,
             role=UserRole.SUPER_ADMIN,
             is_active=True,
         )
         session.add(admin)
         await session.commit()
-        print(f"Super Admin created: admin@pharmacyfantasy.com / admin123")
+        print(f"Super Admin created: {admin_email} / {admin_password}")
         print("⚠️  Change the password immediately in production!")
 
 

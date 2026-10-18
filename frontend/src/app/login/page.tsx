@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client";
 import Link from "next/link";
 import { LOGIN_MUTATION } from "@/lib/graphql-queries";
-import { AUTH_KEYS, ROLE_META } from "@/lib/auth";
-import type { UserRole } from "@/types";
+import { AUTH_KEYS } from "@/lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("superadmin@pharmacyfantasy.com");
-  const [password, setPassword] = useState("admin123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -19,13 +18,19 @@ export default function LoginPage() {
     errorPolicy: "all",
   });
 
-  const handleLogin = async (loginEmail = email, loginPass = password) => {
+  const handleLogin = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!email || !password) {
+      setError("Please enter your registered email and password.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
       const res = await loginMutation({
-        variables: { email: loginEmail, password: loginPass },
+        variables: { email, password },
       });
 
       if (res.data?.login?.accessToken) {
@@ -34,43 +39,19 @@ export default function LoginPage() {
         router.push("/dashboard");
         return;
       }
-    } catch {
-      // Backend may be offline — fallback to demo
-    }
 
-    // Demo fallback
-    const DEMO_USERS: Record<string, { fullName: string; role: UserRole; pass: string }> = {
-      "superadmin@pharmacyfantasy.com": { fullName: "Rajesh Mukherjee", role: "SUPER_ADMIN", pass: "admin123" },
-      "admin@pharmacyfantasy.com": { fullName: "Pooja Sharma", role: "ADMIN", pass: "admin123" },
-      "warehouse@pharmacyfantasy.com": { fullName: "Sunil Ghosh", role: "WAREHOUSE", pass: "warehouse123" },
-      "delivery@pharmacyfantasy.com": { fullName: "Rahul Sharma", role: "DELIVERY", pass: "delivery123" },
-      "cheapmedical@pharmacyfantasy.com": { fullName: "Amitabh Das", role: "SHOPKEEPER", pass: "shop123" },
-    };
-
-    const demo = DEMO_USERS[loginEmail];
-    if (demo && loginPass === demo.pass) {
-      localStorage.setItem(AUTH_KEYS.TOKEN, "demo-token-" + Date.now());
-      localStorage.setItem(AUTH_KEYS.USER, JSON.stringify({ email: loginEmail, fullName: demo.fullName, role: demo.role }));
-      router.push("/dashboard");
-    } else {
-      setError("Invalid credentials. Use a demo account below for quick access.");
+      if (res.errors && res.errors.length > 0) {
+        setError(res.errors[0].message || "Invalid email or password.");
+      } else {
+        setError("Invalid email or password. Please try again.");
+      }
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Authentication failed. Please verify credentials.";
+      setError(message);
+    } finally {
       setLoading(false);
     }
   };
-
-  const handleQuickLogin = (quickEmail: string, quickPass: string) => {
-    setEmail(quickEmail);
-    setPassword(quickPass);
-    handleLogin(quickEmail, quickPass);
-  };
-
-  const quickLogins: { email: string; pass: string; role: UserRole }[] = [
-    { email: "superadmin@pharmacyfantasy.com", pass: "admin123", role: "SUPER_ADMIN" },
-    { email: "admin@pharmacyfantasy.com", pass: "admin123", role: "ADMIN" },
-    { email: "warehouse@pharmacyfantasy.com", pass: "warehouse123", role: "WAREHOUSE" },
-    { email: "delivery@pharmacyfantasy.com", pass: "delivery123", role: "DELIVERY" },
-    { email: "cheapmedical@pharmacyfantasy.com", pass: "shop123", role: "SHOPKEEPER" },
-  ];
 
   return (
     <div style={styles.wrapper}>
@@ -87,13 +68,7 @@ export default function LoginPage() {
         </div>
 
         {/* Login Form */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleLogin();
-          }}
-          style={styles.form}
-        >
+        <form onSubmit={handleLogin} style={styles.form}>
           <div>
             <label htmlFor="email" className="label">
               Registered Email / Phone ID
@@ -102,10 +77,11 @@ export default function LoginPage() {
               id="email"
               type="text"
               className="input"
-              placeholder="e.g. superadmin@pharmacyfantasy.com"
+              placeholder="e.g. name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="username"
             />
           </div>
 
@@ -121,6 +97,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              autoComplete="current-password"
             />
           </div>
 
@@ -135,43 +112,6 @@ export default function LoginPage() {
             {loading ? "Authenticating Session..." : "Sign In to Operations Portal →"}
           </button>
         </form>
-
-        {/* Quick Login */}
-        <div style={{ marginTop: "var(--space-6)", borderTop: "1px solid rgba(0,0,0,0.08)", paddingTop: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase", textAlign: "center", marginBottom: "var(--space-3)" }}>
-            ⚡ 1-Click Fast Login by Role
-          </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-2)" }}>
-            {quickLogins.slice(0, 4).map((q) => {
-              const meta = ROLE_META[q.role];
-              return (
-                <button
-                  key={q.role}
-                  type="button"
-                  className="btn btn-secondary"
-                  style={{ fontSize: "0.75rem", padding: "0.35rem 0.5rem" }}
-                  onClick={() => handleQuickLogin(q.email, q.pass)}
-                >
-                  {meta.icon} {meta.label}
-                </button>
-              );
-            })}
-          </div>
-          {quickLogins.slice(4).map((q) => {
-            const meta = ROLE_META[q.role];
-            return (
-              <button
-                key={q.role}
-                type="button"
-                className="btn btn-secondary"
-                style={{ width: "100%", fontSize: "0.75rem", padding: "0.35rem 0.5rem", marginTop: "var(--space-2)" }}
-                onClick={() => handleQuickLogin(q.email, q.pass)}
-              >
-                {meta.icon} {meta.label}
-              </button>
-            );
-          })}
-        </div>
 
         {/* Links */}
         <div style={{ marginTop: "var(--space-4)", textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
