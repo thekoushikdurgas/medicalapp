@@ -1,7 +1,7 @@
 # Graph Report - pharmacyfantasy  (2026-10-19)
 
 ## Corpus Check
-- 319 files · ~320,205 words
+- 319 files · ~320,206 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 15 file(s) not represented in the graph (top: (none) 6, .gz 2, .bak 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7f6860d7`
+- Built from commit: `41a8b4d0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
