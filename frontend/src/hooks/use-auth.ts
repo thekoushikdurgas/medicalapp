@@ -1,9 +1,11 @@
 /**
  * Custom hook for auth state management.
+ * Uses AUTH_KEYS from lib/auth for consistent localStorage keys.
  */
 
 import { useState, useEffect, useCallback } from "react";
 import type { User } from "@/types";
+import { AUTH_KEYS } from "@/lib/auth";
 
 interface AuthState {
   user: User | null;
@@ -19,9 +21,8 @@ export function useAuth() {
   });
 
   useEffect(() => {
-    // Check for existing token on mount
-    const token = localStorage.getItem("access_token");
-    const userData = localStorage.getItem("user");
+    const token = localStorage.getItem(AUTH_KEYS.TOKEN);
+    const userData = localStorage.getItem(AUTH_KEYS.USER);
 
     if (token && userData) {
       try {
@@ -36,19 +37,17 @@ export function useAuth() {
   }, []);
 
   const login = useCallback(
-    (accessToken: string, refreshToken: string, user: User) => {
-      localStorage.setItem("access_token", accessToken);
-      localStorage.setItem("refresh_token", refreshToken);
-      localStorage.setItem("user", JSON.stringify(user));
+    (accessToken: string, user: User) => {
+      localStorage.setItem(AUTH_KEYS.TOKEN, accessToken);
+      localStorage.setItem(AUTH_KEYS.USER, JSON.stringify(user));
       setState({ user, isAuthenticated: true, isLoading: false });
     },
     []
   );
 
   const logout = useCallback(() => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("user");
+    localStorage.removeItem(AUTH_KEYS.TOKEN);
+    localStorage.removeItem(AUTH_KEYS.USER);
     setState({ user: null, isAuthenticated: false, isLoading: false });
   }, []);
 

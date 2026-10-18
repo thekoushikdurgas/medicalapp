@@ -31670,7 +31670,7 @@
       "file_type": "code",
       "norm_label": "apolloclient",
       "source_file": "frontend/src/lib/apollo-client.ts",
-      "source_location": "L27"
+      "source_location": "L28"
     },
     {
       "id": "frontend_src_lib_apollo_client_authlink",
@@ -98830,7 +98830,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "frontend/src/lib/apollo-client.ts",
-      "source_location": "L27",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -106378,5 +106378,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "7f6860d7cfc15759a0c228dfd4213bbcd2d7d06a"
+  "built_at_commit": "41a8b4d043ce2396dd28707be7d646e28e612453"
 }
