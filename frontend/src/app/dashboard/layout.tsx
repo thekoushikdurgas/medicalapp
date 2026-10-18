@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, Pill } from "lucide-react";
 import Sidebar from "@/components/sidebar";
+import DashboardNavbar from "@/components/navbar";
 import AuthGuard from "@/components/auth-guard";
 
 export default function DashboardLayout({
@@ -10,7 +10,17 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  const handleToggleSidebar = () => {
+    // If on mobile viewport, open mobile drawer; otherwise toggle collapsed mode
+    if (typeof window !== "undefined" && window.innerWidth <= 768) {
+      setMobileDrawerOpen((prev) => !prev);
+    } else {
+      setIsSidebarCollapsed((prev) => !prev);
+    }
+  };
 
   return (
     <AuthGuard>
@@ -20,61 +30,44 @@ export default function DashboardLayout({
       </a>
 
       <div style={{ display: "flex", minHeight: "100vh", position: "relative" }}>
-        {/* Mobile Hamburger Header (Visible on <= 768px via CSS) */}
-        <header className="mobile-header">
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="hamburger-btn"
-              aria-label="Open navigation menu"
-              aria-expanded={sidebarOpen}
-            >
-              <Menu size={22} />
-            </button>
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-              <div
-                style={{
-                  width: "28px",
-                  height: "28px",
-                  borderRadius: "var(--radius-md)",
-                  background: "var(--color-primary-600)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "white",
-                }}
-              >
-                <Pill size={16} />
-              </div>
-              <span style={{ fontWeight: 700, fontSize: "0.95rem" }}>Pharmacy Fantasy</span>
-            </div>
-          </div>
-        </header>
-
         {/* Backdrop for mobile drawer */}
         <div
-          className={`sidebar-overlay ${sidebarOpen ? "visible" : ""}`}
-          onClick={() => setSidebarOpen(false)}
+          className={`sidebar-overlay ${mobileDrawerOpen ? "visible" : ""}`}
+          onClick={() => setMobileDrawerOpen(false)}
           aria-hidden="true"
         />
 
-        {/* Sidebar Component */}
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        {/* Enhanced Collapsible Sidebar Component */}
+        <Sidebar
+          isOpen={mobileDrawerOpen}
+          onClose={() => setMobileDrawerOpen(false)}
+          isCollapsed={isSidebarCollapsed}
+          onToggleCollapse={() => setIsSidebarCollapsed((prev) => !prev)}
+        />
 
-        {/* Main Content Area */}
-        <main
-          id="main-content"
-          className="dashboard-main"
-          style={{
-            flex: 1,
-            padding: "2rem",
-            overflow: "auto",
-            minWidth: 0,
-            background: "var(--bg-secondary)",
-          }}
-        >
-          {children}
-        </main>
+        {/* Main Content & Top Navbar Column */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, minHeight: "100vh" }}>
+          {/* Top Enterprise Dashboard Navbar */}
+          <DashboardNavbar
+            onToggleSidebar={handleToggleSidebar}
+            isSidebarCollapsed={isSidebarCollapsed}
+          />
+
+          {/* Main Workspace Body */}
+          <main
+            id="main-content"
+            className="dashboard-main"
+            style={{
+              flex: 1,
+              padding: "1.75rem 2rem",
+              overflow: "auto",
+              minWidth: 0,
+              background: "var(--bg-secondary)",
+            }}
+          >
+            {children}
+          </main>
+        </div>
       </div>
     </AuthGuard>
   );
