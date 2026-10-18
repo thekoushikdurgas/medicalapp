@@ -1,0 +1,264 @@
+==============================================================================
+💊 PHARMACY FANTASY — COMPREHENSIVE PROJECT PROMPTS REFERENCE
+==============================================================================
+Repository: https://github.com/thekoushikdurgas/medicalapp.git
+Platform: B2B Pharmaceutical Wholesale & Supply Chain Distribution
+Domain: Indian Pharmaceutical Wholesale (West Bengal Jurisdiction)
+Core Rule: "Learn, understand, and analyze deeply, breaking tasks into smaller steps."
+
+This file contains the canonical prompt collection, design specifications,
+and engineering directives tailored for Pharmacy Fantasy.
+Use these prompts with AI coding agents to guide feature development, UI/UX upgrades,
+and backend optimizations.
+
+==============================================================================
+TABLE OF CONTENTS
+==============================================================================
+1. SYSTEM MISSION & DOMAIN DIRECTIVES
+2. UI/UX & MODERN WEB DESIGN PROMPTS
+3. WHOLESALE ORDERING & FEFO LOGISTICS PROMPTS
+4. STATUTORY GST & INVOICING PROMPTS
+5. INVENTORY & DISTRIBUTOR INGESTION PROMPTS
+6. ARCHITECTURE & CODE ORGANIZATION PROMPTS
+7. SECURITY & ROLE-BASED ACCESS CONTROL (RBAC) PROMPTS
+8. QUALITY ASSURANCE, CLEANUP & PERFORMANCE PROMPTS
+9. RECURSIVE TASK BREAKDOWN PROMPT TEMPLATES
+==============================================================================
+
+
+==============================================================================
+1. SYSTEM MISSION & DOMAIN DIRECTIVES
+==============================================================================
+
+Act like an elite Pharmaceutical Supply-Chain Architect and Full-Stack Engineer.
+Study the Pharmacy Fantasy codebase (FastAPI + Strawberry GraphQL + SQLAlchemy 2.0 backend,
+Next.js 14 App Router frontend, PostgreSQL 15, Redis 7).
+Our platform models the physical flow of wholesale drugs in West Bengal:
+Distributor / C&F Agency (e.g. MAA Medical Agency) ->
+Warehouse (MAA Eswari Pharmaceuticals, Benachity, Durgapur-13, GSTIN: 19BKMPG6092H1ZO) ->
+Retail Shopkeepers (e.g. Cheap Medical Stores, Gupta Pharmacy).
+
+Core Business Invariants:
+1. Zero-Tolerance Financial Inaccuracy: Line discounts (DIS1%, DIS2%), taxable values,
+   and SGST (2.5%) + CGST (2.5%) must strictly match statutory norms.
+2. Inventory FEFO Integrity: First-Expiry-First-Out batch selection is mandatory.
+   Batches with less than 60 days shelf life cannot be dispatched without warning.
+3. Role-Based Isolation: Super Admin, Admin, Warehouse Staff, Delivery Boy, and Shopkeeper
+   mutations must enforce strict server-side authorization.
+
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+
+==============================================================================
+2. UI/UX & MODERN WEB DESIGN PROMPTS
+==============================================================================
+
+[Prompt 2.1 - Theme System & Light/Dark Mode]
+Apply dark-light theme to all pages, tabs, components, buttons, input boxes, and text with modern styling and icons.
+Ensure all tokens are centralized in frontend/src/app/globals.css under :root and [data-theme="dark"].
+Include a smooth ThemeToggle component in the sidebar with persistence in localStorage.
+Ensure high contrast, accessible text tokens, and smooth color transitions.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 2.2 - Pure CSS Architecture (No Tailwind, No Inline Styles)]
+In the frontend, remove all external CSS and Tailwind CSS classes. Remove any inline style attributes
+and replace them with clean, unique, semantic class names in globals.css.
+Follow the design tokens for spacing, typography, radii, shadows, and status colors.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 2.3 - Dual-Axis Responsive Scrollable Tables]
+On all data tables (Orders, Inventory, Products, Invoices, Deliveries, Shopkeepers), make the tables
+fully responsive on all screen sizes with both vertical and horizontal scrollbars (.table-scroll-container)
+and sticky headers (.table-header-sticky) so column titles stay visible during deep scrolling.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 2.4 - LinkedIn-Style Right Drawer Panel (SideDrawer)]
+Convert all obstructive modal popups (Order Details, New Wholesale Order, Inward Stock Batch, Product SKU)
+into smooth, sliding right-side panels (SideDrawer) inspired by LinkedIn job details.
+Include backdrop blur, smooth slide-in animations, sticky header/footer, and Escape key dismissal.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 2.5 - Quick Instant Search & Category Filters]
+Add interactive search bars and multi-select filter dropdowns above every data table.
+Allow instant client-side or GraphQL-backed filtering by brand name, active composition, batch number,
+HSN code, retailer name, or order status. Include empty state placeholders when zero items match.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+
+==============================================================================
+3. WHOLESALE ORDERING & FEFO LOGISTICS PROMPTS
+==============================================================================
+
+[Prompt 3.1 - Order State Machine Orchestration]
+Implement and enforce the complete 6-stage wholesale order state machine:
+DRAFT -> PLACED -> CONFIRMED -> PICKING -> PACKED -> DISPATCHED -> DELIVERED.
+- Order placement validates shopkeeper credit limit.
+- Order confirmation triggers automated FEFO batch allocation.
+- Order packing formally locks stock batches and prepares warehouse picking slips.
+- Order delivery records proof-of-delivery (POD) and updates shopkeeper outstanding ledger.
+- Order cancellation at any pre-delivery stage automatically performs atomic stock restitution.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 3.2 - FEFO Automated Batch Allocation Algorithm]
+In backend/app/services/inventory_service.py, implement the FEFO (First-Expiry-First-Out) batch allocation engine:
+When an order is confirmed, query active StockBatch records where product_id matches, expiry_date > today,
+and quantity_available > 0, ordered by expiry_date ASC.
+Reserve required units from the earliest expiring valid batch.
+If shelf-life is less than 60 days, log an advisory warning.
+If total available quantity across batches is insufficient, raise InsufficientStockError.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 3.3 - Shopkeeper Credit Limit Guard]
+In backend/app/services/order_service.py, enforce the shopkeeper credit policy:
+Before creating an order in PLACED status, check:
+ShopkeeperProfile.outstanding_balance + order.net_amount <= ShopkeeperProfile.credit_limit.
+If credit limit is exceeded, reject the order with a clear CreditLimitExceededError detailing
+current outstanding, order net, and approved credit ceiling.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 3.4 - Delivery Personnel & Mobile POD Workflow]
+Build a mobile-responsive courier workflow for delivery boys (/dashboard/deliveries):
+- View assigned delivery routes and shopkeeper phone dialer links.
+- Capture delivery notes and upload proof-of-delivery (POD) signature or photo.
+- Record payment collection (Cash / UPI / Cheque) and auto-deduct from shopkeeper balance.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+
+==============================================================================
+4. STATUTORY GST & INVOICING PROMPTS
+==============================================================================
+
+[Prompt 4.1 - Statutory GST & Discount Math Engine]
+In backend/app/utils/gst.py, ensure all line items and invoice totals strictly comply with Indian GST rules:
+- Line Base Amount = Quantity * Rate
+- Trade Discounts = Base Amount * (DIS1% / 100) -> Cascading DIS2%
+- Taxable Value = Base Amount - Trade Discounts
+- State GST (SGST) = Taxable Value * (SGST% / 100) [Default 2.5% for pharmaceuticals]
+- Central GST (CGST) = Taxable Value * (CGST% / 100) [Default 2.5% for pharmaceuticals]
+- Line Total = Taxable Value + SGST + CGST
+- Invoice Grand Total = Sum(Line Totals) with statutory rounding to nearest Rupee.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 4.2 - Printable Tax Invoice Generator (MAA Eswari Pharmaceuticals)]
+In backend/app/utils/invoice_gen.py, generate clean, standard-compliant, printable HTML/PDF tax invoices:
+Header:
+- Seller: MAA Eswari Pharmaceuticals, Benachity, Durgapur-13, GSTIN: 19BKMPG6092H1ZO, D.L. No: 20B/21B.
+- Buyer: Shopkeeper Name, Store Address, GSTIN, Drug License Number.
+- Invoice No (INV-YYYYMMDD-XXXX), Date, Order Ref, Place of Supply (West Bengal Code 19).
+Table:
+- Sl, Product Description, Pack, Batch, Expiry, HSN, Qty, Free Goods, MRP, Rate, DIS1%, Taxable, SGST, CGST, Amount.
+Footer:
+- Bank Remittance Details (SBI A/C, IFSC), Drug & Cosmetics Act 1940 Statutory Declaration, Authorized Signature.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+
+==============================================================================
+5. INVENTORY & DISTRIBUTOR INGESTION PROMPTS
+==============================================================================
+
+[Prompt 5.1 - Inbound Purchase Bill Ingestion (MAA Medical Agency)]
+Implement the inbound purchase entry workflow in backend and frontend:
+Record distributor bills with:
+- Supplier Name (e.g. MAA Medical Agency), Supplier GSTIN, Supplier Invoice No, Invoice Date.
+- Line items with product_id, batch_number, expiry_date, HSN, quantity, free_goods, purchase rate, MRP, discounts, GST.
+- Automatically create or increment StockBatch records with purchase rate, MRP, and quantity_available.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 5.2 - Expiry & Low-Stock Early Warning Dashboard]
+Build real-time warehouse expiry alerts in frontend/src/app/dashboard/inventory/page.tsx:
+- Batches expiring within 30 days (Critical Red)
+- Batches expiring within 60 days (Warning Amber)
+- Batches expiring within 90 days (Advisory Blue)
+- Stock batches below configurable re-order threshold (< 100 units).
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+
+==============================================================================
+6. ARCHITECTURE & CODE ORGANIZATION PROMPTS
+==============================================================================
+
+[Prompt 6.1 - Layered Service Architecture]
+Enforce strict separation of concerns across the codebase:
+- GraphQL Resolvers (backend/app/graphql/resolvers/): Handle only GraphQL input/output typing and authentication context.
+- Service Layer (backend/app/services/): House all business logic, transactions, state machines, and mathematical formulas.
+- Database Models (backend/app/db/models.py): SQLAlchemy 2.0 Mapped models with strict constraints and indexes.
+- Frontend App Router (frontend/src/app/): Lightweight page layouts delegating to reusable UI atoms and hooks.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 6.2 - Centralized Structured Logging]
+In the entire codebase, replace all raw console.log() and Python print() statements with structured loggers:
+- Backend: Use logging standard library via app.core.logger with formatted timestamps, log levels, and request context.
+- Frontend: Use frontend/src/lib/logger.ts to silence debug noise in production builds.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 6.3 - Prevent N+1 Queries with DataLoader]
+In backend/app/graphql/resolvers/, implement DataLoader patterns for relationship resolution
+(e.g., loading items for a list of orders, or loading stock batches for a list of products)
+to batch database queries and eliminate N+1 latency bottlenecks.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+
+==============================================================================
+7. SECURITY & ROLE-BASED ACCESS CONTROL (RBAC) PROMPTS
+==============================================================================
+
+[Prompt 7.1 - Role-Based Permission Matrix (RBAC)]
+Enforce strict server-side authorization guards on all GraphQL mutations:
+- SUPER_ADMIN: System settings, user creation, financial audits.
+- ADMIN: Product master, order confirmation, credit limit overrides, invoice adjustments.
+- WAREHOUSE: Stock batch receiving, picking slips, packing verification.
+- DELIVERY: Delivery status updates, POD capture, cash/UPI collection.
+- SHOPKEEPER: Catalog browsing, cart preparation, order placement, invoice downloads.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 7.2 - JWT Token Lifecycle & Session Persistence]
+Implement secure JWT authentication:
+- Issue short-lived access tokens (30 minutes) and long-lived refresh tokens (7 days).
+- Store session in httpOnly secure cookies or localStorage with auto-refresh on 401.
+- Hash all passwords using bcrypt (cost factor >= 12).
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+
+==============================================================================
+8. QUALITY ASSURANCE, CLEANUP & PERFORMANCE PROMPTS
+==============================================================================
+
+[Prompt 8.1 - Automated Test-Driven Verification]
+Maintain 100% pass rate across the Pytest and Next.js build suites:
+- Run python -m pytest backend/tests/ to verify GST calculations, FEFO allocations, and purchase entry workflows.
+- Run npx tsc --noEmit and npm run build in frontend/ to guarantee zero type errors.
+- Never declare a feature complete without executing and verifying tests.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 8.2 - Dead Code, Duplicate Code & Unused Import Elimination]
+Audit the codebase file by file:
+- Remove unused variables, dead functions, and obsolete imports.
+- Deduplicate shared constants and type interfaces between frontend and backend.
+- Maintain minimal surgical diffs adhering to the Ponytail senior developer guidelines.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+[Prompt 8.3 - Sub-Second API Latency Optimization]
+Audit database queries and add appropriate indexes on:
+- products(hsn_code, is_active)
+- stock_batches(product_id, expiry_date, quantity_available)
+- orders(shopkeeper_id, status, placed_at)
+- invoices(invoice_number, order_id)
+Ensure all queries return in under 50 milliseconds.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps.
+
+
+==============================================================================
+9. RECURSIVE TASK BREAKDOWN PROMPT TEMPLATES
+==============================================================================
+
+Use this standardized prompt structure when requesting new complex features:
+
+"Act like an elite senior developer. Study the Pharmacy Fantasy codebase.
+Task: [DESCRIBE TASK HERE]
+Guidelines:
+1. Think before coding: surface trade-offs and domain constraints (e.g. West Bengal pharma norms).
+2. Simplicity first: minimum clean code that works; no speculative abstractions.
+3. Surgical changes: touch only what is necessary, match existing style.
+4. Goal-driven execution: create a numbered checklist, execute step by step, and verify with tests.
+Learn, understand, and analyze deeply, breaking tasks into smaller steps."
+==============================================================================

@@ -1,0 +1,394 @@
+# ==============================================================================
+# 💊 PHARMACY FANTASY — COMPREHENSIVE PROJECT COMMANDS REFERENCE
+# ==============================================================================
+# Repository: https://github.com/thekoushikdurgas/medicalapp.git
+# Platform: B2B Pharmaceutical Wholesale & Supply Chain Distribution
+# Target Market: West Bengal & Pan-India Drug Distribution (MAA Eswari Pharmaceuticals)
+# Tech Stack:
+#   - Backend: FastAPI (Python 3.11+) + Strawberry GraphQL + SQLAlchemy 2.0 (async)
+#   - Database: PostgreSQL 15 + Redis 7 + Alembic Migrations
+#   - Frontend: Next.js 14+ (App Router, TypeScript) + Apollo Client + Vanilla CSS
+#   - Containerization: Docker & Docker Compose
+# ==============================================================================
+
+# ==============================================================================
+# TABLE OF CONTENTS
+# ==============================================================================
+# 1. QUICK START & ENVIRONMENT SETUP
+# 2. DOCKER & CONTAINER INFRASTRUCTURE
+# 3. BACKEND COMMANDS (FastAPI, Uvicorn & Strawberry GraphQL)
+# 4. DATABASE & ALEMBIC MIGRATIONS
+# 5. DATABASE SEEDING & DATA MANAGEMENT
+# 6. FRONTEND COMMANDS (Next.js, Apollo Client, TypeScript)
+# 7. TESTING & QUALITY ASSURANCE (Pytest & Jest)
+# 8. GIT & REPOSITORY WORKFLOWS
+# 9. GRAPHQL QUERY & MUTATION EXAMPLES (cURL & HTTP)
+# 10. SYSTEMD, NGINX & PRODUCTION DEPLOYMENT
+# 11. GRAPHIFY KNOWLEDGE GRAPH COMMANDS
+# 12. TROUBLESHOOTING & COMMON ERROR FIXES
+# ==============================================================================
+
+
+# ==============================================================================
+# 1. QUICK START & ENVIRONMENT SETUP
+# ==============================================================================
+
+# Clone and enter repository
+git clone https://github.com/thekoushikdurgas/medicalapp.git
+cd pharmacyfantasy
+
+# Create root environment file from template
+cp .env.example .env
+
+# Spin up core infrastructure (PostgreSQL 15 & Redis 7)
+docker compose up -d postgres redis
+docker compose ps
+
+# Backend setup (Windows PowerShell)
+cd backend
+python -m venv .venv
+.\.venv\Scripts\activate
+pip install --upgrade pip
+pip install -r requirements.txt
+alembic upgrade head
+python -m app.scripts.seed_demo_data
+
+# Frontend setup (Windows PowerShell / cmd)
+cd ..\frontend
+npm install
+npm run dev
+
+# App access points:
+#   Frontend Web App:       http://localhost:3000
+#   FastAPI Health Check:   http://localhost:8000/health
+#   Strawberry GraphQL IDE: http://localhost:8000/graphql
+
+
+# ==============================================================================
+# 2. DOCKER & CONTAINER INFRASTRUCTURE
+# ==============================================================================
+
+# Spin up complete stack (Postgres, Redis, Backend, Frontend)
+docker compose up -d --build
+
+# Spin up only database and cache services
+docker compose up -d postgres redis
+
+# Check container status and port bindings
+docker compose ps
+
+# View live streaming container logs
+docker compose logs -f
+docker compose logs -f backend
+docker compose logs -f frontend
+docker compose logs -f postgres
+docker compose logs -f redis
+
+# Stop all running containers without destroying volumes
+docker compose stop
+
+# Stop containers and remove networks
+docker compose down
+
+# Stop containers and wipe all persistent volumes (Clean DB reset)
+docker compose down -v
+
+# Rebuild images from scratch without caching
+docker compose build --no-cache
+
+# Run ad-hoc shell inside running container
+docker compose exec backend bash
+docker compose exec postgres psql -U postgres -d pharmacyfantasy
+docker compose exec redis redis-cli ping
+
+
+# ==============================================================================
+# 3. BACKEND COMMANDS (FastAPI, Uvicorn & Strawberry GraphQL)
+# ==============================================================================
+
+# Activate virtual environment
+# Windows:
+.\backend\.venv\Scripts\activate
+# Linux/macOS:
+source backend/.venv/bin/activate
+
+# Install all backend dependencies
+pip install -r backend/requirements.txt
+
+# Start FastAPI development server with hot reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload --app-dir backend
+
+# Start backend using python module execution
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload --app-dir backend
+
+# Check code formatting & linting
+black --check backend/app
+isort --check-only backend/app
+ruff check backend/app
+
+# Auto-format Python codebase
+black backend/app backend/tests
+isort backend/app backend/tests
+ruff check --fix backend/app
+
+# Print Strawberry GraphQL schema definition (SDL)
+python -c "from app.graphql.schema import schema; print(schema)"
+
+
+# ==============================================================================
+# 4. DATABASE & ALEMBIC MIGRATIONS
+# ==============================================================================
+
+# Navigate to backend directory before running Alembic
+cd backend
+
+# Create a new auto-detected migration revision
+alembic revision --autogenerate -m "add_fefo_and_purchase_entry_models"
+
+# Apply all pending migrations to the latest database schema
+alembic upgrade head
+
+# Roll back the single most recent migration
+alembic downgrade -1
+
+# Roll back all migrations to initial state
+alembic downgrade base
+
+# View migration history and current head
+alembic history --verbose
+alembic current
+
+# Connect directly to local PostgreSQL instance
+psql -h localhost -p 5432 -U postgres -d pharmacyfantasy
+
+# Useful PostgreSQL commands inside psql:
+#   \dt                  -- List all relational tables
+#   \d+ stock_batches    -- Inspect StockBatch schema, columns, and indexes
+#   \d+ orders           -- Inspect Order schema and foreign keys
+#   SELECT count(*) FROM products;
+#   SELECT batch_number, expiry_date, quantity_available FROM stock_batches ORDER BY expiry_date ASC;
+
+
+# ==============================================================================
+# 5. DATABASE SEEDING & DATA MANAGEMENT
+# ==============================================================================
+
+# Seed default Super Admin user (admin@pharmacyfantasy.com / admin123)
+python -m app.scripts.seed_superadmin
+
+# Seed comprehensive pharmaceutical demo dataset (MAA Eswari Pharmaceuticals bills, products, batches, orders)
+python -m app.scripts.seed_demo_data
+
+# Dump PostgreSQL database to SQL backup file
+pg_dump -h localhost -U postgres -d pharmacyfantasy -F c -b -v -f pharmacyfantasy_backup.dump
+
+# Restore PostgreSQL database from dump file
+pg_restore -h localhost -U postgres -d pharmacyfantasy -v -c pharmacyfantasy_backup.dump
+
+# Flush Redis cache
+redis-cli -h localhost -p 6379 FLUSHALL
+
+
+# ==============================================================================
+# 6. FRONTEND COMMANDS (Next.js, Apollo Client, TypeScript)
+# ==============================================================================
+
+# Navigate to frontend directory
+cd frontend
+
+# Install Node.js dependencies
+npm install
+
+# Start Next.js App Router development server on port 3000
+npm run dev
+
+# Run static TypeScript typecheck without emitting output
+npx tsc --noEmit
+# On Windows cmd:
+cmd /c npx tsc --noEmit
+
+# Run ESLint validation
+npm run lint
+
+# Build optimized production bundle
+npm run build
+
+# Start production server after build
+npm run start
+
+# Clean Next.js cache and node_modules in case of build corruption
+# Windows PowerShell:
+Remove-Item -Recurse -Force .next, node_modules; npm install
+# Linux/macOS:
+rm -rf .next node_modules && npm install
+
+
+# ==============================================================================
+# 7. TESTING & QUALITY ASSURANCE (Pytest & Jest)
+# ==============================================================================
+
+# Run all backend unit & integration test suites
+python -m pytest backend/tests/
+
+# Run tests with verbose output and test names
+python -m pytest backend/tests/ -v
+
+# Run tests with code coverage report
+python -m pytest backend/tests/ --cov=backend/app --cov-report=term-missing
+
+# Run specific test file
+python -m pytest backend/tests/test_gst.py -v
+python -m pytest backend/tests/test_services.py -v
+
+# Run only tests matching a name pattern
+python -m pytest backend/tests/ -k "fefo"
+python -m pytest backend/tests/ -k "purchase_entry"
+python -m pytest backend/tests/ -k "credit_limit"
+
+# Run frontend test suite
+cd frontend
+npm test
+
+
+# ==============================================================================
+# 8. GIT & REPOSITORY WORKFLOWS
+# ==============================================================================
+
+# Check repository status and uncommitted diffs
+git status
+git diff
+
+# Stage all modified and new files
+git add .
+
+# Commit with Conventional Commit specification
+git commit -m "feat(inventory): implement FEFO batch auto-allocation and statutory GST invoice generator"
+
+# Push to origin repository (medicalapp)
+git push origin main
+
+# Pull latest changes from remote
+git pull origin main
+
+# Create and checkout a feature branch
+git checkout -b feat/delivery-pod-workflow
+
+# Merge branch into main
+git checkout main
+git merge feat/delivery-pod-workflow
+
+git init
+git remote add origin https://github.com/thekoushikdurgas/medicalapp.git
+git branch -M main
+git add .
+git commit -m "medicalapp deployment v1"
+git push -u origin main
+
+
+# ==============================================================================
+# 9. GRAPHQL QUERY & MUTATION EXAMPLES (cURL & HTTP)
+# ==============================================================================
+
+# Health check endpoint
+curl -X GET http://localhost:8000/health
+
+# GraphQL Query: Fetch Dashboard Overview Stats
+curl -X POST http://localhost:8000/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ dashboardStats { totalOrders pendingOrders todaySales lowStockCount expiringBatchesCount outstandingPayments } }"}'
+
+# GraphQL Query: List First 10 Products with Category & Stock
+curl -X POST http://localhost:8000/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query": "{ products(page: 1, perPage: 10) { items { id name composition packSize defaultMrp defaultSgstRate defaultCgstRate } totalCount } }"}'
+
+# GraphQL Mutation: User Login
+curl -X POST http://localhost:8000/graphql \
+  -H "Content-Type: application/json" \
+  -d '{"query": "mutation { login(email: \"admin@pharmacyfantasy.com\", password: \"admin123\") { accessToken tokenType user { id email fullName role } } }"}'
+
+# GraphQL Mutation: Confirm Order with Automated FEFO Batch Allocation
+curl -X POST http://localhost:8000/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  -d '{"query": "mutation { confirmOrder(orderId: \"<ORDER_UUID>\") { id orderNumber status netAmount confirmedAt } }"}'
+
+
+# ==============================================================================
+# 10. SYSTEMD, NGINX & PRODUCTION DEPLOYMENT
+# ==============================================================================
+
+# Backend Systemd service definition (/etc/systemd/system/pharmacy-backend.service):
+# [Unit]
+# Description=Pharmacy Fantasy FastAPI Backend
+# After=network.target postgresql.service redis.service
+#
+# [Service]
+# User=ubuntu
+# WorkingDirectory=/var/www/pharmacyfantasy/backend
+# ExecStart=/var/www/pharmacyfantasy/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 4
+# Restart=always
+# EnvironmentFile=/var/www/pharmacyfantasy/.env
+#
+# [Install]
+# WantedBy=multi-user.target
+
+# Reload and manage systemd backend service
+sudo systemctl daemon-reload
+sudo systemctl enable pharmacy-backend
+sudo systemctl start pharmacy-backend
+sudo systemctl status pharmacy-backend
+sudo journalctl -u pharmacy-backend -f
+
+# Next.js PM2 process manager for frontend:
+npm install -g pm2
+cd /var/www/pharmacyfantasy/frontend
+npm run build
+pm2 start npm --name "pharmacy-frontend" -- start -- -p 3000
+pm2 save
+pm2 startup
+
+
+# ==============================================================================
+# 11. GRAPHIFY KNOWLEDGE GRAPH COMMANDS
+# ==============================================================================
+
+# Update knowledge graph AST after adding or modifying files (no API cost)
+graphify update .
+
+# Query the codebase knowledge graph
+graphify query "How does FEFO batch auto-allocation work in order confirmation?"
+graphify query "Explain GST statutory line item and invoice calculations"
+
+# Find structural dependency path between two components
+graphify path "backend/app/services/order_service.py" "backend/app/db/models.py"
+
+# Open interactive visual knowledge graph in browser
+# Open file in browser: e:\chanchal\pharmacyfantasy\graphify-out\graph.html
+
+
+# ==============================================================================
+# 12. TROUBLESHOOTING & COMMON ERROR FIXES
+# ==============================================================================
+
+# Issue: Port 8000 or 3000 already in use (Windows)
+netstat -ano | findstr :8000
+netstat -ano | findstr :3000
+taskkill /F /PID <PID_NUMBER>
+
+# Issue: PostgreSQL connection refused
+docker compose restart postgres
+docker compose logs --tail=50 postgres
+
+# Issue: Redis connection failure
+docker compose restart redis
+
+# Issue: Alembic migration divergence / multiple heads
+alembic merge heads -m "merge_divergent_heads"
+alembic upgrade head
+
+# Issue: Next.js script execution policy error in PowerShell
+# Run commands using cmd wrapper:
+cmd /c npm run dev
+cmd /c npm run build
+cmd /c npx tsc --noEmit
