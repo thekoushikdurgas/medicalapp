@@ -246,10 +246,10 @@
     "semantic_hash": "0b3ce358b3b8acf1be57c81ccd4e2810"
   },
   "frontend/src/app/dashboard/layout.tsx": {
-    "mtime": 1791871574.198816,
-    "seen": 1791878825.264815,
-    "ast_hash": "7a62b88afdf510a8cde3bde7c6000285",
-    "semantic_hash": "7a62b88afdf510a8cde3bde7c6000285"
+    "mtime": 1792356894.1416068,
+    "seen": 1792357078.616835,
+    "ast_hash": "af7e13103c9f734e51603b45fb402e66",
+    "semantic_hash": ""
   },
   "frontend/src/app/dashboard/orders/page.tsx": {
     "mtime": 1792352086.3505106,
@@ -258,10 +258,10 @@
     "semantic_hash": ""
   },
   "frontend/src/app/dashboard/page.tsx": {
-    "mtime": 1791873156.965743,
-    "seen": 1791878825.264815,
-    "ast_hash": "865fb44af8283acbd744e1b11c9d0d66",
-    "semantic_hash": "865fb44af8283acbd744e1b11c9d0d66"
+    "mtime": 1792356862.8041148,
+    "seen": 1792357078.616835,
+    "ast_hash": "9fba264f0af13b39c79e73647ff5e5e9",
+    "semantic_hash": ""
   },
   "frontend/src/app/dashboard/products/page.tsx": {
     "mtime": 1792352338.371281,
@@ -294,10 +294,10 @@
     "semantic_hash": "920637b0ea7b2bff9e71b805139cc927"
   },
   "frontend/src/app/page.tsx": {
-    "mtime": 1791873564.424051,
-    "seen": 1791878825.264815,
-    "ast_hash": "2fad78f7ef5ea974107cef6fdb3f0ccb",
-    "semantic_hash": "2fad78f7ef5ea974107cef6fdb3f0ccb"
+    "mtime": 1792356679.0194361,
+    "seen": 1792357078.616835,
+    "ast_hash": "669df2c21e7ba298f30dd21bb6957a28",
+    "semantic_hash": ""
   },
   "frontend/src/components/providers.tsx": {
     "mtime": 1791871552.1747658,
@@ -306,16 +306,16 @@
     "semantic_hash": "23ed2717b7ad77c753abc44d9f014d03"
   },
   "frontend/src/components/sidebar.tsx": {
-    "mtime": 1792352019.7308483,
-    "seen": 1792352446.1270537,
-    "ast_hash": "c21bc613782d0b72250027651e678b82",
+    "mtime": 1792356881.9514809,
+    "seen": 1792357078.616835,
+    "ast_hash": "84b3ae825c3dc44002daa0f60878ec44",
     "semantic_hash": ""
   },
   "frontend/src/hooks/use-auth.ts": {
-    "mtime": 1791871661.0873518,
-    "seen": 1791878825.264815,
-    "ast_hash": "dc1ceef67494e58b85c7cd20b18474ae",
-    "semantic_hash": "dc1ceef67494e58b85c7cd20b18474ae"
+    "mtime": 1792356597.6291654,
+    "seen": 1792357078.616835,
+    "ast_hash": "2afbd9319d59a688bf615d55faf7c818",
+    "semantic_hash": ""
   },
   "frontend/src/lib/apollo-client.ts": {
     "mtime": 1792355562.3045251,
@@ -1971,6 +1971,36 @@
     "mtime": 1792355737.8537958,
     "seen": 1792355791.1897666,
     "ast_hash": "42e94d7fa5b15c48f97c0eda506c34ff",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/forgot-password/page.tsx": {
+    "mtime": 1792356766.909384,
+    "seen": 1792357078.616835,
+    "ast_hash": "9fe17eb77ca3f843719cdb735342e150",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/login/page.tsx": {
+    "mtime": 1792356718.9722557,
+    "seen": 1792357078.616835,
+    "ast_hash": "ec1d4b6b862a2f50c65458e01a385687",
+    "semantic_hash": ""
+  },
+  "frontend/src/app/register/page.tsx": {
+    "mtime": 1792356749.1023855,
+    "seen": 1792357078.616835,
+    "ast_hash": "76518fee0e61421d6d8a43bcfdf1ed66",
+    "semantic_hash": ""
+  },
+  "frontend/src/components/auth-guard.tsx": {
+    "mtime": 1792356612.398717,
+    "seen": 1792357078.616835,
+    "ast_hash": "66d709c2b8acd898217c7cb9fba97d77",
+    "semantic_hash": ""
+  },
+  "frontend/src/lib/auth.ts": {
+    "mtime": 1792356580.003966,
+    "seen": 1792357078.616835,
+    "ast_hash": "f908bf18898446b79de860c45040f9d4",
     "semantic_hash": ""
   }
 }
