@@ -214,6 +214,30 @@ class CreateUserInput:
     shop_name: str | None = None
     shop_address: str | None = None
     gstin: str | None = None
+    # Delivery fields (optional)
+    vehicle_type: str | None = None
+    vehicle_number: str | None = None
+    assigned_area: str | None = None
+
+
+@strawberry.input
+class RegisterInput:
+    role: str  # "SHOPKEEPER" or "DELIVERY"
+    full_name: str
+    phone: str
+    password: str
+    email: str | None = None
+    # Shopkeeper fields
+    shop_name: str | None = None
+    shop_address: str | None = None
+    gstin: str | None = None
+    drug_license_no: str | None = None
+    area: str | None = None
+    city: str | None = None
+    # Delivery fields
+    vehicle_type: str | None = None
+    vehicle_number: str | None = None
+    assigned_area: str | None = None
 
 
 @strawberry.input

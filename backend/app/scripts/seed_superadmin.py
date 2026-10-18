@@ -16,14 +16,10 @@ from app.db.session import async_session_factory
 
 
 async def seed():
-    admin_email = os.getenv("SUPERADMIN_EMAIL")
+    admin_email = os.getenv("SUPERADMIN_EMAIL", "superadmin@pharmacyfantasy.com")
     admin_password = os.getenv("SUPERADMIN_PASSWORD", "admin123")
     admin_name = os.getenv("SUPERADMIN_NAME", "Super Admin")
-
-    if not admin_email:
-        print("No SUPERADMIN_EMAIL provided. Skipping Super Admin creation.")
-        print("To create a super admin, run with: SUPERADMIN_EMAIL=your_email@example.com python -m app.scripts.seed_superadmin")
-        return
+    admin_phone = os.getenv("SUPERADMIN_PHONE", "9800000001")
 
     async with async_session_factory() as session:
         # Check if super admin already exists
@@ -36,6 +32,7 @@ async def seed():
 
         admin = User(
             email=admin_email,
+            phone=admin_phone,
             password_hash=hash_password(admin_password),
             full_name=admin_name,
             role=UserRole.SUPER_ADMIN,

@@ -65,19 +65,26 @@ export default function LoginPage() {
           <p style={styles.brandTagline}>
             B2B Pharmaceutical Wholesale &amp; Supply Chain Distribution
           </p>
+          <div style={styles.rolesBadgeContainer}>
+            <span style={styles.roleBadge}>👑 Super Admin</span>
+            <span style={styles.roleBadge}>🛡️ Operations Admin</span>
+            <span style={styles.roleBadge}>📦 Warehouse Staff</span>
+            <span style={styles.roleBadge}>🛵 Delivery Boy</span>
+            <span style={styles.roleBadge}>🏪 Retail Shopkeeper</span>
+          </div>
         </div>
 
         {/* Login Form */}
         <form onSubmit={handleLogin} style={styles.form}>
           <div>
             <label htmlFor="email" className="label">
-              Registered Email / Phone ID
+              Registered Email or Mobile Phone
             </label>
             <input
               id="email"
               type="text"
               className="input"
-              placeholder="e.g. name@example.com"
+              placeholder="e.g. admin@pharmacyfantasy.com or 9800000001"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -114,16 +121,25 @@ export default function LoginPage() {
         </form>
 
         {/* Links */}
-        <div style={{ marginTop: "var(--space-4)", textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+        <div style={{ marginTop: "var(--space-4)", textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
           <Link href="/forgot-password" style={{ fontSize: "0.8rem", color: "var(--color-primary-600)" }}>
             Forgot your password?
           </Link>
-          <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-            Retail Shopkeeper?{" "}
-            <Link href="/register" style={{ color: "var(--color-primary-600)", fontWeight: 600 }}>
-              Register here →
+          <div style={{
+            fontSize: "0.8rem",
+            color: "var(--text-secondary)",
+            background: "rgba(16, 185, 129, 0.08)",
+            padding: "var(--space-2) var(--space-3)",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid rgba(16, 185, 129, 0.2)",
+          }}>
+            <p style={{ margin: 0, fontWeight: 500 }}>
+              Need an account? Free instant registration without approval:
+            </p>
+            <Link href="/register" style={{ color: "var(--color-primary-700)", fontWeight: 700, display: "inline-block", marginTop: "4px" }}>
+              🏪 Register Retail Shopkeeper or 🛵 Delivery Boy →
             </Link>
-          </p>
+          </div>
         </div>
 
         <p style={styles.footer}>
@@ -178,6 +194,22 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: "var(--font-size-xs)",
     color: "var(--text-secondary)",
     marginTop: "var(--space-1)",
+  },
+  rolesBadgeContainer: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: "6px",
+    marginTop: "var(--space-3)",
+  },
+  roleBadge: {
+    fontSize: "0.7rem",
+    fontWeight: 600,
+    padding: "2px 8px",
+    borderRadius: "9999px",
+    background: "rgba(6, 78, 59, 0.08)",
+    color: "var(--color-primary-800)",
+    border: "1px solid rgba(6, 78, 59, 0.15)",
   },
   form: { display: "flex", flexDirection: "column", gap: "var(--space-4)" },
   submitBtn: {
