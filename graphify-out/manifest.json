@@ -132,9 +132,9 @@
     "semantic_hash": ""
   },
   "backend/app/graphql/resolvers/orders.py": {
-    "mtime": 1792450614.270835,
-    "seen": 1792452191.0839703,
-    "ast_hash": "920731978794c012dd8b1b828aaa2014",
+    "mtime": 1792453060.385254,
+    "seen": 1792453226.3671126,
+    "ast_hash": "76309fe973fff922e0b624f468690552",
     "semantic_hash": ""
   },
   "backend/app/graphql/resolvers/products.py": {
@@ -156,9 +156,9 @@
     "semantic_hash": ""
   },
   "backend/app/main.py": {
-    "mtime": 1792450614.2877603,
-    "seen": 1792452191.0839703,
-    "ast_hash": "9ed3ad32c52c7b1421f65fb8a0f16634",
+    "mtime": 1792452777.502791,
+    "seen": 1792453226.3671126,
+    "ast_hash": "10c6dcd96d5e367ecca456ae01cf3159",
     "semantic_hash": ""
   },
   "backend/app/scripts/__init__.py": {
@@ -1956,9 +1956,9 @@
     "semantic_hash": ""
   },
   "commands.txt": {
-    "mtime": 1792352743.8438866,
-    "seen": 1792452191.0839703,
-    "ast_hash": "ebaa5a18bc23bb3bdb795d501bdc1a68",
+    "mtime": 1792452459.0385952,
+    "seen": 1792453226.3671126,
+    "ast_hash": "2543be8f6ead48d46f6874ed96ff4748",
     "semantic_hash": ""
   },
   "promts.txt": {
@@ -2100,9 +2100,9 @@
     "semantic_hash": ""
   },
   "backend/tests/test_auth_rbac.py": {
-    "mtime": 1792449189.2890842,
-    "seen": 1792452191.0839703,
-    "ast_hash": "e7d6c72089ca472c127621ff09f44b4c",
+    "mtime": 1792453170.802252,
+    "seen": 1792453226.3671126,
+    "ast_hash": "38707ab4874772343d4573db8080b9d9",
     "semantic_hash": ""
   },
   "backend/tests/test_logistics_services.py": {
@@ -2262,9 +2262,9 @@
     "semantic_hash": ""
   },
   "backend/reports/check_report_bat.json": {
-    "mtime": 1792451178.0318527,
-    "seen": 1792452191.0839703,
-    "ast_hash": "732863d6810b0ddc511993fe99936fb5",
+    "mtime": 1792452774.1236203,
+    "seen": 1792453226.3671126,
+    "ast_hash": "91d98c26f275076f19dd9a4a686c98ad",
     "semantic_hash": ""
   },
   "backend/scripts/api_checker.py": {
@@ -2298,9 +2298,9 @@
     "semantic_hash": ""
   },
   "backend/reports/backend-source-inventory.txt": {
-    "mtime": 1792451006.9134429,
-    "seen": 1792452191.0839703,
-    "ast_hash": "cef122f830d1b292e1c3bdb5e2d6cd0f",
+    "mtime": 1792452611.191997,
+    "seen": 1792453226.3671126,
+    "ast_hash": "c8a8741fa3f377b6817095bf61b85695",
     "semantic_hash": ""
   },
   "docs/superpowers/specs/2026-10-20-codebase-bat-pipeline-design.md": {
@@ -2313,6 +2313,12 @@
     "mtime": 1792451403.2160766,
     "seen": 1792452191.0839703,
     "ast_hash": "9b8be5ef96ddd69ecd1ddc1554c61a88",
+    "semantic_hash": ""
+  },
+  "backend/alembic/versions/7a8b9c0d1e2f_add_missing_feature_columns.py": {
+    "mtime": 1792452795.2873006,
+    "seen": 1792453226.3671126,
+    "ast_hash": "4a33b6bf0180b1aa9f0881c32897980f",
     "semantic_hash": ""
   }
 }

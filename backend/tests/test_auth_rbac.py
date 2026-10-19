@@ -147,3 +147,53 @@ class TestAuthRBACGuards:
 
         with pytest.raises(Exception, match="Permission denied"):
             await AuthMutation().assign_user_role(info, target_id, UserRole.ADMIN.value)
+
+    def test_user_to_type_includes_assigned_work_queue(self):
+        """Regression test: User model with or without assigned_work_queue serializes cleanly to UserType."""
+        from app.graphql.resolvers.auth import _user_to_type
+
+        user_with_queue = User(
+            id=uuid.uuid4(),
+            email="picker@test.com",
+            phone="9800000010",
+            password_hash="hashed",
+            full_name="Picker One",
+            role=UserRole.WAREHOUSE,
+            is_active=True,
+            assigned_work_queue="PICKING_PACKING",
+        )
+        user_type = _user_to_type(user_with_queue)
+        assert user_type.assigned_work_queue == "PICKING_PACKING"
+        assert user_type.email == "picker@test.com"
+
+        user_without_queue = User(
+            id=uuid.uuid4(),
+            email="admin@test.com",
+            phone="9800000011",
+            password_hash="hashed",
+            full_name="Admin Person",
+            role=UserRole.ADMIN,
+            is_active=True,
+            assigned_work_queue=None,
+        )
+        user_type_none = _user_to_type(user_without_queue)
+        assert user_type_none.assigned_work_queue is None
+
+    @pytest.mark.asyncio
+    async def test_dashboard_stats_resolves_cleanly(self):
+        """Regression test: Dashboard stats handles timestamps without asyncpg offset-naive/aware DataError."""
+        from app.graphql.resolvers.orders import OrderQuery
+
+        info = make_mock_info(user_id=str(uuid.uuid4()), role=UserRole.ADMIN.value)
+        mock_session = AsyncMock()
+        mock_result = MagicMock()
+        mock_result.scalar.return_value = 15
+        mock_session.execute.return_value = mock_result
+
+        with patch("app.graphql.resolvers.orders.async_session_factory") as mock_factory:
+            mock_factory.return_value.__aenter__.return_value = mock_session
+            stats = await OrderQuery().dashboard_stats(info)
+            assert stats.total_orders == 15
+            assert stats.pending_orders == 15
+            assert stats.today_sales == 15.0
+

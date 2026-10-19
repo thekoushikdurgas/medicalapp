@@ -51,6 +51,7 @@ python -m venv .venv
 pip install --upgrade pip
 pip install -r requirements.txt
 alembic upgrade head
+python -m alembic upgrade head
 python -m app.scripts.seed_demo_data
 
 # Frontend setup (Windows PowerShell / cmd)

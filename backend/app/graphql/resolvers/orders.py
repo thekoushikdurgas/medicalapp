@@ -136,7 +136,7 @@ class OrderQuery:
             pending_orders = (await session.execute(pending_q)).scalar() or 0
 
             today_start = datetime.now(timezone.utc).replace(
-                hour=0, minute=0, second=0, microsecond=0
+                tzinfo=None, hour=0, minute=0, second=0, microsecond=0
             )
             today_sales_q = select(
                 func.coalesce(func.sum(Order.net_amount), 0.0)

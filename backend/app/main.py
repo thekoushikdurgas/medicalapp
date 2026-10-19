@@ -22,6 +22,17 @@ logger.info(f"Starting {settings.APP_NAME} in {settings.APP_ENV} mode")
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        if conn.dialect.name == "postgresql":
+            from sqlalchemy import text
+            for table_name, table in Base.metadata.tables.items():
+                for column in table.columns:
+                    col_name = column.name
+                    col_type = column.type.compile(dialect=conn.dialect)
+                    sql = f'ALTER TABLE "{table_name}" ADD COLUMN IF NOT EXISTS "{col_name}" {col_type};'
+                    try:
+                        await conn.execute(text(sql))
+                    except Exception as ex:
+                        logger.warning(f"Auto-sync notice for {table_name}.{col_name}: {ex}")
     yield
 
 
