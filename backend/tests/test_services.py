@@ -12,7 +12,7 @@ from app.services.inventory_service import (
     restore_batch_stock,
     InsufficientStockError,
 )
-from app.db.models import StockBatch, Product
+from app.db.models import StockBatch
 
 
 class TestInventoryService:
@@ -51,7 +51,9 @@ class TestInventoryService:
         mock_result.scalars.return_value.all.return_value = [b1, b2]
         mock_session.execute.return_value = mock_result
 
-        allocated = await allocate_batch_fefo(mock_session, prod_id, requested_quantity=20)
+        allocated = await allocate_batch_fefo(
+            mock_session, prod_id, requested_quantity=20
+        )
         assert allocated.batch_number == "B1_EXP30"
         assert allocated.quantity_available == 30
         assert allocated.quantity_sold == 20
@@ -88,7 +90,9 @@ class TestInventoryService:
         mock_result.scalars.return_value.all.return_value = [b1, b2]
         mock_session.execute.return_value = mock_result
 
-        allocated = await allocate_batch_fefo(mock_session, prod_id, requested_quantity=25)
+        allocated = await allocate_batch_fefo(
+            mock_session, prod_id, requested_quantity=25
+        )
         assert allocated.batch_number == "B2_LARGE"
         assert allocated.quantity_available == 25
         assert allocated.quantity_sold == 25
@@ -231,8 +235,9 @@ class TestInvoiceGeneration:
         assert "MAA Eswari Pharmaceuticals" in html
         assert "Cheap Medical Stores" in html
         assert "19BKMPG6092H1ZO" in html
-        assert "Drugs &amp; Cosmetics Act 1940" in html or "Drugs & Cosmetics Act 1940" in html
+        assert (
+            "Drugs &amp; Cosmetics Act 1940" in html
+            or "Drugs & Cosmetics Act 1940" in html
+        )
         assert "AZITHRAL 500MG TAB" in html
         assert "₹3211.97" in html
-
-

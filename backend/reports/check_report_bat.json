@@ -1,0 +1,4532 @@
+{
+  "timestamp": "2026-10-20T04:36:18.029205",
+  "project_root": "E:\\chanchal\\pharmacyfantasy\\backend",
+  "summary": {
+    "total_points": 121,
+    "passed": 56,
+    "failed": 65,
+    "score": 46.28
+  },
+  "categories": {
+    "Project Structure": {
+      "total": 10,
+      "passed": 6,
+      "failed": 4,
+      "results": [
+        {
+          "point_number": 1,
+          "category": "Project Structure",
+          "description": "app/ package directory exists",
+          "passed": true,
+          "message": "app/ found",
+          "severity": "info"
+        },
+        {
+          "point_number": 2,
+          "category": "Project Structure",
+          "description": "pyproject.toml or requirements.txt present",
+          "passed": true,
+          "message": "pyproject.toml: False, requirements.txt: True",
+          "severity": "info"
+        },
+        {
+          "point_number": 3,
+          "category": "Project Structure",
+          "description": "tests/ directory exists",
+          "passed": true,
+          "message": "tests/ found",
+          "severity": "info"
+        },
+        {
+          "point_number": 4,
+          "category": "Project Structure",
+          "description": "scripts/ directory for maintenance scripts",
+          "passed": true,
+          "message": "scripts/ found",
+          "severity": "info"
+        },
+        {
+          "point_number": 5,
+          "category": "Project Structure",
+          "description": ".env.example documents environment variables",
+          "passed": false,
+          "message": ".env.example missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 6,
+          "category": "Project Structure",
+          "description": ".gitignore excludes .env, __pycache__, .pytest_cache",
+          "passed": false,
+          "message": "Missing .gitignore patterns: .env / __pycache__ / .pytest_cache",
+          "severity": "info"
+        },
+        {
+          "point_number": 7,
+          "category": "Project Structure",
+          "description": "README.md with setup/local-dev/deployment instructions (>=500 chars)",
+          "passed": false,
+          "message": "README.md missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 8,
+          "category": "Project Structure",
+          "description": "Dockerfile for containerised deploy",
+          "passed": true,
+          "message": "Dockerfile found",
+          "severity": "info"
+        },
+        {
+          "point_number": 9,
+          "category": "Project Structure",
+          "description": "alembic/ directory for database migrations",
+          "passed": true,
+          "message": "alembic/ found",
+          "severity": "info"
+        },
+        {
+          "point_number": 10,
+          "category": "Project Structure",
+          "description": "deploy/ or infra/ for deployment configs",
+          "passed": false,
+          "message": "deploy/infra dir missing",
+          "severity": "info"
+        }
+      ]
+    },
+    "Code Organization": {
+      "total": 15,
+      "passed": 6,
+      "failed": 9,
+      "results": [
+        {
+          "point_number": 11,
+          "category": "Code Organization",
+          "description": "app/services/ \u2014 business logic layer",
+          "passed": true,
+          "message": "app/services found",
+          "severity": "info"
+        },
+        {
+          "point_number": 12,
+          "category": "Code Organization",
+          "description": "app/repositories/ \u2014 data-access layer",
+          "passed": false,
+          "message": "app/repositories missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 13,
+          "category": "Code Organization",
+          "description": "app/clients/ \u2014 external HTTP service clients",
+          "passed": false,
+          "message": "app/clients missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 14,
+          "category": "Code Organization",
+          "description": "app/models/ \u2014 SQLAlchemy/domain models",
+          "passed": false,
+          "message": "app/models missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 15,
+          "category": "Code Organization",
+          "description": "app/graphql/ \u2014 GraphQL schema & resolvers",
+          "passed": true,
+          "message": "app/graphql found",
+          "severity": "info"
+        },
+        {
+          "point_number": 16,
+          "category": "Code Organization",
+          "description": "app/core/ \u2014 config, security, middleware",
+          "passed": true,
+          "message": "app/core found",
+          "severity": "info"
+        },
+        {
+          "point_number": 17,
+          "category": "Code Organization",
+          "description": "app/utils/ \u2014 shared utilities",
+          "passed": true,
+          "message": "app/utils found",
+          "severity": "info"
+        },
+        {
+          "point_number": 18,
+          "category": "Code Organization",
+          "description": "app/db/ \u2014 DB session, base, engine",
+          "passed": true,
+          "message": "app/db found",
+          "severity": "info"
+        },
+        {
+          "point_number": 19,
+          "category": "Code Organization",
+          "description": "GraphQL modules use queries.py + mutations.py pattern",
+          "passed": false,
+          "message": "app/graphql/modules/ not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 20,
+          "category": "Code Organization",
+          "description": "Base HTTP client class (clients/base.py)",
+          "passed": false,
+          "message": "app/clients/base.py missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 21,
+          "category": "Code Organization",
+          "description": "Centralised error utilities (app/utils/external_errors.py or similar)",
+          "passed": false,
+          "message": "external_errors.py/graphql errors missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 22,
+          "category": "Code Organization",
+          "description": "app/graphql/schema.py assembles the schema",
+          "passed": true,
+          "message": "app/graphql/schema.py found",
+          "severity": "info"
+        },
+        {
+          "point_number": 23,
+          "category": "Code Organization",
+          "description": "GraphQL context module (graphql/context.py)",
+          "passed": false,
+          "message": "app/graphql/context.py missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 24,
+          "category": "Code Organization",
+          "description": "DataLoaders to prevent N+1 queries (app/graphql/dataloaders.py)",
+          "passed": false,
+          "message": "dataloaders.py missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 25,
+          "category": "Code Organization",
+          "description": "Input validation utilities in app/utils/",
+          "passed": false,
+          "message": "Validation utilities not found",
+          "severity": "info"
+        }
+      ]
+    },
+    "Models & Database": {
+      "total": 12,
+      "passed": 8,
+      "failed": 4,
+      "results": [
+        {
+          "point_number": 26,
+          "category": "Models & Database",
+          "description": "SQLAlchemy async models (AsyncAttrs / MappedAsDataclass / async_sessionmaker)",
+          "passed": true,
+          "message": "AsyncSession/async_sessionmaker found",
+          "severity": "info"
+        },
+        {
+          "point_number": 27,
+          "category": "Models & Database",
+          "description": "Alembic migration files present (alembic/versions/)",
+          "passed": true,
+          "message": "1 migration file(s) found",
+          "severity": "info"
+        },
+        {
+          "point_number": 28,
+          "category": "Models & Database",
+          "description": "Timestamp columns (created_at/updated_at) in base mixin or models",
+          "passed": false,
+          "message": "created_at/updated_at not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 29,
+          "category": "Models & Database",
+          "description": "UUID primary keys used in models",
+          "passed": false,
+          "message": "UUID not found in models",
+          "severity": "info"
+        },
+        {
+          "point_number": 30,
+          "category": "Models & Database",
+          "description": "Async DB session factory/context (app/db/session.py)",
+          "passed": true,
+          "message": "Session factory found",
+          "severity": "info"
+        },
+        {
+          "point_number": 31,
+          "category": "Models & Database",
+          "description": "Database connection pool configured",
+          "passed": true,
+          "message": "Pool settings found",
+          "severity": "info"
+        },
+        {
+          "point_number": 32,
+          "category": "Models & Database",
+          "description": "DATABASE_URL or POSTGRES_* from environment (not hardcoded)",
+          "passed": true,
+          "message": "DATABASE_URL/POSTGRES_* env-backed",
+          "severity": "info"
+        },
+        {
+          "point_number": 33,
+          "category": "Models & Database",
+          "description": "No raw SQL strings (ORM used throughout)",
+          "passed": true,
+          "message": "Raw SQL not found \u2014 ORM used",
+          "severity": "info"
+        },
+        {
+          "point_number": 34,
+          "category": "Models & Database",
+          "description": "selectinload/joinedload used for eager loading (avoid N+1)",
+          "passed": true,
+          "message": "Eager loading found",
+          "severity": "info"
+        },
+        {
+          "point_number": 35,
+          "category": "Models & Database",
+          "description": "Database indexes defined on models",
+          "passed": false,
+          "message": "Index definitions not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 36,
+          "category": "Models & Database",
+          "description": "alembic/env.py for migration config",
+          "passed": true,
+          "message": "alembic/env.py found",
+          "severity": "info"
+        },
+        {
+          "point_number": 37,
+          "category": "Models & Database",
+          "description": "Token blacklist / session revocation model",
+          "passed": false,
+          "message": "Token blacklist not found",
+          "severity": "info"
+        }
+      ]
+    },
+    "FastAPI & GraphQL": {
+      "total": 20,
+      "passed": 7,
+      "failed": 13,
+      "results": [
+        {
+          "point_number": 38,
+          "category": "FastAPI & GraphQL",
+          "description": "strawberry-graphql in dependencies",
+          "passed": true,
+          "message": "strawberry-graphql found",
+          "severity": "info"
+        },
+        {
+          "point_number": 39,
+          "category": "FastAPI & GraphQL",
+          "description": "app/main.py \u2014 FastAPI application entry point",
+          "passed": true,
+          "message": "app/main.py found",
+          "severity": "info"
+        },
+        {
+          "point_number": 40,
+          "category": "FastAPI & GraphQL",
+          "description": "Health endpoint configured",
+          "passed": true,
+          "message": "Health endpoint found",
+          "severity": "info"
+        },
+        {
+          "point_number": 41,
+          "category": "FastAPI & GraphQL",
+          "description": "CORS middleware configured",
+          "passed": true,
+          "message": "CORSMiddleware found",
+          "severity": "info"
+        },
+        {
+          "point_number": 42,
+          "category": "FastAPI & GraphQL",
+          "description": "Rate limiting configured (GRAPHQL_RATE_LIMIT_REQUESTS_PER_MINUTE or middleware)",
+          "passed": false,
+          "message": "Rate limiting not configured",
+          "severity": "info"
+        },
+        {
+          "point_number": 43,
+          "category": "FastAPI & GraphQL",
+          "description": "Query depth/complexity limits configured",
+          "passed": false,
+          "message": "Depth/complexity limits not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 44,
+          "category": "FastAPI & GraphQL",
+          "description": "GraphQL introspection toggled via config (env-backed)",
+          "passed": false,
+          "message": "Introspection config not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 45,
+          "category": "FastAPI & GraphQL",
+          "description": "Idempotency middleware for mutations",
+          "passed": false,
+          "message": "Idempotency not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 46,
+          "category": "FastAPI & GraphQL",
+          "description": "Auth middleware / dependency injection (require_auth / JWTBearer)",
+          "passed": false,
+          "message": "Auth guard not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 47,
+          "category": "FastAPI & GraphQL",
+          "description": "Request body size limit configured",
+          "passed": false,
+          "message": "Body size limit not configured",
+          "severity": "info"
+        },
+        {
+          "point_number": 48,
+          "category": "FastAPI & GraphQL",
+          "description": "GraphQL extensions (tracing/error, app/graphql/extensions.py)",
+          "passed": false,
+          "message": "extensions.py missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 49,
+          "category": "FastAPI & GraphQL",
+          "description": "Pagination helper implemented",
+          "passed": true,
+          "message": "Pagination found",
+          "severity": "info"
+        },
+        {
+          "point_number": 103,
+          "category": "FastAPI & GraphQL",
+          "description": "GraphQL modules define types.py (separate schema types)",
+          "passed": false,
+          "message": "0 module(s) with types.py (threshold: 5)",
+          "severity": "info"
+        },
+        {
+          "point_number": 104,
+          "category": "FastAPI & GraphQL",
+          "description": "GraphQL modules define inputs.py (@strawberry.input for complex args)",
+          "passed": false,
+          "message": "0 module(s) with inputs.py (threshold: 3)",
+          "severity": "info"
+        },
+        {
+          "point_number": 105,
+          "category": "FastAPI & GraphQL",
+          "description": "GraphQL context subclasses strawberry.fastapi BaseContext",
+          "passed": false,
+          "message": "BaseContext subclass not found in context.py",
+          "severity": "info"
+        },
+        {
+          "point_number": 106,
+          "category": "FastAPI & GraphQL",
+          "description": "strawberry.lazy used for circular / forward type references",
+          "passed": false,
+          "message": "strawberry.lazy not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 107,
+          "category": "FastAPI & GraphQL",
+          "description": "GraphQL IDE (GraphiQL/Apollo Sandbox) gated by settings/env, not hardcoded True",
+          "passed": true,
+          "message": "graphql_ide OK (guarded or absent)",
+          "severity": "info"
+        },
+        {
+          "point_number": 108,
+          "category": "FastAPI & GraphQL",
+          "description": "DataLoaders instantiated per-request in context (no module-level DataLoader factories)",
+          "passed": false,
+          "message": "context DataLoaders( missing; module-level DataLoader none",
+          "severity": "info"
+        },
+        {
+          "point_number": 109,
+          "category": "FastAPI & GraphQL",
+          "description": "Resolvers use typed strawberry.Info parameter (explicit signatures)",
+          "passed": false,
+          "message": "files with info: strawberry.Info: 0 (threshold: 10)",
+          "severity": "warning"
+        },
+        {
+          "point_number": 110,
+          "category": "FastAPI & GraphQL",
+          "description": "@strawberry.enum for GraphQL enums",
+          "passed": true,
+          "message": "@strawberry.enum found",
+          "severity": "info"
+        }
+      ]
+    },
+    "Security": {
+      "total": 16,
+      "passed": 7,
+      "failed": 9,
+      "results": [
+        {
+          "point_number": 50,
+          "category": "Security",
+          "description": "SECRET_KEY loaded from environment (not hardcoded)",
+          "passed": true,
+          "message": "SECRET_KEY env-backed in config",
+          "severity": "info"
+        },
+        {
+          "point_number": 51,
+          "category": "Security",
+          "description": "DEBUG flag env-backed (not hardcoded True in production)",
+          "passed": true,
+          "message": "DEBUG env-backed",
+          "severity": "info"
+        },
+        {
+          "point_number": 52,
+          "category": "Security",
+          "description": "ALLOWED_ORIGINS not wildcard (*) as default",
+          "passed": true,
+          "message": "ALLOWED_ORIGINS OK",
+          "severity": "info"
+        },
+        {
+          "point_number": 53,
+          "category": "Security",
+          "description": "JWT validation with python-jose or equivalent",
+          "passed": true,
+          "message": "JWT found",
+          "severity": "info"
+        },
+        {
+          "point_number": 54,
+          "category": "Security",
+          "description": "bcrypt used for password hashing",
+          "passed": true,
+          "message": "bcrypt found in deps",
+          "severity": "info"
+        },
+        {
+          "point_number": 55,
+          "category": "Security",
+          "description": "No hardcoded secrets in app/ (heuristic scan)",
+          "passed": true,
+          "message": "No secrets found",
+          "severity": "info"
+        },
+        {
+          "point_number": 56,
+          "category": "Security",
+          "description": "Token blacklist for JWT revocation",
+          "passed": false,
+          "message": "token_blacklist model missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 57,
+          "category": "Security",
+          "description": "API key authentication support",
+          "passed": false,
+          "message": "API key not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 58,
+          "category": "Security",
+          "description": "Two-factor authentication (TOTP/HOTP) support",
+          "passed": false,
+          "message": "2FA not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 59,
+          "category": "Security",
+          "description": ".pre-commit-config.yaml for secret/lint scanning",
+          "passed": false,
+          "message": ".pre-commit-config.yaml missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 60,
+          "category": "Security",
+          "description": "GraphQL introspection env-backed (disable in production)",
+          "passed": false,
+          "message": "GRAPHQL_INTROSPECTION_ENABLED not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 61,
+          "category": "Security",
+          "description": "Session cookies httponly/secure OR session table present",
+          "passed": false,
+          "message": "Session security not configured",
+          "severity": "info"
+        },
+        {
+          "point_number": 111,
+          "category": "Security",
+          "description": "Resolver-level authorization hints in GraphQL modules (roles/ForbiddenError)",
+          "passed": false,
+          "message": "GraphQL resolvers no obvious field-level auth pattern",
+          "severity": "warning"
+        },
+        {
+          "point_number": 112,
+          "category": "Security",
+          "description": "Sanitized GraphQL errors (GraphQLAppError / handle_graphql_error)",
+          "passed": false,
+          "message": "app/graphql/errors.py missing or incomplete",
+          "severity": "info"
+        },
+        {
+          "point_number": 113,
+          "category": "Security",
+          "description": "GraphQL audit service used for sensitive mutations",
+          "passed": false,
+          "message": "graphql_audit_service.py: False; mutations files importing audit: 0",
+          "severity": "warning"
+        },
+        {
+          "point_number": 114,
+          "category": "Security",
+          "description": "No raise HTTPException inside GraphQL module resolvers (use GraphQL errors)",
+          "passed": true,
+          "message": "OK",
+          "severity": "info"
+        }
+      ]
+    },
+    "Performance": {
+      "total": 12,
+      "passed": 6,
+      "failed": 6,
+      "results": [
+        {
+          "point_number": 62,
+          "category": "Performance",
+          "description": "async/await used in \u226540% of app/ Python files",
+          "passed": true,
+          "message": "async def in 25/42 files (59.5%)",
+          "severity": "info"
+        },
+        {
+          "point_number": 63,
+          "category": "Performance",
+          "description": "tenacity retry decorators on external HTTP clients",
+          "passed": false,
+          "message": "tenacity @retry not found in app/clients",
+          "severity": "info"
+        },
+        {
+          "point_number": 64,
+          "category": "Performance",
+          "description": "Pagination (limit/offset or page_size) in list queries",
+          "passed": true,
+          "message": "Pagination found",
+          "severity": "info"
+        },
+        {
+          "point_number": 65,
+          "category": "Performance",
+          "description": "Timeout configured on all HTTP clients",
+          "passed": false,
+          "message": "Timeout not found in clients",
+          "severity": "info"
+        },
+        {
+          "point_number": 66,
+          "category": "Performance",
+          "description": "Database connection pool settings",
+          "passed": true,
+          "message": "Pool settings found",
+          "severity": "info"
+        },
+        {
+          "point_number": 67,
+          "category": "Performance",
+          "description": "lru_cache / cached singletons for heavy resources (settings, clients)",
+          "passed": false,
+          "message": "@lru_cache not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 68,
+          "category": "Performance",
+          "description": "selectinload/joinedload for eager loading",
+          "passed": true,
+          "message": "Eager loading found",
+          "severity": "info"
+        },
+        {
+          "point_number": 69,
+          "category": "Performance",
+          "description": "Background tasks (FastAPI BackgroundTasks or Celery)",
+          "passed": false,
+          "message": "Background tasks not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 70,
+          "category": "Performance",
+          "description": "DataLoaders for batched DB reads (GraphQL N+1 prevention)",
+          "passed": false,
+          "message": "DataLoaders not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 71,
+          "category": "Performance",
+          "description": "RED metrics / SLO monitoring middleware",
+          "passed": true,
+          "message": "RED/SLO metrics found",
+          "severity": "info"
+        },
+        {
+          "point_number": 115,
+          "category": "Performance",
+          "description": "SLOW_QUERY_THRESHOLD configured for slow GraphQL operation logging",
+          "passed": false,
+          "message": "SLOW_QUERY_THRESHOLD not found",
+          "severity": "warning"
+        },
+        {
+          "point_number": 116,
+          "category": "Performance",
+          "description": "Optional cross-request cache (TTLCache/Redis/ENABLE_USER_CACHE) for hot paths",
+          "passed": true,
+          "message": "Caching hooks found",
+          "severity": "info"
+        }
+      ]
+    },
+    "Testing": {
+      "total": 10,
+      "passed": 4,
+      "failed": 6,
+      "results": [
+        {
+          "point_number": 72,
+          "category": "Testing",
+          "description": "tests/ directory with test files",
+          "passed": true,
+          "message": "10 test_*.py file(s) found",
+          "severity": "info"
+        },
+        {
+          "point_number": 73,
+          "category": "Testing",
+          "description": "pytest configured (pytest.ini or [tool.pytest] in pyproject.toml)",
+          "passed": false,
+          "message": "pytest config missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 74,
+          "category": "Testing",
+          "description": "pytest-asyncio for async test support",
+          "passed": true,
+          "message": "pytest-asyncio found",
+          "severity": "info"
+        },
+        {
+          "point_number": 75,
+          "category": "Testing",
+          "description": "pytest-cov for test coverage measurement",
+          "passed": false,
+          "message": "pytest-cov missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 76,
+          "category": "Testing",
+          "description": "tests/conftest.py for shared fixtures",
+          "passed": false,
+          "message": "tests/conftest.py missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 77,
+          "category": "Testing",
+          "description": "Mock / patch used for external service isolation in tests",
+          "passed": true,
+          "message": "mock/patch found",
+          "severity": "info"
+        },
+        {
+          "point_number": 78,
+          "category": "Testing",
+          "description": "Integration/GraphQL tests present (tests/integration/ or tests/graphql/)",
+          "passed": false,
+          "message": "Integration tests not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 79,
+          "category": "Testing",
+          "description": "scripts/validate_env.py to catch environment issues early",
+          "passed": true,
+          "message": "validate_env.py found",
+          "severity": "info"
+        },
+        {
+          "point_number": 117,
+          "category": "Testing",
+          "description": "ASGI/HTTP test client used in tests (httpx AsyncClient or TestClient)",
+          "passed": false,
+          "message": "httpx/TestClient not found",
+          "severity": "warning"
+        },
+        {
+          "point_number": 118,
+          "category": "Testing",
+          "description": "GraphQL tests cover auth failure paths (401/403/Forbidden patterns)",
+          "passed": false,
+          "message": "tests/graphql/ no obvious auth-failure coverage",
+          "severity": "warning"
+        }
+      ]
+    },
+    "Deployment & Ops": {
+      "total": 7,
+      "passed": 2,
+      "failed": 5,
+      "results": [
+        {
+          "point_number": 80,
+          "category": "Deployment & Ops",
+          "description": "Dockerfile for reproducible deployment",
+          "passed": true,
+          "message": "Dockerfile found",
+          "severity": "info"
+        },
+        {
+          "point_number": 82,
+          "category": "Deployment & Ops",
+          "description": "Structured JSON logging configured (app/core/logging_config.py)",
+          "passed": false,
+          "message": "Structured logging not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 83,
+          "category": "Deployment & Ops",
+          "description": "scripts/verify_health.py for health-check automation",
+          "passed": false,
+          "message": "verify_health.py missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 85,
+          "category": "Deployment & Ops",
+          "description": ".env.example documents satellite service URLs",
+          "passed": false,
+          "message": "Satellite URL docs not found in .env.example",
+          "severity": "info"
+        },
+        {
+          "point_number": 119,
+          "category": "Deployment & Ops",
+          "description": "app/graphql/common/ for shared GraphQL helpers (pagination, etc.)",
+          "passed": false,
+          "message": "app/graphql/common/ missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 120,
+          "category": "Deployment & Ops",
+          "description": "Request or trace ID propagated (context or middleware)",
+          "passed": false,
+          "message": "request_id/trace_id pattern not found",
+          "severity": "warning"
+        },
+        {
+          "point_number": 121,
+          "category": "Deployment & Ops",
+          "description": "Schema SDL file, export script, or SCHEMA_CHANGELOG for evolution tracking",
+          "passed": true,
+          "message": ".graphql file(s): 0; changelog: False; export script hint: True",
+          "severity": "info"
+        }
+      ]
+    },
+    "Python Code Quality": {
+      "total": 19,
+      "passed": 10,
+      "failed": 9,
+      "results": [
+        {
+          "point_number": 86,
+          "category": "Python Code Quality",
+          "description": "Return-type annotations in \u226540% of app/ files",
+          "passed": true,
+          "message": "Type annotated: 20/42 files (47.6%)",
+          "severity": "info"
+        },
+        {
+          "point_number": 87,
+          "category": "Python Code Quality",
+          "description": "ruff linting configured ([tool.ruff] in pyproject.toml or ruff.toml)",
+          "passed": false,
+          "message": "ruff config missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 88,
+          "category": "Python Code Quality",
+          "description": "mypy type-checking configured",
+          "passed": false,
+          "message": "mypy config missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 89,
+          "category": "Python Code Quality",
+          "description": "black formatter in dev dependencies",
+          "passed": false,
+          "message": "black not in deps",
+          "severity": "info"
+        },
+        {
+          "point_number": 90,
+          "category": "Python Code Quality",
+          "description": ".pre-commit-config.yaml for pre-commit hooks",
+          "passed": false,
+          "message": ".pre-commit-config.yaml missing",
+          "severity": "info"
+        },
+        {
+          "point_number": 91,
+          "category": "Python Code Quality",
+          "description": "requirements.txt uses pinned versions (== or >=)",
+          "passed": true,
+          "message": "18 pinned version(s) found",
+          "severity": "info"
+        },
+        {
+          "point_number": 92,
+          "category": "Python Code Quality",
+          "description": "[project] section in pyproject.toml",
+          "passed": false,
+          "message": "[project] missing in pyproject.toml",
+          "severity": "info"
+        },
+        {
+          "point_number": 93,
+          "category": "Python Code Quality",
+          "description": "Python 3.11+ target declared",
+          "passed": false,
+          "message": "Python 3.11+ not found in pyproject.toml",
+          "severity": "info"
+        },
+        {
+          "point_number": 94,
+          "category": "Python Code Quality",
+          "description": "from __future__ import annotations used (deferred evaluation)",
+          "passed": false,
+          "message": "__future__ annotations in 0 app/ files",
+          "severity": "info"
+        },
+        {
+          "point_number": 95,
+          "category": "Python Code Quality",
+          "description": "__init__.py in every app/ package directory",
+          "passed": true,
+          "message": "8 __init__.py file(s) found under app/",
+          "severity": "info"
+        },
+        {
+          "point_number": 96,
+          "category": "Python Code Quality",
+          "description": "No bare print() statements in app/ (use logger)",
+          "passed": false,
+          "message": "print() in: app\\scripts\\reset_clean_db.py, app\\scripts\\seed_demo_data.py, app\\scripts\\seed_superadmin.py",
+          "severity": "warning"
+        },
+        {
+          "point_number": 97,
+          "category": "Python Code Quality",
+          "description": "Centralised logger utility (app/utils/logger.py)",
+          "passed": false,
+          "message": "Logger utility not found",
+          "severity": "info"
+        },
+        {
+          "point_number": 98,
+          "category": "Python Code Quality",
+          "description": "ENVIRONMENT-based config branching (dev/staging/production)",
+          "passed": true,
+          "message": "Environment branching found",
+          "severity": "info"
+        },
+        {
+          "point_number": 99,
+          "category": "Python Code Quality",
+          "description": "scripts/validate_env.py for env validation",
+          "passed": true,
+          "message": "validate_env.py found",
+          "severity": "info"
+        },
+        {
+          "point_number": 100,
+          "category": "Python Code Quality",
+          "description": "pydantic-settings for environment-backed configuration",
+          "passed": true,
+          "message": "pydantic-settings found",
+          "severity": "info"
+        },
+        {
+          "point_number": 101,
+          "category": "Python Code Quality",
+          "description": "Module-level imports in app/ stay in the header block (allowed delayed: 5; set max_delayed_module_imports_app in config)",
+          "passed": true,
+          "message": "No delayed module imports in app/",
+          "severity": "info"
+        },
+        {
+          "point_number": 102,
+          "category": "Python Code Quality",
+          "description": "Nested imports in app/ stay at module scope when possible (set max_nested_imports_app in config)",
+          "passed": true,
+          "message": "2 nested import(s) in app/ (allowed 5)",
+          "severity": "info"
+        },
+        {
+          "point_number": 122,
+          "category": "Python Code Quality",
+          "description": "Module-level imports stay in header across import_scan_roots (allowed delayed total: 15)",
+          "passed": true,
+          "message": "1 delayed module-level import(s) \u2014 see import_analysis",
+          "severity": "info"
+        },
+        {
+          "point_number": 123,
+          "category": "Python Code Quality",
+          "description": "Nested imports across import_scan_roots (allowed nested total: 30)",
+          "passed": true,
+          "message": "5 nested import(s) \u2014 see import_analysis",
+          "severity": "info"
+        }
+      ]
+    }
+  },
+  "all_results": [
+    {
+      "point_number": 1,
+      "category": "Project Structure",
+      "description": "app/ package directory exists",
+      "passed": true,
+      "message": "app/ found",
+      "severity": "info"
+    },
+    {
+      "point_number": 2,
+      "category": "Project Structure",
+      "description": "pyproject.toml or requirements.txt present",
+      "passed": true,
+      "message": "pyproject.toml: False, requirements.txt: True",
+      "severity": "info"
+    },
+    {
+      "point_number": 3,
+      "category": "Project Structure",
+      "description": "tests/ directory exists",
+      "passed": true,
+      "message": "tests/ found",
+      "severity": "info"
+    },
+    {
+      "point_number": 4,
+      "category": "Project Structure",
+      "description": "scripts/ directory for maintenance scripts",
+      "passed": true,
+      "message": "scripts/ found",
+      "severity": "info"
+    },
+    {
+      "point_number": 5,
+      "category": "Project Structure",
+      "description": ".env.example documents environment variables",
+      "passed": false,
+      "message": ".env.example missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 6,
+      "category": "Project Structure",
+      "description": ".gitignore excludes .env, __pycache__, .pytest_cache",
+      "passed": false,
+      "message": "Missing .gitignore patterns: .env / __pycache__ / .pytest_cache",
+      "severity": "info"
+    },
+    {
+      "point_number": 7,
+      "category": "Project Structure",
+      "description": "README.md with setup/local-dev/deployment instructions (>=500 chars)",
+      "passed": false,
+      "message": "README.md missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 8,
+      "category": "Project Structure",
+      "description": "Dockerfile for containerised deploy",
+      "passed": true,
+      "message": "Dockerfile found",
+      "severity": "info"
+    },
+    {
+      "point_number": 9,
+      "category": "Project Structure",
+      "description": "alembic/ directory for database migrations",
+      "passed": true,
+      "message": "alembic/ found",
+      "severity": "info"
+    },
+    {
+      "point_number": 10,
+      "category": "Project Structure",
+      "description": "deploy/ or infra/ for deployment configs",
+      "passed": false,
+      "message": "deploy/infra dir missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 11,
+      "category": "Code Organization",
+      "description": "app/services/ \u2014 business logic layer",
+      "passed": true,
+      "message": "app/services found",
+      "severity": "info"
+    },
+    {
+      "point_number": 12,
+      "category": "Code Organization",
+      "description": "app/repositories/ \u2014 data-access layer",
+      "passed": false,
+      "message": "app/repositories missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 13,
+      "category": "Code Organization",
+      "description": "app/clients/ \u2014 external HTTP service clients",
+      "passed": false,
+      "message": "app/clients missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 14,
+      "category": "Code Organization",
+      "description": "app/models/ \u2014 SQLAlchemy/domain models",
+      "passed": false,
+      "message": "app/models missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 15,
+      "category": "Code Organization",
+      "description": "app/graphql/ \u2014 GraphQL schema & resolvers",
+      "passed": true,
+      "message": "app/graphql found",
+      "severity": "info"
+    },
+    {
+      "point_number": 16,
+      "category": "Code Organization",
+      "description": "app/core/ \u2014 config, security, middleware",
+      "passed": true,
+      "message": "app/core found",
+      "severity": "info"
+    },
+    {
+      "point_number": 17,
+      "category": "Code Organization",
+      "description": "app/utils/ \u2014 shared utilities",
+      "passed": true,
+      "message": "app/utils found",
+      "severity": "info"
+    },
+    {
+      "point_number": 18,
+      "category": "Code Organization",
+      "description": "app/db/ \u2014 DB session, base, engine",
+      "passed": true,
+      "message": "app/db found",
+      "severity": "info"
+    },
+    {
+      "point_number": 19,
+      "category": "Code Organization",
+      "description": "GraphQL modules use queries.py + mutations.py pattern",
+      "passed": false,
+      "message": "app/graphql/modules/ not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 20,
+      "category": "Code Organization",
+      "description": "Base HTTP client class (clients/base.py)",
+      "passed": false,
+      "message": "app/clients/base.py missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 21,
+      "category": "Code Organization",
+      "description": "Centralised error utilities (app/utils/external_errors.py or similar)",
+      "passed": false,
+      "message": "external_errors.py/graphql errors missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 22,
+      "category": "Code Organization",
+      "description": "app/graphql/schema.py assembles the schema",
+      "passed": true,
+      "message": "app/graphql/schema.py found",
+      "severity": "info"
+    },
+    {
+      "point_number": 23,
+      "category": "Code Organization",
+      "description": "GraphQL context module (graphql/context.py)",
+      "passed": false,
+      "message": "app/graphql/context.py missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 24,
+      "category": "Code Organization",
+      "description": "DataLoaders to prevent N+1 queries (app/graphql/dataloaders.py)",
+      "passed": false,
+      "message": "dataloaders.py missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 25,
+      "category": "Code Organization",
+      "description": "Input validation utilities in app/utils/",
+      "passed": false,
+      "message": "Validation utilities not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 26,
+      "category": "Models & Database",
+      "description": "SQLAlchemy async models (AsyncAttrs / MappedAsDataclass / async_sessionmaker)",
+      "passed": true,
+      "message": "AsyncSession/async_sessionmaker found",
+      "severity": "info"
+    },
+    {
+      "point_number": 27,
+      "category": "Models & Database",
+      "description": "Alembic migration files present (alembic/versions/)",
+      "passed": true,
+      "message": "1 migration file(s) found",
+      "severity": "info"
+    },
+    {
+      "point_number": 28,
+      "category": "Models & Database",
+      "description": "Timestamp columns (created_at/updated_at) in base mixin or models",
+      "passed": false,
+      "message": "created_at/updated_at not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 29,
+      "category": "Models & Database",
+      "description": "UUID primary keys used in models",
+      "passed": false,
+      "message": "UUID not found in models",
+      "severity": "info"
+    },
+    {
+      "point_number": 30,
+      "category": "Models & Database",
+      "description": "Async DB session factory/context (app/db/session.py)",
+      "passed": true,
+      "message": "Session factory found",
+      "severity": "info"
+    },
+    {
+      "point_number": 31,
+      "category": "Models & Database",
+      "description": "Database connection pool configured",
+      "passed": true,
+      "message": "Pool settings found",
+      "severity": "info"
+    },
+    {
+      "point_number": 32,
+      "category": "Models & Database",
+      "description": "DATABASE_URL or POSTGRES_* from environment (not hardcoded)",
+      "passed": true,
+      "message": "DATABASE_URL/POSTGRES_* env-backed",
+      "severity": "info"
+    },
+    {
+      "point_number": 33,
+      "category": "Models & Database",
+      "description": "No raw SQL strings (ORM used throughout)",
+      "passed": true,
+      "message": "Raw SQL not found \u2014 ORM used",
+      "severity": "info"
+    },
+    {
+      "point_number": 34,
+      "category": "Models & Database",
+      "description": "selectinload/joinedload used for eager loading (avoid N+1)",
+      "passed": true,
+      "message": "Eager loading found",
+      "severity": "info"
+    },
+    {
+      "point_number": 35,
+      "category": "Models & Database",
+      "description": "Database indexes defined on models",
+      "passed": false,
+      "message": "Index definitions not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 36,
+      "category": "Models & Database",
+      "description": "alembic/env.py for migration config",
+      "passed": true,
+      "message": "alembic/env.py found",
+      "severity": "info"
+    },
+    {
+      "point_number": 37,
+      "category": "Models & Database",
+      "description": "Token blacklist / session revocation model",
+      "passed": false,
+      "message": "Token blacklist not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 38,
+      "category": "FastAPI & GraphQL",
+      "description": "strawberry-graphql in dependencies",
+      "passed": true,
+      "message": "strawberry-graphql found",
+      "severity": "info"
+    },
+    {
+      "point_number": 39,
+      "category": "FastAPI & GraphQL",
+      "description": "app/main.py \u2014 FastAPI application entry point",
+      "passed": true,
+      "message": "app/main.py found",
+      "severity": "info"
+    },
+    {
+      "point_number": 40,
+      "category": "FastAPI & GraphQL",
+      "description": "Health endpoint configured",
+      "passed": true,
+      "message": "Health endpoint found",
+      "severity": "info"
+    },
+    {
+      "point_number": 41,
+      "category": "FastAPI & GraphQL",
+      "description": "CORS middleware configured",
+      "passed": true,
+      "message": "CORSMiddleware found",
+      "severity": "info"
+    },
+    {
+      "point_number": 42,
+      "category": "FastAPI & GraphQL",
+      "description": "Rate limiting configured (GRAPHQL_RATE_LIMIT_REQUESTS_PER_MINUTE or middleware)",
+      "passed": false,
+      "message": "Rate limiting not configured",
+      "severity": "info"
+    },
+    {
+      "point_number": 43,
+      "category": "FastAPI & GraphQL",
+      "description": "Query depth/complexity limits configured",
+      "passed": false,
+      "message": "Depth/complexity limits not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 44,
+      "category": "FastAPI & GraphQL",
+      "description": "GraphQL introspection toggled via config (env-backed)",
+      "passed": false,
+      "message": "Introspection config not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 45,
+      "category": "FastAPI & GraphQL",
+      "description": "Idempotency middleware for mutations",
+      "passed": false,
+      "message": "Idempotency not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 46,
+      "category": "FastAPI & GraphQL",
+      "description": "Auth middleware / dependency injection (require_auth / JWTBearer)",
+      "passed": false,
+      "message": "Auth guard not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 47,
+      "category": "FastAPI & GraphQL",
+      "description": "Request body size limit configured",
+      "passed": false,
+      "message": "Body size limit not configured",
+      "severity": "info"
+    },
+    {
+      "point_number": 48,
+      "category": "FastAPI & GraphQL",
+      "description": "GraphQL extensions (tracing/error, app/graphql/extensions.py)",
+      "passed": false,
+      "message": "extensions.py missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 49,
+      "category": "FastAPI & GraphQL",
+      "description": "Pagination helper implemented",
+      "passed": true,
+      "message": "Pagination found",
+      "severity": "info"
+    },
+    {
+      "point_number": 103,
+      "category": "FastAPI & GraphQL",
+      "description": "GraphQL modules define types.py (separate schema types)",
+      "passed": false,
+      "message": "0 module(s) with types.py (threshold: 5)",
+      "severity": "info"
+    },
+    {
+      "point_number": 104,
+      "category": "FastAPI & GraphQL",
+      "description": "GraphQL modules define inputs.py (@strawberry.input for complex args)",
+      "passed": false,
+      "message": "0 module(s) with inputs.py (threshold: 3)",
+      "severity": "info"
+    },
+    {
+      "point_number": 105,
+      "category": "FastAPI & GraphQL",
+      "description": "GraphQL context subclasses strawberry.fastapi BaseContext",
+      "passed": false,
+      "message": "BaseContext subclass not found in context.py",
+      "severity": "info"
+    },
+    {
+      "point_number": 106,
+      "category": "FastAPI & GraphQL",
+      "description": "strawberry.lazy used for circular / forward type references",
+      "passed": false,
+      "message": "strawberry.lazy not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 107,
+      "category": "FastAPI & GraphQL",
+      "description": "GraphQL IDE (GraphiQL/Apollo Sandbox) gated by settings/env, not hardcoded True",
+      "passed": true,
+      "message": "graphql_ide OK (guarded or absent)",
+      "severity": "info"
+    },
+    {
+      "point_number": 108,
+      "category": "FastAPI & GraphQL",
+      "description": "DataLoaders instantiated per-request in context (no module-level DataLoader factories)",
+      "passed": false,
+      "message": "context DataLoaders( missing; module-level DataLoader none",
+      "severity": "info"
+    },
+    {
+      "point_number": 109,
+      "category": "FastAPI & GraphQL",
+      "description": "Resolvers use typed strawberry.Info parameter (explicit signatures)",
+      "passed": false,
+      "message": "files with info: strawberry.Info: 0 (threshold: 10)",
+      "severity": "warning"
+    },
+    {
+      "point_number": 110,
+      "category": "FastAPI & GraphQL",
+      "description": "@strawberry.enum for GraphQL enums",
+      "passed": true,
+      "message": "@strawberry.enum found",
+      "severity": "info"
+    },
+    {
+      "point_number": 50,
+      "category": "Security",
+      "description": "SECRET_KEY loaded from environment (not hardcoded)",
+      "passed": true,
+      "message": "SECRET_KEY env-backed in config",
+      "severity": "info"
+    },
+    {
+      "point_number": 51,
+      "category": "Security",
+      "description": "DEBUG flag env-backed (not hardcoded True in production)",
+      "passed": true,
+      "message": "DEBUG env-backed",
+      "severity": "info"
+    },
+    {
+      "point_number": 52,
+      "category": "Security",
+      "description": "ALLOWED_ORIGINS not wildcard (*) as default",
+      "passed": true,
+      "message": "ALLOWED_ORIGINS OK",
+      "severity": "info"
+    },
+    {
+      "point_number": 53,
+      "category": "Security",
+      "description": "JWT validation with python-jose or equivalent",
+      "passed": true,
+      "message": "JWT found",
+      "severity": "info"
+    },
+    {
+      "point_number": 54,
+      "category": "Security",
+      "description": "bcrypt used for password hashing",
+      "passed": true,
+      "message": "bcrypt found in deps",
+      "severity": "info"
+    },
+    {
+      "point_number": 55,
+      "category": "Security",
+      "description": "No hardcoded secrets in app/ (heuristic scan)",
+      "passed": true,
+      "message": "No secrets found",
+      "severity": "info"
+    },
+    {
+      "point_number": 56,
+      "category": "Security",
+      "description": "Token blacklist for JWT revocation",
+      "passed": false,
+      "message": "token_blacklist model missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 57,
+      "category": "Security",
+      "description": "API key authentication support",
+      "passed": false,
+      "message": "API key not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 58,
+      "category": "Security",
+      "description": "Two-factor authentication (TOTP/HOTP) support",
+      "passed": false,
+      "message": "2FA not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 59,
+      "category": "Security",
+      "description": ".pre-commit-config.yaml for secret/lint scanning",
+      "passed": false,
+      "message": ".pre-commit-config.yaml missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 60,
+      "category": "Security",
+      "description": "GraphQL introspection env-backed (disable in production)",
+      "passed": false,
+      "message": "GRAPHQL_INTROSPECTION_ENABLED not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 61,
+      "category": "Security",
+      "description": "Session cookies httponly/secure OR session table present",
+      "passed": false,
+      "message": "Session security not configured",
+      "severity": "info"
+    },
+    {
+      "point_number": 111,
+      "category": "Security",
+      "description": "Resolver-level authorization hints in GraphQL modules (roles/ForbiddenError)",
+      "passed": false,
+      "message": "GraphQL resolvers no obvious field-level auth pattern",
+      "severity": "warning"
+    },
+    {
+      "point_number": 112,
+      "category": "Security",
+      "description": "Sanitized GraphQL errors (GraphQLAppError / handle_graphql_error)",
+      "passed": false,
+      "message": "app/graphql/errors.py missing or incomplete",
+      "severity": "info"
+    },
+    {
+      "point_number": 113,
+      "category": "Security",
+      "description": "GraphQL audit service used for sensitive mutations",
+      "passed": false,
+      "message": "graphql_audit_service.py: False; mutations files importing audit: 0",
+      "severity": "warning"
+    },
+    {
+      "point_number": 114,
+      "category": "Security",
+      "description": "No raise HTTPException inside GraphQL module resolvers (use GraphQL errors)",
+      "passed": true,
+      "message": "OK",
+      "severity": "info"
+    },
+    {
+      "point_number": 62,
+      "category": "Performance",
+      "description": "async/await used in \u226540% of app/ Python files",
+      "passed": true,
+      "message": "async def in 25/42 files (59.5%)",
+      "severity": "info"
+    },
+    {
+      "point_number": 63,
+      "category": "Performance",
+      "description": "tenacity retry decorators on external HTTP clients",
+      "passed": false,
+      "message": "tenacity @retry not found in app/clients",
+      "severity": "info"
+    },
+    {
+      "point_number": 64,
+      "category": "Performance",
+      "description": "Pagination (limit/offset or page_size) in list queries",
+      "passed": true,
+      "message": "Pagination found",
+      "severity": "info"
+    },
+    {
+      "point_number": 65,
+      "category": "Performance",
+      "description": "Timeout configured on all HTTP clients",
+      "passed": false,
+      "message": "Timeout not found in clients",
+      "severity": "info"
+    },
+    {
+      "point_number": 66,
+      "category": "Performance",
+      "description": "Database connection pool settings",
+      "passed": true,
+      "message": "Pool settings found",
+      "severity": "info"
+    },
+    {
+      "point_number": 67,
+      "category": "Performance",
+      "description": "lru_cache / cached singletons for heavy resources (settings, clients)",
+      "passed": false,
+      "message": "@lru_cache not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 68,
+      "category": "Performance",
+      "description": "selectinload/joinedload for eager loading",
+      "passed": true,
+      "message": "Eager loading found",
+      "severity": "info"
+    },
+    {
+      "point_number": 69,
+      "category": "Performance",
+      "description": "Background tasks (FastAPI BackgroundTasks or Celery)",
+      "passed": false,
+      "message": "Background tasks not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 70,
+      "category": "Performance",
+      "description": "DataLoaders for batched DB reads (GraphQL N+1 prevention)",
+      "passed": false,
+      "message": "DataLoaders not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 71,
+      "category": "Performance",
+      "description": "RED metrics / SLO monitoring middleware",
+      "passed": true,
+      "message": "RED/SLO metrics found",
+      "severity": "info"
+    },
+    {
+      "point_number": 115,
+      "category": "Performance",
+      "description": "SLOW_QUERY_THRESHOLD configured for slow GraphQL operation logging",
+      "passed": false,
+      "message": "SLOW_QUERY_THRESHOLD not found",
+      "severity": "warning"
+    },
+    {
+      "point_number": 116,
+      "category": "Performance",
+      "description": "Optional cross-request cache (TTLCache/Redis/ENABLE_USER_CACHE) for hot paths",
+      "passed": true,
+      "message": "Caching hooks found",
+      "severity": "info"
+    },
+    {
+      "point_number": 72,
+      "category": "Testing",
+      "description": "tests/ directory with test files",
+      "passed": true,
+      "message": "10 test_*.py file(s) found",
+      "severity": "info"
+    },
+    {
+      "point_number": 73,
+      "category": "Testing",
+      "description": "pytest configured (pytest.ini or [tool.pytest] in pyproject.toml)",
+      "passed": false,
+      "message": "pytest config missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 74,
+      "category": "Testing",
+      "description": "pytest-asyncio for async test support",
+      "passed": true,
+      "message": "pytest-asyncio found",
+      "severity": "info"
+    },
+    {
+      "point_number": 75,
+      "category": "Testing",
+      "description": "pytest-cov for test coverage measurement",
+      "passed": false,
+      "message": "pytest-cov missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 76,
+      "category": "Testing",
+      "description": "tests/conftest.py for shared fixtures",
+      "passed": false,
+      "message": "tests/conftest.py missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 77,
+      "category": "Testing",
+      "description": "Mock / patch used for external service isolation in tests",
+      "passed": true,
+      "message": "mock/patch found",
+      "severity": "info"
+    },
+    {
+      "point_number": 78,
+      "category": "Testing",
+      "description": "Integration/GraphQL tests present (tests/integration/ or tests/graphql/)",
+      "passed": false,
+      "message": "Integration tests not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 79,
+      "category": "Testing",
+      "description": "scripts/validate_env.py to catch environment issues early",
+      "passed": true,
+      "message": "validate_env.py found",
+      "severity": "info"
+    },
+    {
+      "point_number": 117,
+      "category": "Testing",
+      "description": "ASGI/HTTP test client used in tests (httpx AsyncClient or TestClient)",
+      "passed": false,
+      "message": "httpx/TestClient not found",
+      "severity": "warning"
+    },
+    {
+      "point_number": 118,
+      "category": "Testing",
+      "description": "GraphQL tests cover auth failure paths (401/403/Forbidden patterns)",
+      "passed": false,
+      "message": "tests/graphql/ no obvious auth-failure coverage",
+      "severity": "warning"
+    },
+    {
+      "point_number": 80,
+      "category": "Deployment & Ops",
+      "description": "Dockerfile for reproducible deployment",
+      "passed": true,
+      "message": "Dockerfile found",
+      "severity": "info"
+    },
+    {
+      "point_number": 82,
+      "category": "Deployment & Ops",
+      "description": "Structured JSON logging configured (app/core/logging_config.py)",
+      "passed": false,
+      "message": "Structured logging not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 83,
+      "category": "Deployment & Ops",
+      "description": "scripts/verify_health.py for health-check automation",
+      "passed": false,
+      "message": "verify_health.py missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 85,
+      "category": "Deployment & Ops",
+      "description": ".env.example documents satellite service URLs",
+      "passed": false,
+      "message": "Satellite URL docs not found in .env.example",
+      "severity": "info"
+    },
+    {
+      "point_number": 119,
+      "category": "Deployment & Ops",
+      "description": "app/graphql/common/ for shared GraphQL helpers (pagination, etc.)",
+      "passed": false,
+      "message": "app/graphql/common/ missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 120,
+      "category": "Deployment & Ops",
+      "description": "Request or trace ID propagated (context or middleware)",
+      "passed": false,
+      "message": "request_id/trace_id pattern not found",
+      "severity": "warning"
+    },
+    {
+      "point_number": 121,
+      "category": "Deployment & Ops",
+      "description": "Schema SDL file, export script, or SCHEMA_CHANGELOG for evolution tracking",
+      "passed": true,
+      "message": ".graphql file(s): 0; changelog: False; export script hint: True",
+      "severity": "info"
+    },
+    {
+      "point_number": 86,
+      "category": "Python Code Quality",
+      "description": "Return-type annotations in \u226540% of app/ files",
+      "passed": true,
+      "message": "Type annotated: 20/42 files (47.6%)",
+      "severity": "info"
+    },
+    {
+      "point_number": 87,
+      "category": "Python Code Quality",
+      "description": "ruff linting configured ([tool.ruff] in pyproject.toml or ruff.toml)",
+      "passed": false,
+      "message": "ruff config missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 88,
+      "category": "Python Code Quality",
+      "description": "mypy type-checking configured",
+      "passed": false,
+      "message": "mypy config missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 89,
+      "category": "Python Code Quality",
+      "description": "black formatter in dev dependencies",
+      "passed": false,
+      "message": "black not in deps",
+      "severity": "info"
+    },
+    {
+      "point_number": 90,
+      "category": "Python Code Quality",
+      "description": ".pre-commit-config.yaml for pre-commit hooks",
+      "passed": false,
+      "message": ".pre-commit-config.yaml missing",
+      "severity": "info"
+    },
+    {
+      "point_number": 91,
+      "category": "Python Code Quality",
+      "description": "requirements.txt uses pinned versions (== or >=)",
+      "passed": true,
+      "message": "18 pinned version(s) found",
+      "severity": "info"
+    },
+    {
+      "point_number": 92,
+      "category": "Python Code Quality",
+      "description": "[project] section in pyproject.toml",
+      "passed": false,
+      "message": "[project] missing in pyproject.toml",
+      "severity": "info"
+    },
+    {
+      "point_number": 93,
+      "category": "Python Code Quality",
+      "description": "Python 3.11+ target declared",
+      "passed": false,
+      "message": "Python 3.11+ not found in pyproject.toml",
+      "severity": "info"
+    },
+    {
+      "point_number": 94,
+      "category": "Python Code Quality",
+      "description": "from __future__ import annotations used (deferred evaluation)",
+      "passed": false,
+      "message": "__future__ annotations in 0 app/ files",
+      "severity": "info"
+    },
+    {
+      "point_number": 95,
+      "category": "Python Code Quality",
+      "description": "__init__.py in every app/ package directory",
+      "passed": true,
+      "message": "8 __init__.py file(s) found under app/",
+      "severity": "info"
+    },
+    {
+      "point_number": 96,
+      "category": "Python Code Quality",
+      "description": "No bare print() statements in app/ (use logger)",
+      "passed": false,
+      "message": "print() in: app\\scripts\\reset_clean_db.py, app\\scripts\\seed_demo_data.py, app\\scripts\\seed_superadmin.py",
+      "severity": "warning"
+    },
+    {
+      "point_number": 97,
+      "category": "Python Code Quality",
+      "description": "Centralised logger utility (app/utils/logger.py)",
+      "passed": false,
+      "message": "Logger utility not found",
+      "severity": "info"
+    },
+    {
+      "point_number": 98,
+      "category": "Python Code Quality",
+      "description": "ENVIRONMENT-based config branching (dev/staging/production)",
+      "passed": true,
+      "message": "Environment branching found",
+      "severity": "info"
+    },
+    {
+      "point_number": 99,
+      "category": "Python Code Quality",
+      "description": "scripts/validate_env.py for env validation",
+      "passed": true,
+      "message": "validate_env.py found",
+      "severity": "info"
+    },
+    {
+      "point_number": 100,
+      "category": "Python Code Quality",
+      "description": "pydantic-settings for environment-backed configuration",
+      "passed": true,
+      "message": "pydantic-settings found",
+      "severity": "info"
+    },
+    {
+      "point_number": 101,
+      "category": "Python Code Quality",
+      "description": "Module-level imports in app/ stay in the header block (allowed delayed: 5; set max_delayed_module_imports_app in config)",
+      "passed": true,
+      "message": "No delayed module imports in app/",
+      "severity": "info"
+    },
+    {
+      "point_number": 102,
+      "category": "Python Code Quality",
+      "description": "Nested imports in app/ stay at module scope when possible (set max_nested_imports_app in config)",
+      "passed": true,
+      "message": "2 nested import(s) in app/ (allowed 5)",
+      "severity": "info"
+    },
+    {
+      "point_number": 122,
+      "category": "Python Code Quality",
+      "description": "Module-level imports stay in header across import_scan_roots (allowed delayed total: 15)",
+      "passed": true,
+      "message": "1 delayed module-level import(s) \u2014 see import_analysis",
+      "severity": "info"
+    },
+    {
+      "point_number": 123,
+      "category": "Python Code Quality",
+      "description": "Nested imports across import_scan_roots (allowed nested total: 30)",
+      "passed": true,
+      "message": "5 nested import(s) \u2014 see import_analysis",
+      "severity": "info"
+    }
+  ],
+  "import_analysis": {
+    "scan_roots": [
+      "app",
+      "tests",
+      "scripts"
+    ],
+    "totals": {
+      "files_scanned": 57,
+      "top_import_statements": 325,
+      "delayed_module_import_statements": 1,
+      "nested_import_statements": 5
+    },
+    "parse_errors": [],
+    "per_file": {
+      "app/main.py": {
+        "path": "app/main.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from contextlib import asynccontextmanager"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from fastapi import FastAPI"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from fastapi.middleware.cors import CORSMiddleware"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from strawberry.fastapi import GraphQLRouter"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.core.config import settings"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.core.logger import setup_logging, logger"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.graphql.schema import schema"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.db.base import Base"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.db.session import engine"
+          },
+          {
+            "line": 15,
+            "end_line": 15,
+            "kind": "import",
+            "statement": "import app.db.models"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/__init__.py": {
+        "path": "app/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/core/config.py": {
+        "path": "app/core/config.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from pydantic_settings import BaseSettings, SettingsConfigDict"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/core/deps.py": {
+        "path": "app/core/deps.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from fastapi import Depends, HTTPException, status"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import jwt as pyjwt"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.core.security import decode_token"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/core/logger.py": {
+        "path": "app/core/logger.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import logging"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import sys"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.core.config import settings"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/core/security.py": {
+        "path": "app/core/security.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from datetime import datetime, timedelta, timezone"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import jwt"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from passlib.context import CryptContext"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.core.config import settings"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/core/__init__.py": {
+        "path": "app/core/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/db/base.py": {
+        "path": "app/db/base.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import DeclarativeBase"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/db/models.py": {
+        "path": "app/db/models.py",
+        "top_imports": [
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import enum"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from datetime import date, datetime"
+          },
+          {
+            "line": 11,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from sqlalchemy import Boolean, Date, DateTime, Enum, ForeignKey, Index, Numeric, String, Text, Integer, Uuid, func"
+          },
+          {
+            "line": 25,
+            "end_line": 25,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import Mapped, mapped_column, relationship"
+          },
+          {
+            "line": 27,
+            "end_line": 27,
+            "kind": "from",
+            "statement": "from app.db.base import Base"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/db/session.py": {
+        "path": "app/db/session.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.core.config import settings"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/db/__init__.py": {
+        "path": "app/db/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/schema.py": {
+        "path": "app/graphql/schema.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import AuthMutation, AuthQuery"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.products import ProductQuery, ProductMutation"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.orders import OrderQuery, OrderMutation"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.delivery import DeliveryQuery, DeliveryMutation"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.challan import ChallanQuery, ChallanMutation"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.returns import ReturnQuery, ReturnMutation"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.payments import PaymentQuery, PaymentMutation"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.ledger import LedgerQuery, LedgerMutation"
+          },
+          {
+            "line": 15,
+            "end_line": 15,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.notifications import NotificationQuery, NotificationMutation"
+          },
+          {
+            "line": 16,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.ops_automation import OpsAutomationQuery, OpsAutomationMutation"
+          },
+          {
+            "line": 20,
+            "end_line": 23,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.superadmin_governance import SuperAdminGovernanceQuery, SuperAdminGovernanceMutation"
+          },
+          {
+            "line": 24,
+            "end_line": 27,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.warehouse_ops import WarehouseOpsQuery, WarehouseOpsMutation"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/types.py": {
+        "path": "app/graphql/types.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import enum"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from datetime import date, datetime"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "import",
+            "statement": "import strawberry"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/__init__.py": {
+        "path": "app/graphql/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/scripts/reset_clean_db.py": {
+        "path": "app/scripts/reset_clean_db.py",
+        "top_imports": [
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "import",
+            "statement": "import asyncio"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "import",
+            "statement": "import os"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from sqlalchemy import text, select, func"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.core.security import hash_password"
+          },
+          {
+            "line": 15,
+            "end_line": 15,
+            "kind": "from",
+            "statement": "from app.db.base import Base"
+          },
+          {
+            "line": 16,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from app.db.models import User, UserRole"
+          },
+          {
+            "line": 17,
+            "end_line": 17,
+            "kind": "from",
+            "statement": "from app.db.session import engine, async_session_factory"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/scripts/seed_demo_data.py": {
+        "path": "app/scripts/seed_demo_data.py",
+        "top_imports": [
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "import",
+            "statement": "import asyncio"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from datetime import date, datetime, timedelta"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 15,
+            "end_line": 15,
+            "kind": "from",
+            "statement": "from app.core.security import hash_password"
+          },
+          {
+            "line": 16,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from app.db.base import Base"
+          },
+          {
+            "line": 17,
+            "end_line": 32,
+            "kind": "from",
+            "statement": "from app.db.models import User, UserRole, ShopkeeperProfile, DeliveryProfile, Product, StockBatch, Order, OrderItem, OrderStatus, Invoice, DeliveryAssignment, DeliveryStatus, Payment, PaymentMethod"
+          },
+          {
+            "line": 33,
+            "end_line": 33,
+            "kind": "from",
+            "statement": "from app.db.session import engine, async_session_factory"
+          },
+          {
+            "line": 34,
+            "end_line": 34,
+            "kind": "from",
+            "statement": "from app.utils.gst import calculate_line_total, calculate_invoice_totals"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/scripts/seed_superadmin.py": {
+        "path": "app/scripts/seed_superadmin.py",
+        "top_imports": [
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "import",
+            "statement": "import asyncio"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "import",
+            "statement": "import os"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.core.security import hash_password"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.db.models import User, UserRole"
+          },
+          {
+            "line": 15,
+            "end_line": 15,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/scripts/__init__.py": {
+        "path": "app/scripts/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/services/challan_service.py": {
+        "path": "app/services/challan_service.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import date"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, func"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 11,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.db.models import DeliveryChallan, ChallanItem, ChallanReturn, ChallanReturnItem, Order, OrderStatus, StockBatch"
+          },
+          {
+            "line": 20,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/services/inventory_service.py": {
+        "path": "app/services/inventory_service.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import date"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, and_"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.db.models import StockBatch, Product"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
+          }
+        ],
+        "mid_file_imports": [
+          {
+            "path": "app/services/inventory_service.py",
+            "line": 174,
+            "end_line": 174,
+            "scope": "async_function:record_purchase_entry",
+            "kind": "from",
+            "statement": "from app.db.models import PurchaseEntry, PurchaseItem",
+            "category": "nested"
+          }
+        ],
+        "delayed_module_imports": [],
+        "nested_imports": [
+          {
+            "path": "app/services/inventory_service.py",
+            "line": 174,
+            "end_line": 174,
+            "scope": "async_function:record_purchase_entry",
+            "kind": "from",
+            "statement": "from app.db.models import PurchaseEntry, PurchaseItem"
+          }
+        ]
+      },
+      "app/services/invoice_service.py": {
+        "path": "app/services/invoice_service.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from datetime import date"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, func"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.db.models import Invoice, Order"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/services/ledger_service.py": {
+        "path": "app/services/ledger_service.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.db.models import LedgerEntry, LedgerEntryType"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/services/order_service.py": {
+        "path": "app/services/order_service.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import datetime, timezone"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 11,
+            "end_line": 18,
+            "kind": "from",
+            "statement": "from app.db.models import Order, OrderItem, OrderStatus, Product, ShopkeeperProfile, LedgerEntryType"
+          },
+          {
+            "line": 19,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.utils.gst import calculate_line_total"
+          },
+          {
+            "line": 20,
+            "end_line": 23,
+            "kind": "from",
+            "statement": "from app.services.inventory_service import restore_batch_stock, allocate_batches_fefo_multi"
+          },
+          {
+            "line": 24,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from app.services.invoice_service import create_invoice_for_order"
+          },
+          {
+            "line": 25,
+            "end_line": 25,
+            "kind": "from",
+            "statement": "from app.services.ledger_service import record_ledger_entry"
+          },
+          {
+            "line": 26,
+            "end_line": 26,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/services/payment_service.py": {
+        "path": "app/services/payment_service.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import date"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, func"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 10,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from app.db.models import AdvancePayment, PaymentMethod, ShopkeeperProfile, User, LedgerEntryType"
+          },
+          {
+            "line": 17,
+            "end_line": 17,
+            "kind": "from",
+            "statement": "from app.services.ledger_service import record_ledger_entry"
+          },
+          {
+            "line": 18,
+            "end_line": 18,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/services/return_service.py": {
+        "path": "app/services/return_service.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import date"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, func"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 11,
+            "end_line": 18,
+            "kind": "from",
+            "statement": "from app.db.models import Invoice, InvoiceReturn, InvoiceReturnItem, ShopkeeperProfile, StockBatch, LedgerEntryType"
+          },
+          {
+            "line": 19,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.services.ledger_service import record_ledger_entry"
+          },
+          {
+            "line": 20,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/services/__init__.py": {
+        "path": "app/services/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/utils/gst.py": {
+        "path": "app/utils/gst.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/utils/invoice_gen.py": {
+        "path": "app/utils/invoice_gen.py",
+        "top_imports": [
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import date"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from typing import Any"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/utils/__init__.py": {
+        "path": "app/utils/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/auth.py": {
+        "path": "app/graphql/resolvers/auth.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, or_, func"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 11,
+            "end_line": 17,
+            "kind": "from",
+            "statement": "from app.core.security import verify_password, create_access_token, create_refresh_token, decode_token, hash_password"
+          },
+          {
+            "line": 18,
+            "end_line": 25,
+            "kind": "from",
+            "statement": "from app.db.models import User, UserRole, ShopkeeperProfile, DeliveryProfile, Order, Notification"
+          },
+          {
+            "line": 26,
+            "end_line": 26,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 27,
+            "end_line": 33,
+            "kind": "from",
+            "statement": "from app.graphql.types import AuthPayload, UserType, CreateUserInput, RegisterInput, ShopkeeperProfileType"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/challan.py": {
+        "path": "app/graphql/resolvers/challan.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.db.models import DeliveryChallan, UserRole"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 14,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.graphql.types import DeliveryChallanType, ChallanItemType, ChallanReturnType, CreateChallanInput, CreateChallanReturnInput"
+          },
+          {
+            "line": 21,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from app.services.challan_service import create_challan_for_order, process_challan_return"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/delivery.py": {
+        "path": "app/graphql/resolvers/delivery.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import random"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from datetime import datetime, timezone"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 14,
+            "end_line": 26,
+            "kind": "from",
+            "statement": "from app.db.models import DeliveryAssignment, DeliveryStatus, NonDeliveryReason, DeliveryRoster, Order, OrderStatus, Payment, PaymentMethod, ShopkeeperProfile, UserRole, LedgerEntryType"
+          },
+          {
+            "line": 27,
+            "end_line": 27,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 28,
+            "end_line": 28,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 29,
+            "end_line": 35,
+            "kind": "from",
+            "statement": "from app.graphql.types import CompleteDeliveryInput, DeliveryAssignmentType, DeliveryShiftSummaryType, ReportDeliveryFailureInput, DeliveryRosterType"
+          },
+          {
+            "line": 36,
+            "end_line": 36,
+            "kind": "from",
+            "statement": "from app.services.ledger_service import record_ledger_entry"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/ledger.py": {
+        "path": "app/graphql/resolvers/ledger.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import date, datetime, timezone"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, func"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 12,
+            "end_line": 17,
+            "kind": "from",
+            "statement": "from app.db.models import LedgerEntry, ReturnRequest, ReturnRequestStatus, UserRole"
+          },
+          {
+            "line": 18,
+            "end_line": 18,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 19,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 20,
+            "end_line": 25,
+            "kind": "from",
+            "statement": "from app.graphql.types import LedgerRecordType, ReturnClaimType, SubmitReturnRequestInput, ReviewReturnRequestInput"
+          },
+          {
+            "line": 26,
+            "end_line": 26,
+            "kind": "from",
+            "statement": "from app.services.ledger_service import get_shopkeeper_ledger"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/notifications.py": {
+        "path": "app/graphql/resolvers/notifications.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import json"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.db.models import Notification, ShopkeeperProfile"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 15,
+            "end_line": 18,
+            "kind": "from",
+            "statement": "from app.graphql.types import NotificationType, UpdateNotificationPreferencesInput"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/ops_automation.py": {
+        "path": "app/graphql/resolvers/ops_automation.py",
+        "top_imports": [
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import datetime"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import time"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, func"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 14,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from app.db.models import AutomationJob, JobStatus, Notification, UserRole, User, AccountAuditLog, Order, OrderStatus, ShopkeeperProfile"
+          },
+          {
+            "line": 25,
+            "end_line": 25,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 26,
+            "end_line": 26,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller, _user_to_type"
+          },
+          {
+            "line": 27,
+            "end_line": 33,
+            "kind": "from",
+            "statement": "from app.graphql.types import AutomationJobType, IntegrationHealthType, AccountAuditLogType, OperationsIncidentSummaryType, UserType"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/orders.py": {
+        "path": "app/graphql/resolvers/orders.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import datetime, timezone"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, func"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 13,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.db.models import Order, OrderStatus, StockBatch, ShopkeeperProfile, UserRole"
+          },
+          {
+            "line": 20,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 21,
+            "end_line": 21,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 22,
+            "end_line": 28,
+            "kind": "from",
+            "statement": "from app.graphql.types import OrderType, PaginatedOrders, PlaceOrderInput, RateOrderInput, DashboardStats"
+          },
+          {
+            "line": 29,
+            "end_line": 29,
+            "kind": "from",
+            "statement": "from app.services import order_service"
+          }
+        ],
+        "mid_file_imports": [
+          {
+            "path": "app/graphql/resolvers/orders.py",
+            "line": 126,
+            "end_line": 126,
+            "scope": "class:OrderQuery/async_function:dashboard_stats",
+            "kind": "from",
+            "statement": "from datetime import date, timedelta",
+            "category": "nested"
+          }
+        ],
+        "delayed_module_imports": [],
+        "nested_imports": [
+          {
+            "path": "app/graphql/resolvers/orders.py",
+            "line": 126,
+            "end_line": 126,
+            "scope": "class:OrderQuery/async_function:dashboard_stats",
+            "kind": "from",
+            "statement": "from datetime import date, timedelta"
+          }
+        ]
+      },
+      "app/graphql/resolvers/payments.py": {
+        "path": "app/graphql/resolvers/payments.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.db.models import AdvancePayment, PaymentMethod, UserRole"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 14,
+            "end_line": 17,
+            "kind": "from",
+            "statement": "from app.graphql.types import AdvancePaymentType, RecordAdvancePaymentInput"
+          },
+          {
+            "line": 18,
+            "end_line": 18,
+            "kind": "from",
+            "statement": "from app.services.payment_service import record_advance_payment as svc_record_advance"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/products.py": {
+        "path": "app/graphql/resolvers/products.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy import select, func"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.db.models import Product, StockBatch, UserRole"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 15,
+            "end_line": 21,
+            "kind": "from",
+            "statement": "from app.graphql.types import ProductType, PaginatedProducts, StockBatchType, ProductInput, StockBatchInput"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/returns.py": {
+        "path": "app/graphql/resolvers/returns.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.db.models import InvoiceReturn, UserRole"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 14,
+            "end_line": 18,
+            "kind": "from",
+            "statement": "from app.graphql.types import InvoiceReturnType, InvoiceReturnItemType, CreateInvoiceReturnInput"
+          },
+          {
+            "line": 19,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.services.return_service import create_invoice_return"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/superadmin_governance.py": {
+        "path": "app/graphql/resolvers/superadmin_governance.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import datetime"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 12,
+            "end_line": 22,
+            "kind": "from",
+            "statement": "from app.db.models import Product, ShopkeeperProfile, User, UserRole, AutomationCircuitBreaker, HighRiskApproval, AccountAuditLog, SystemGovernancePolicy, SupplierReconciliationRecord"
+          },
+          {
+            "line": 23,
+            "end_line": 23,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 24,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 25,
+            "end_line": 33,
+            "kind": "from",
+            "statement": "from app.graphql.types import BulkPricePreviewItem, BulkPriceSimulationResult, AutomationCircuitType, HighRiskApprovalType, SupplierReconciliationItemType, ProductChangeAuditItemType, SuperAdminGovernanceOverviewType"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/warehouse_ops.py": {
+        "path": "app/graphql/resolvers/warehouse_ops.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "from",
+            "statement": "from datetime import datetime, timedelta"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from strawberry.types import Info"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import selectinload"
+          },
+          {
+            "line": 12,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.db.models import Order, OrderItem, OrderStatus, StockBatch, StockAdjustment, User, UserRole"
+          },
+          {
+            "line": 21,
+            "end_line": 21,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
+          },
+          {
+            "line": 22,
+            "end_line": 22,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import _get_caller"
+          },
+          {
+            "line": 23,
+            "end_line": 28,
+            "kind": "from",
+            "statement": "from app.graphql.types import StockAdjustmentType, WarehousePickingLineType, WarehousePickingSlipType, BarcodeVerificationResult"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/resolvers/__init__.py": {
+        "path": "app/graphql/resolvers/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_auth_rbac.py": {
+        "path": "tests/test_auth_rbac.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from unittest.mock import AsyncMock, MagicMock, patch"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.db.models import User, UserRole"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import AuthMutation"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.graphql.types import CreateUserInput"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_delivery_and_orders_rbac.py": {
+        "path": "tests/test_delivery_and_orders_rbac.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from datetime import date, timedelta"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from unittest.mock import AsyncMock, MagicMock, patch"
+          },
+          {
+            "line": 10,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.db.models import DeliveryAssignment, DeliveryStatus, NonDeliveryReason, Order, OrderStatus, ShopkeeperProfile, StockBatch, UserRole"
+          },
+          {
+            "line": 20,
+            "end_line": 23,
+            "kind": "from",
+            "statement": "from app.services.inventory_service import allocate_batches_fefo_multi, InsufficientStockError"
+          },
+          {
+            "line": 24,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.orders import OrderMutation, OrderQuery"
+          },
+          {
+            "line": 25,
+            "end_line": 25,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.delivery import DeliveryMutation, DeliveryQuery"
+          },
+          {
+            "line": 26,
+            "end_line": 26,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.notifications import NotificationMutation"
+          },
+          {
+            "line": 27,
+            "end_line": 32,
+            "kind": "from",
+            "statement": "from app.graphql.types import CompleteDeliveryInput, ReportDeliveryFailureInput, RateOrderInput, UpdateNotificationPreferencesInput"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_gst.py": {
+        "path": "tests/test_gst.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from app.utils.gst import calculate_line_total, calculate_invoice_totals"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_ledger_and_claims.py": {
+        "path": "tests/test_ledger_and_claims.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from unittest.mock import AsyncMock, MagicMock, patch"
+          },
+          {
+            "line": 9,
+            "end_line": 15,
+            "kind": "from",
+            "statement": "from app.db.models import LedgerEntry, LedgerEntryType, ReturnRequest, ReturnRequestStatus, UserRole"
+          },
+          {
+            "line": 16,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from app.services.ledger_service import record_ledger_entry"
+          },
+          {
+            "line": 17,
+            "end_line": 17,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.ledger import LedgerQuery, LedgerMutation"
+          },
+          {
+            "line": 18,
+            "end_line": 18,
+            "kind": "from",
+            "statement": "from app.graphql.types import SubmitReturnRequestInput, ReviewReturnRequestInput"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_logistics_services.py": {
+        "path": "tests/test_logistics_services.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from datetime import date"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from unittest.mock import AsyncMock, MagicMock"
+          },
+          {
+            "line": 10,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.db.models import Order, OrderItem, OrderStatus, Invoice, ShopkeeperProfile, StockBatch, PaymentMethod, User, UserRole"
+          },
+          {
+            "line": 21,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from app.services.challan_service import create_challan_for_order, process_challan_return"
+          },
+          {
+            "line": 25,
+            "end_line": 25,
+            "kind": "from",
+            "statement": "from app.services.return_service import create_invoice_return"
+          },
+          {
+            "line": 26,
+            "end_line": 26,
+            "kind": "from",
+            "statement": "from app.services.payment_service import record_advance_payment"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_ops_automation.py": {
+        "path": "tests/test_ops_automation.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from unittest.mock import AsyncMock, MagicMock, patch"
+          },
+          {
+            "line": 9,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from app.db.models import AutomationJob, JobStatus, Notification, ShopkeeperProfile, User, UserRole"
+          },
+          {
+            "line": 17,
+            "end_line": 17,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import AuthMutation"
+          },
+          {
+            "line": 18,
+            "end_line": 21,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.ops_automation import OpsAutomationMutation, OpsAutomationQuery"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_schema_snapshot.py": {
+        "path": "tests/test_schema_snapshot.py",
+        "top_imports": [
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from pathlib import Path"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.graphql.schema import schema"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_services.py": {
+        "path": "tests/test_services.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from datetime import date, timedelta"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from unittest.mock import AsyncMock, MagicMock"
+          },
+          {
+            "line": 10,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.services.inventory_service import allocate_batch_fefo, restore_batch_stock, InsufficientStockError"
+          },
+          {
+            "line": 15,
+            "end_line": 15,
+            "kind": "from",
+            "statement": "from app.db.models import StockBatch"
+          }
+        ],
+        "mid_file_imports": [
+          {
+            "path": "tests/test_services.py",
+            "line": 147,
+            "end_line": 147,
+            "scope": "class:TestInventoryService/async_function:test_record_purchase_entry",
+            "kind": "from",
+            "statement": "from app.services.inventory_service import record_purchase_entry",
+            "category": "nested"
+          },
+          {
+            "path": "tests/test_services.py",
+            "line": 191,
+            "end_line": 191,
+            "scope": "class:TestInvoiceGeneration/function:test_render_html_invoice_statutory_fields",
+            "kind": "from",
+            "statement": "from app.utils.invoice_gen import render_html_invoice",
+            "category": "nested"
+          }
+        ],
+        "delayed_module_imports": [],
+        "nested_imports": [
+          {
+            "path": "tests/test_services.py",
+            "line": 147,
+            "end_line": 147,
+            "scope": "class:TestInventoryService/async_function:test_record_purchase_entry",
+            "kind": "from",
+            "statement": "from app.services.inventory_service import record_purchase_entry"
+          },
+          {
+            "path": "tests/test_services.py",
+            "line": 191,
+            "end_line": 191,
+            "scope": "class:TestInvoiceGeneration/function:test_render_html_invoice_statutory_fields",
+            "kind": "from",
+            "statement": "from app.utils.invoice_gen import render_html_invoice"
+          }
+        ]
+      },
+      "tests/test_superadmin_governance.py": {
+        "path": "tests/test_superadmin_governance.py",
+        "top_imports": [
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from unittest.mock import AsyncMock, MagicMock, patch"
+          },
+          {
+            "line": 10,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from app.db.models import Product, StockBatch, User, UserRole, HighRiskApproval"
+          },
+          {
+            "line": 17,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.superadmin_governance import SuperAdminGovernanceQuery, SuperAdminGovernanceMutation"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/test_warehouse_ops.py": {
+        "path": "tests/test_warehouse_ops.py",
+        "top_imports": [
+          {
+            "line": 6,
+            "end_line": 6,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from datetime import date, datetime, timedelta"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from unittest.mock import AsyncMock, MagicMock, patch"
+          },
+          {
+            "line": 11,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.db.models import Order, OrderItem, Product, StockBatch, StockAdjustment, ShopkeeperProfile, User, UserRole"
+          },
+          {
+            "line": 21,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.warehouse_ops import WarehouseOpsQuery, WarehouseOpsMutation"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/__init__.py": {
+        "path": "tests/__init__.py",
+        "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "scripts/api_checker.py": {
+        "path": "scripts/api_checker.py",
+        "top_imports": [
+          {
+            "line": 29,
+            "end_line": 29,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 31,
+            "end_line": 31,
+            "kind": "import",
+            "statement": "import argparse"
+          },
+          {
+            "line": 32,
+            "end_line": 32,
+            "kind": "import",
+            "statement": "import ast"
+          },
+          {
+            "line": 33,
+            "end_line": 33,
+            "kind": "import",
+            "statement": "import json"
+          },
+          {
+            "line": 34,
+            "end_line": 34,
+            "kind": "import",
+            "statement": "import re"
+          },
+          {
+            "line": 35,
+            "end_line": 35,
+            "kind": "import",
+            "statement": "import sys"
+          },
+          {
+            "line": 36,
+            "end_line": 36,
+            "kind": "from",
+            "statement": "from dataclasses import asdict, dataclass, field"
+          },
+          {
+            "line": 37,
+            "end_line": 37,
+            "kind": "from",
+            "statement": "from datetime import datetime"
+          },
+          {
+            "line": 38,
+            "end_line": 38,
+            "kind": "from",
+            "statement": "from pathlib import Path"
+          },
+          {
+            "line": 39,
+            "end_line": 39,
+            "kind": "from",
+            "statement": "from typing import Any"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "scripts/check_best_practices.py": {
+        "path": "scripts/check_best_practices.py",
+        "top_imports": [
+          {
+            "line": 36,
+            "end_line": 36,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 38,
+            "end_line": 38,
+            "kind": "import",
+            "statement": "import argparse"
+          },
+          {
+            "line": 39,
+            "end_line": 39,
+            "kind": "import",
+            "statement": "import importlib.util"
+          },
+          {
+            "line": 40,
+            "end_line": 40,
+            "kind": "import",
+            "statement": "import sys"
+          },
+          {
+            "line": 41,
+            "end_line": 41,
+            "kind": "from",
+            "statement": "from pathlib import Path"
+          },
+          {
+            "line": 42,
+            "end_line": 42,
+            "kind": "from",
+            "statement": "from typing import Any"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "scripts/regen_schema_snapshot.py": {
+        "path": "scripts/regen_schema_snapshot.py",
+        "top_imports": [
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "import",
+            "statement": "import sys"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from pathlib import Path"
+          }
+        ],
+        "mid_file_imports": [
+          {
+            "line": 16,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from app.graphql.schema import schema"
+          }
+        ],
+        "delayed_module_imports": [
+          {
+            "line": 16,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from app.graphql.schema import schema"
+          }
+        ],
+        "nested_imports": []
+      },
+      "scripts/validate_env.py": {
+        "path": "scripts/validate_env.py",
+        "top_imports": [
+          {
+            "line": 16,
+            "end_line": 16,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 18,
+            "end_line": 18,
+            "kind": "import",
+            "statement": "import argparse"
+          },
+          {
+            "line": 19,
+            "end_line": 19,
+            "kind": "import",
+            "statement": "import os"
+          },
+          {
+            "line": 20,
+            "end_line": 20,
+            "kind": "import",
+            "statement": "import sys"
+          },
+          {
+            "line": 21,
+            "end_line": 21,
+            "kind": "from",
+            "statement": "from pathlib import Path"
+          }
+        ],
+        "mid_file_imports": [
+          {
+            "path": "scripts/validate_env.py",
+            "line": 57,
+            "end_line": 57,
+            "scope": "function:_load_dotenv",
+            "kind": "from",
+            "statement": "from dotenv import load_dotenv as _load_dotenv_impl",
+            "category": "nested"
+          }
+        ],
+        "delayed_module_imports": [],
+        "nested_imports": [
+          {
+            "path": "scripts/validate_env.py",
+            "line": 57,
+            "end_line": 57,
+            "scope": "function:_load_dotenv",
+            "kind": "from",
+            "statement": "from dotenv import load_dotenv as _load_dotenv_impl"
+          }
+        ]
+      }
+    }
+  }
+}

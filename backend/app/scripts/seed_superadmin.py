@@ -23,9 +23,7 @@ async def seed():
 
     async with async_session_factory() as session:
         # Check if super admin already exists
-        result = await session.execute(
-            select(User).where(User.email == admin_email)
-        )
+        result = await session.execute(select(User).where(User.email == admin_email))
         if result.scalar_one_or_none():
             print(f"Super Admin ({admin_email}) already exists. Skipping.")
             return

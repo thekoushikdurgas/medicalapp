@@ -47,7 +47,7 @@ class ProductQuery:
     ) -> PaginatedProducts:
         """List products with optional search and pagination."""
         async with async_session_factory() as session:
-            query = select(Product).where(Product.is_active == True)
+            query = select(Product).where(Product.is_active.is_(True))
 
             if search:
                 query = query.where(Product.name.ilike(f"%{search}%"))
@@ -85,9 +85,7 @@ class ProductQuery:
             if not product:
                 raise Exception("Product not found")
 
-            total_stock = sum(
-                b.quantity_available for b in product.stock_batches
-            )
+            total_stock = sum(b.quantity_available for b in product.stock_batches)
             return _product_to_type(product, stock=total_stock)
 
     @strawberry.field
@@ -125,7 +123,9 @@ class ProductMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: You are not authorized to add products.")
+            raise Exception(
+                "Permission denied: You are not authorized to add products."
+            )
 
         async with async_session_factory() as session:
             product = Product(
@@ -145,7 +145,9 @@ class ProductMutation:
             return _product_to_type(product)
 
     @strawberry.mutation
-    async def add_stock_batch(self, info: Info, input: StockBatchInput) -> StockBatchType:
+    async def add_stock_batch(
+        self, info: Info, input: StockBatchInput
+    ) -> StockBatchType:
         """Add a stock batch for a product (Super Admin, Admin, or Warehouse only)."""
         _, role = _get_caller(info)
         if role not in (
@@ -153,7 +155,9 @@ class ProductMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: You are not authorized to add inventory stock.")
+            raise Exception(
+                "Permission denied: You are not authorized to add inventory stock."
+            )
 
         async with async_session_factory() as session:
             batch = StockBatch(

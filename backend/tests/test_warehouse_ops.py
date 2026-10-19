@@ -11,7 +11,6 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from app.db.models import (
     Order,
     OrderItem,
-    OrderStatus,
     Product,
     StockBatch,
     StockAdjustment,
@@ -102,7 +101,9 @@ class TestWarehouseOperations:
         query = WarehouseOpsQuery()
         info = make_mock_info(role=UserRole.WAREHOUSE.value)
 
-        with patch("app.graphql.resolvers.warehouse_ops.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.warehouse_ops.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
 
             slip = await query.warehouse_picking_slip(info=info, order_id=order_id)
@@ -146,7 +147,9 @@ class TestWarehouseOperations:
         mutation = WarehouseOpsMutation()
         info = make_mock_info(role=UserRole.WAREHOUSE.value)
 
-        with patch("app.graphql.resolvers.warehouse_ops.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.warehouse_ops.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
 
             # 1. Matching barcode scan
@@ -208,7 +211,9 @@ class TestWarehouseOperations:
         mutation = WarehouseOpsMutation()
         info = make_mock_info(user_id=str(caller_id), role=UserRole.WAREHOUSE.value)
 
-        with patch("app.graphql.resolvers.warehouse_ops.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.warehouse_ops.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
 
             adj_res = await mutation.record_stock_adjustment(

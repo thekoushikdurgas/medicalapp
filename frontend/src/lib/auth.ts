@@ -18,7 +18,11 @@ export interface NavItem {
 }
 
 /** Nav items visible per role. Order matters — first item is the default landing. */
-const SHARED_DASHBOARD: NavItem = { href: "/dashboard", label: "Dashboard", icon: "📊" };
+const SHARED_DASHBOARD: NavItem = {
+  href: "/dashboard",
+  label: "Dashboard",
+  icon: "📊",
+};
 
 const NAV_BY_ROLE: Record<UserRole, NavItem[]> = {
   SUPER_ADMIN: [
@@ -67,7 +71,10 @@ export function getNavItems(role: UserRole): NavItem[] {
 }
 
 /** Role display metadata */
-export const ROLE_META: Record<UserRole, { label: string; icon: string; color: string }> = {
+export const ROLE_META: Record<
+  UserRole,
+  { label: string; icon: string; color: string }
+> = {
   SUPER_ADMIN: { label: "Super Admin", icon: "👑", color: "#7c3aed" },
   ADMIN: { label: "Operations Admin", icon: "🛡️", color: "#2563eb" },
   WAREHOUSE: { label: "Warehouse Staff", icon: "📦", color: "#d97706" },
@@ -76,7 +83,11 @@ export const ROLE_META: Record<UserRole, { label: string; icon: string; color: s
 };
 
 /** Read current user from localStorage (client-side only) */
-export function getStoredUser(): { role: UserRole; fullName: string; email: string } | null {
+export function getStoredUser(): {
+  role: UserRole;
+  fullName: string;
+  email: string;
+} | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = localStorage.getItem(AUTH_KEYS.USER);

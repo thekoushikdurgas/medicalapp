@@ -6,7 +6,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True, extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env", case_sensitive=True, extra="ignore"
+    )
 
     # General
     APP_NAME: str = "PharmacyFantasy"
@@ -20,7 +22,9 @@ class Settings(BaseSettings):
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://postgres:postgres@localhost:5432/pharmacyfantasy"
+    DATABASE_URL: str = (
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/pharmacyfantasy"
+    )
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"

@@ -50,7 +50,11 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<{ role: UserRole; fullName: string; email: string } | null>(null);
+  const [user, setUser] = useState<{
+    role: UserRole;
+    fullName: string;
+    email: string;
+  } | null>(null);
 
   useEffect(() => {
     setUser(getStoredUser());
@@ -109,14 +113,24 @@ export default function Sidebar({
             title: "Commerce & Sales",
             items: [
               { href: "/dashboard/products", label: "Products Catalog" },
-              { href: "/dashboard/orders", label: "Wholesale Orders", badge: "1", badgeColor: "var(--color-warning)" },
+              {
+                href: "/dashboard/orders",
+                label: "Wholesale Orders",
+                badge: "1",
+                badgeColor: "var(--color-warning)",
+              },
               { href: "/dashboard/invoices", label: "Tax Invoices" },
             ],
           },
           {
             title: "Supply Chain & Ops",
             items: [
-              { href: "/dashboard/inventory", label: "Warehouse Inventory", badge: "FEFO", badgeColor: "var(--color-primary-600)" },
+              {
+                href: "/dashboard/inventory",
+                label: "Warehouse Inventory",
+                badge: "FEFO",
+                badgeColor: "var(--color-primary-600)",
+              },
               { href: "/dashboard/deliveries", label: "Fleet Deliveries" },
               { href: "/dashboard/shopkeepers", label: "Pharmacies" },
             ],
@@ -138,7 +152,12 @@ export default function Sidebar({
           {
             title: "Daily Operations",
             items: [
-              { href: "/dashboard/orders", label: "Orders Queue", badge: "1", badgeColor: "var(--color-warning)" },
+              {
+                href: "/dashboard/orders",
+                label: "Orders Queue",
+                badge: "1",
+                badgeColor: "var(--color-warning)",
+              },
               { href: "/dashboard/deliveries", label: "Assign Delivery" },
               { href: "/dashboard/invoices", label: "Invoices" },
             ],
@@ -154,9 +173,7 @@ export default function Sidebar({
           },
           {
             title: "Administration",
-            items: [
-              { href: "/dashboard/users", label: "Staff & Users" },
-            ],
+            items: [{ href: "/dashboard/users", label: "Staff & Users" }],
           },
         ];
 
@@ -168,8 +185,18 @@ export default function Sidebar({
           {
             title: "Warehouse Operations",
             items: [
-              { href: "/dashboard/inventory", label: "Inventory & Racks", badge: "FEFO", badgeColor: "var(--color-primary-600)" },
-              { href: "/dashboard/orders", label: "Picking Queue", badge: "2", badgeColor: "var(--color-warning)" },
+              {
+                href: "/dashboard/inventory",
+                label: "Inventory & Racks",
+                badge: "FEFO",
+                badgeColor: "var(--color-primary-600)",
+              },
+              {
+                href: "/dashboard/orders",
+                label: "Picking Queue",
+                badge: "2",
+                badgeColor: "var(--color-warning)",
+              },
               { href: "/dashboard/invoices", label: "Invoices & Challans" },
               { href: "/dashboard/products", label: "SKU Catalog" },
             ],
@@ -184,7 +211,12 @@ export default function Sidebar({
           {
             title: "My Runs",
             items: [
-              { href: "/dashboard/deliveries", label: "Assigned Trips", badge: "2 Active", badgeColor: "var(--color-primary-600)" },
+              {
+                href: "/dashboard/deliveries",
+                label: "Assigned Trips",
+                badge: "2 Active",
+                badgeColor: "var(--color-primary-600)",
+              },
             ],
           },
         ];
@@ -198,7 +230,12 @@ export default function Sidebar({
             title: "Wholesale Purchasing",
             items: [
               { href: "/dashboard/products", label: "Browse Catalog" },
-              { href: "/dashboard/orders", label: "My Orders", badge: "1 En Route", badgeColor: "var(--color-info)" },
+              {
+                href: "/dashboard/orders",
+                label: "My Orders",
+                badge: "1 En Route",
+                badgeColor: "var(--color-info)",
+              },
               { href: "/dashboard/invoices", label: "My Invoices" },
             ],
           },
@@ -224,7 +261,12 @@ export default function Sidebar({
       <div className="sidebar-brand">
         <Link
           href="/dashboard"
-          style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", textDecoration: "none" }}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--space-3)",
+            textDecoration: "none",
+          }}
           onClick={onClose}
         >
           <div
@@ -232,7 +274,8 @@ export default function Sidebar({
               width: "36px",
               height: "36px",
               borderRadius: "var(--radius-lg)",
-              background: "linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700))",
+              background:
+                "linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700))",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -276,7 +319,11 @@ export default function Sidebar({
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             aria-label="Collapse sidebar"
           >
-            {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            {isCollapsed ? (
+              <ChevronRight size={16} />
+            ) : (
+              <ChevronLeft size={16} />
+            )}
           </button>
         )}
       </div>
@@ -310,14 +357,19 @@ export default function Sidebar({
                   >
                     {getNavIcon(item.href)}
                   </span>
-                  <span className="sidebar-item-label" style={{ flex: 1, whiteSpace: "nowrap" }}>
+                  <span
+                    className="sidebar-item-label"
+                    style={{ flex: 1, whiteSpace: "nowrap" }}
+                  >
                     {item.label}
                   </span>
                   {item.badge && (
                     <span
                       className="sidebar-badge"
                       style={{
-                        background: item.badgeColor ? `color-mix(in srgb, ${item.badgeColor} 20%, transparent)` : "rgba(255,255,255,0.12)",
+                        background: item.badgeColor
+                          ? `color-mix(in srgb, ${item.badgeColor} 20%, transparent)`
+                          : "rgba(255,255,255,0.12)",
                         color: item.badgeColor ?? "#ffffff",
                         border: `1px solid color-mix(in srgb, ${item.badgeColor ?? "#ffffff"} 30%, transparent)`,
                       }}

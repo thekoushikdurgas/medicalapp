@@ -35,7 +35,10 @@ export default function LoginPage() {
 
       if (res.data?.login?.accessToken) {
         localStorage.setItem(AUTH_KEYS.TOKEN, res.data.login.accessToken);
-        localStorage.setItem(AUTH_KEYS.USER, JSON.stringify(res.data.login.user));
+        localStorage.setItem(
+          AUTH_KEYS.USER,
+          JSON.stringify(res.data.login.user),
+        );
         router.push("/dashboard");
         return;
       }
@@ -46,7 +49,10 @@ export default function LoginPage() {
         setError("Invalid email or password. Please try again.");
       }
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Authentication failed. Please verify credentials.";
+      const message =
+        err instanceof Error
+          ? err.message
+          : "Authentication failed. Please verify credentials.";
       setError(message);
     } finally {
       setLoading(false);
@@ -116,27 +122,50 @@ export default function LoginPage() {
             style={styles.submitBtn}
             disabled={loading}
           >
-            {loading ? "Authenticating Session..." : "Sign In to Operations Portal →"}
+            {loading
+              ? "Authenticating Session..."
+              : "Sign In to Operations Portal →"}
           </button>
         </form>
 
         {/* Links */}
-        <div style={{ marginTop: "var(--space-4)", textAlign: "center", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-          <Link href="/forgot-password" style={{ fontSize: "0.8rem", color: "var(--color-primary-600)" }}>
+        <div
+          style={{
+            marginTop: "var(--space-4)",
+            textAlign: "center",
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-3)",
+          }}
+        >
+          <Link
+            href="/forgot-password"
+            style={{ fontSize: "0.8rem", color: "var(--color-primary-600)" }}
+          >
             Forgot your password?
           </Link>
-          <div style={{
-            fontSize: "0.8rem",
-            color: "var(--text-secondary)",
-            background: "rgba(16, 185, 129, 0.08)",
-            padding: "var(--space-2) var(--space-3)",
-            borderRadius: "var(--radius-lg)",
-            border: "1px solid rgba(16, 185, 129, 0.2)",
-          }}>
+          <div
+            style={{
+              fontSize: "0.8rem",
+              color: "var(--text-secondary)",
+              background: "rgba(16, 185, 129, 0.08)",
+              padding: "var(--space-2) var(--space-3)",
+              borderRadius: "var(--radius-lg)",
+              border: "1px solid rgba(16, 185, 129, 0.2)",
+            }}
+          >
             <p style={{ margin: 0, fontWeight: 500 }}>
               Need an account? Free instant registration without approval:
             </p>
-            <Link href="/register" style={{ color: "var(--color-primary-700)", fontWeight: 700, display: "inline-block", marginTop: "4px" }}>
+            <Link
+              href="/register"
+              style={{
+                color: "var(--color-primary-700)",
+                fontWeight: 700,
+                display: "inline-block",
+                marginTop: "4px",
+              }}
+            >
               🏪 Register Retail Shopkeeper or 🛵 Delivery Boy →
             </Link>
           </div>
@@ -161,7 +190,8 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "center",
     padding: "var(--space-4)",
     position: "relative",
-    background: "linear-gradient(135deg, #064e3b 0%, #065f46 40%, #047857 100%)",
+    background:
+      "linear-gradient(135deg, #064e3b 0%, #065f46 40%, #047857 100%)",
   },
   backdrop: {
     position: "absolute",

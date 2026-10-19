@@ -11,17 +11,16 @@ from app.db.models import (
     LedgerEntryType,
     ReturnRequest,
     ReturnRequestStatus,
-    Product,
-    StockBatch,
-    User,
     UserRole,
 )
-from app.services.ledger_service import record_ledger_entry, get_shopkeeper_ledger
+from app.services.ledger_service import record_ledger_entry
 from app.graphql.resolvers.ledger import LedgerQuery, LedgerMutation
 from app.graphql.types import SubmitReturnRequestInput, ReviewReturnRequestInput
 
 
-def make_mock_info(user_id: str | None = None, role: str | None = None, has_auth_header: bool = True):
+def make_mock_info(
+    user_id: str | None = None, role: str | None = None, has_auth_header: bool = True
+):
     info = MagicMock()
     if not has_auth_header and user_id is None:
         info.context = {}
@@ -93,7 +92,9 @@ class TestLedgerGraphQLResolvers:
 
         info = make_mock_info(user_id=str(sk_id), role=UserRole.SHOPKEEPER.value)
 
-        with patch("app.graphql.resolvers.ledger.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ledger.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             ledger = await LedgerQuery().my_ledger(info)
 
@@ -109,7 +110,9 @@ class TestLedgerGraphQLResolvers:
 
         info = make_mock_info(user_id=str(sk1_id), role=UserRole.SHOPKEEPER.value)
 
-        with patch("app.graphql.resolvers.ledger.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ledger.async_session_factory"
+        ) as mock_factory:
             # Shopkeeper ignores passed shopkeeper_id and always sees only their own
             mock_session = AsyncMock()
             mock_res = MagicMock()
@@ -157,18 +160,24 @@ class TestLedgerGraphQLResolvers:
         mock_claim_res.scalar_one_or_none.return_value = claim_obj
         mock_session.execute.side_effect = [mock_count, mock_claim_res, mock_claim_res]
 
-        with patch("app.graphql.resolvers.ledger.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ledger.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             created = await LedgerMutation().submit_return_claim(info_sk, input_submit)
             assert created.request_number.startswith("CLM-")
             assert created.status == "PENDING"
 
             # Admin reviews and approves claim
-            info_admin = make_mock_info(user_id=str(admin_id), role=UserRole.ADMIN.value)
+            info_admin = make_mock_info(
+                user_id=str(admin_id), role=UserRole.ADMIN.value
+            )
             input_review = ReviewReturnRequestInput(
                 request_id=claim_id,
                 action="APPROVE",
             )
-            reviewed = await LedgerMutation().review_return_claim(info_admin, input_review)
+            reviewed = await LedgerMutation().review_return_claim(
+                info_admin, input_review
+            )
             assert reviewed.status == "APPROVED"
             assert reviewed.reviewed_by == admin_id

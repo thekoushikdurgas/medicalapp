@@ -8,7 +8,7 @@ from strawberry.types import Info
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.db.models import AdvancePayment, PaymentMethod, UserRole, User
+from app.db.models import AdvancePayment, PaymentMethod, UserRole
 from app.db.session import async_session_factory
 from app.graphql.resolvers.auth import _get_caller
 from app.graphql.types import (
@@ -46,9 +46,13 @@ class PaymentQuery:
         """List advance payments, optionally filtered by shopkeeper."""
         user_id_str, role = _get_caller(info)
         async with async_session_factory() as session:
-            stmt = select(AdvancePayment).options(selectinload(AdvancePayment.shopkeeper))
+            stmt = select(AdvancePayment).options(
+                selectinload(AdvancePayment.shopkeeper)
+            )
             if role == UserRole.SHOPKEEPER.value:
-                stmt = stmt.where(AdvancePayment.shopkeeper_id == uuid.UUID(user_id_str))
+                stmt = stmt.where(
+                    AdvancePayment.shopkeeper_id == uuid.UUID(user_id_str)
+                )
             elif shopkeeper_id:
                 stmt = stmt.where(AdvancePayment.shopkeeper_id == shopkeeper_id)
 
@@ -77,7 +81,9 @@ class PaymentMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: Only Admin or Staff can record advance payments.")
+            raise Exception(
+                "Permission denied: Only Admin or Staff can record advance payments."
+            )
 
         recorded_by = uuid.UUID(user_id_str)
         try:

@@ -7,6 +7,10 @@
     "build": "next build",
     "start": "next start -H 0.0.0.0 --port 3000",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css}\"",
+    "clean": "node -e \"['.next','out','dist'].forEach((p)=>require('fs').rmSync(p,{recursive:true,force:true}))\"",
     "test": "jest"
   },
   "dependencies": {
@@ -23,6 +27,7 @@
     "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0",
+    "prettier": "^3.9.10",
     "typescript": "^5.6.0"
   }
 }

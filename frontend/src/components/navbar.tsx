@@ -38,7 +38,11 @@ export default function DashboardNavbar({
 }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const [user, setUser] = useState<{ role: UserRole; fullName: string; email: string } | null>(null);
+  const [user, setUser] = useState<{
+    role: UserRole;
+    fullName: string;
+    email: string;
+  } | null>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -99,7 +103,10 @@ export default function DashboardNavbar({
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
         setNotificationsOpen(false);
       }
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(e.target as Node)
+      ) {
         setUserMenuOpen(false);
       }
     };
@@ -156,7 +163,14 @@ export default function DashboardNavbar({
     <>
       <header className="dashboard-navbar" aria-label="Dashboard Top Bar">
         {/* Left: Sidebar Toggle & Page Breadcrumbs */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", minWidth: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--space-3)",
+            minWidth: 0,
+          }}
+        >
           <button
             onClick={onToggleSidebar}
             className="navbar-action-btn"
@@ -171,7 +185,14 @@ export default function DashboardNavbar({
           </button>
 
           {/* Breadcrumb Context */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", minWidth: 0 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              minWidth: 0,
+            }}
+          >
             <Link
               href="/dashboard"
               style={{
@@ -185,7 +206,12 @@ export default function DashboardNavbar({
             >
               Overview
             </Link>
-            <ChevronRight size={12} color="var(--text-muted)" style={{ display: "none" }} className="breadcrumb-chevron" />
+            <ChevronRight
+              size={12}
+              color="var(--text-muted)"
+              style={{ display: "none" }}
+              className="breadcrumb-chevron"
+            />
             <span
               style={{
                 fontSize: "var(--font-size-sm)",
@@ -203,7 +229,14 @@ export default function DashboardNavbar({
         </div>
 
         {/* Center: Global Search Bar Trigger */}
-        <div style={{ flex: 1, maxWidth: "420px", display: "flex", justifyContent: "center" }}>
+        <div
+          style={{
+            flex: 1,
+            maxWidth: "420px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           <button
             onClick={() => setSearchOpen(true)}
             className="navbar-search-btn"
@@ -212,7 +245,10 @@ export default function DashboardNavbar({
           >
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <Search size={14} color="var(--text-muted)" />
-              <span className="navbar-search-text" style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+              <span
+                className="navbar-search-text"
+                style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}
+              >
                 Quick search drugs, orders, batches...
               </span>
             </div>
@@ -221,7 +257,14 @@ export default function DashboardNavbar({
         </div>
 
         {/* Right: Live GST Server Status, Notifications, Theme, User Profile */}
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", flexShrink: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "var(--space-3)",
+            flexShrink: 0,
+          }}
+        >
           {/* GST Live Server Badge */}
           <div
             className="navbar-gst-badge"
@@ -261,7 +304,10 @@ export default function DashboardNavbar({
               aria-label="Notifications"
               aria-expanded={notificationsOpen}
             >
-              <Bell size={18} className={unreadCount > 0 ? "icon-bounce" : ""} />
+              <Bell
+                size={18}
+                className={unreadCount > 0 ? "icon-bounce" : ""}
+              />
               {unreadCount > 0 && <span className="navbar-notification-dot" />}
             </button>
 
@@ -278,7 +324,13 @@ export default function DashboardNavbar({
                     background: "var(--bg-secondary)",
                   }}
                 >
-                  <div style={{ fontWeight: 700, fontSize: "var(--font-size-sm)", color: "var(--text-primary)" }}>
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      fontSize: "var(--font-size-sm)",
+                      color: "var(--text-primary)",
+                    }}
+                  >
                     Notifications
                   </div>
                   <span
@@ -302,31 +354,83 @@ export default function DashboardNavbar({
                       style={{
                         padding: "var(--space-3) var(--space-4)",
                         borderBottom: "1px solid var(--border-color)",
-                        background: n.unread ? "var(--bg-primary)" : "var(--bg-secondary)",
+                        background: n.unread
+                          ? "var(--bg-primary)"
+                          : "var(--bg-secondary)",
                         cursor: "pointer",
                         transition: "background var(--transition-fast)",
                       }}
                       onClick={() => {
                         setNotifications((prev) =>
-                          prev.map((item) => (item.id === n.id ? { ...item, unread: false } : item))
+                          prev.map((item) =>
+                            item.id === n.id
+                              ? { ...item, unread: false }
+                              : item,
+                          ),
                         );
                       }}
                     >
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "8px" }}>
-                        <div style={{ display: "flex", gap: "8px", alignItems: "flex-start" }}>
-                          {n.type === "order" && <ShoppingCart size={15} color="var(--color-primary-600)" />}
-                          {n.type === "alert" && <AlertTriangle size={15} color="var(--color-warning)" />}
-                          {n.type === "success" && <CheckCircle2 size={15} color="var(--color-success)" />}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "flex-start",
+                          gap: "8px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "8px",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          {n.type === "order" && (
+                            <ShoppingCart
+                              size={15}
+                              color="var(--color-primary-600)"
+                            />
+                          )}
+                          {n.type === "alert" && (
+                            <AlertTriangle
+                              size={15}
+                              color="var(--color-warning)"
+                            />
+                          )}
+                          {n.type === "success" && (
+                            <CheckCircle2
+                              size={15}
+                              color="var(--color-success)"
+                            />
+                          )}
                           <div>
-                            <div style={{ fontSize: "0.8rem", fontWeight: n.unread ? 700 : 500, color: "var(--text-primary)" }}>
+                            <div
+                              style={{
+                                fontSize: "0.8rem",
+                                fontWeight: n.unread ? 700 : 500,
+                                color: "var(--text-primary)",
+                              }}
+                            >
                               {n.title}
                             </div>
-                            <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "2px" }}>
+                            <div
+                              style={{
+                                fontSize: "0.72rem",
+                                color: "var(--text-secondary)",
+                                marginTop: "2px",
+                              }}
+                            >
                               {n.desc}
                             </div>
                           </div>
                         </div>
-                        <span style={{ fontSize: "0.68rem", color: "var(--text-muted)", whiteSpace: "nowrap" }}>
+                        <span
+                          style={{
+                            fontSize: "0.68rem",
+                            color: "var(--text-muted)",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {n.time}
                         </span>
                       </div>
@@ -344,7 +448,9 @@ export default function DashboardNavbar({
                 >
                   <button
                     onClick={() => {
-                      setNotifications((prev) => prev.map((item) => ({ ...item, unread: false })));
+                      setNotifications((prev) =>
+                        prev.map((item) => ({ ...item, unread: false })),
+                      );
                     }}
                     style={{
                       background: "none",
@@ -412,12 +518,32 @@ export default function DashboardNavbar({
 
             {/* User Dropdown Popover */}
             {userMenuOpen && (
-              <div className="navbar-popover" style={{ width: "240px", right: 0 }}>
-                <div style={{ padding: "var(--space-4)", borderBottom: "1px solid var(--border-color)" }}>
-                  <div style={{ fontWeight: 700, fontSize: "0.85rem", color: "var(--text-primary)" }}>
+              <div
+                className="navbar-popover"
+                style={{ width: "240px", right: 0 }}
+              >
+                <div
+                  style={{
+                    padding: "var(--space-4)",
+                    borderBottom: "1px solid var(--border-color)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: 700,
+                      fontSize: "0.85rem",
+                      color: "var(--text-primary)",
+                    }}
+                  >
                     {user?.fullName ?? "Wholesale Operator"}
                   </div>
-                  <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "2px" }}>
+                  <div
+                    style={{
+                      fontSize: "0.72rem",
+                      color: "var(--text-muted)",
+                      marginTop: "2px",
+                    }}
+                  >
                     {user?.email}
                   </div>
                   <span
@@ -521,22 +647,73 @@ function CommandSearchModal({ onClose }: { onClose: () => void }) {
   }, []);
 
   const SEARCH_ITEMS = [
-    { type: "Medicine", label: "AZITHRAL 500 MG (Alembic)", href: "/dashboard/products", icon: <Pill size={16} /> },
-    { type: "Medicine", label: "TELMA 40 MG (Glenmark)", href: "/dashboard/products", icon: <Pill size={16} /> },
-    { type: "Medicine", label: "HIFENAC MR (Intas)", href: "/dashboard/products", icon: <Pill size={16} /> },
-    { type: "Medicine", label: "PAN D CAPSULES (Alkem)", href: "/dashboard/products", icon: <Pill size={16} /> },
-    { type: "Order", label: "ORD-2026-004448 (Cheap Medical Stores)", href: "/dashboard/orders", icon: <ShoppingCart size={16} /> },
-    { type: "Order", label: "ORD-2026-000538 (Gupta Pharmacy)", href: "/dashboard/orders", icon: <ShoppingCart size={16} /> },
-    { type: "Pharmacy", label: "Cheap Medical Stores (Benachity)", href: "/dashboard/shopkeepers", icon: <Store size={16} /> },
-    { type: "Pharmacy", label: "Gupta Pharmacy (City Centre)", href: "/dashboard/shopkeepers", icon: <Store size={16} /> },
-    { type: "Page", label: "FEFO Warehouse Inventory", href: "/dashboard/inventory", icon: <Package size={16} /> },
-    { type: "Page", label: "GST Tax Invoices & Reports", href: "/dashboard/invoices", icon: <Shield size={16} /> },
+    {
+      type: "Medicine",
+      label: "AZITHRAL 500 MG (Alembic)",
+      href: "/dashboard/products",
+      icon: <Pill size={16} />,
+    },
+    {
+      type: "Medicine",
+      label: "TELMA 40 MG (Glenmark)",
+      href: "/dashboard/products",
+      icon: <Pill size={16} />,
+    },
+    {
+      type: "Medicine",
+      label: "HIFENAC MR (Intas)",
+      href: "/dashboard/products",
+      icon: <Pill size={16} />,
+    },
+    {
+      type: "Medicine",
+      label: "PAN D CAPSULES (Alkem)",
+      href: "/dashboard/products",
+      icon: <Pill size={16} />,
+    },
+    {
+      type: "Order",
+      label: "ORD-2026-004448 (Cheap Medical Stores)",
+      href: "/dashboard/orders",
+      icon: <ShoppingCart size={16} />,
+    },
+    {
+      type: "Order",
+      label: "ORD-2026-000538 (Gupta Pharmacy)",
+      href: "/dashboard/orders",
+      icon: <ShoppingCart size={16} />,
+    },
+    {
+      type: "Pharmacy",
+      label: "Cheap Medical Stores (Benachity)",
+      href: "/dashboard/shopkeepers",
+      icon: <Store size={16} />,
+    },
+    {
+      type: "Pharmacy",
+      label: "Gupta Pharmacy (City Centre)",
+      href: "/dashboard/shopkeepers",
+      icon: <Store size={16} />,
+    },
+    {
+      type: "Page",
+      label: "FEFO Warehouse Inventory",
+      href: "/dashboard/inventory",
+      icon: <Package size={16} />,
+    },
+    {
+      type: "Page",
+      label: "GST Tax Invoices & Reports",
+      href: "/dashboard/invoices",
+      icon: <Shield size={16} />,
+    },
   ];
 
   const filtered = query.trim()
-    ? SEARCH_ITEMS.filter((item) =>
-        item.label.toLowerCase().includes(query.toLowerCase()) ||
-        item.type.toLowerCase().includes(query.toLowerCase())
+    ? SEARCH_ITEMS.filter(
+        (item) =>
+          item.label.toLowerCase().includes(query.toLowerCase()) ||
+          item.type.toLowerCase().includes(query.toLowerCase()),
       )
     : SEARCH_ITEMS.slice(0, 6);
 
@@ -577,7 +754,12 @@ function CommandSearchModal({ onClose }: { onClose: () => void }) {
           />
           <button
             onClick={onClose}
-            style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "var(--text-muted)",
+            }}
             aria-label="Close search"
           >
             <X size={18} />
@@ -585,9 +767,22 @@ function CommandSearchModal({ onClose }: { onClose: () => void }) {
         </div>
 
         {/* Results List */}
-        <div style={{ maxHeight: "360px", overflowY: "auto", padding: "var(--space-2)" }}>
+        <div
+          style={{
+            maxHeight: "360px",
+            overflowY: "auto",
+            padding: "var(--space-2)",
+          }}
+        >
           {filtered.length === 0 ? (
-            <div style={{ padding: "var(--space-6)", textAlign: "center", color: "var(--text-muted)", fontSize: "0.85rem" }}>
+            <div
+              style={{
+                padding: "var(--space-6)",
+                textAlign: "center",
+                color: "var(--text-muted)",
+                fontSize: "0.85rem",
+              }}
+            >
               No matches found for &quot;{query}&quot;
             </div>
           ) : (
@@ -604,10 +799,16 @@ function CommandSearchModal({ onClose }: { onClose: () => void }) {
                   cursor: "pointer",
                   transition: "background var(--transition-fast)",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "var(--color-gray-100)")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "var(--color-gray-100)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = "transparent")
+                }
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "12px" }}
+                >
                   <div
                     style={{
                       width: 32,
@@ -623,13 +824,27 @@ function CommandSearchModal({ onClose }: { onClose: () => void }) {
                     {item.icon}
                   </div>
                   <div>
-                    <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-primary)" }}>
+                    <div
+                      style={{
+                        fontSize: "0.85rem",
+                        fontWeight: 600,
+                        color: "var(--text-primary)",
+                      }}
+                    >
                       {item.label}
                     </div>
-                    <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{item.type}</div>
+                    <div
+                      style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}
+                    >
+                      {item.type}
+                    </div>
                   </div>
                 </div>
-                <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Jump →</span>
+                <span
+                  style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}
+                >
+                  Jump →
+                </span>
               </div>
             ))
           )}

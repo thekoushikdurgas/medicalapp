@@ -12,7 +12,6 @@ from app.db.models import (
     Invoice,
     InvoiceReturn,
     InvoiceReturnItem,
-    Order,
     ShopkeeperProfile,
     StockBatch,
     LedgerEntryType,
@@ -42,7 +41,9 @@ async def create_invoice_return(
     and credit the retailer's outstanding balance.
     """
     invoice_res = await session.execute(
-        select(Invoice).options(selectinload(Invoice.order)).where(Invoice.id == invoice_id)
+        select(Invoice)
+        .options(selectinload(Invoice.order))
+        .where(Invoice.id == invoice_id)
     )
     invoice = invoice_res.scalar_one_or_none()
     if not invoice:

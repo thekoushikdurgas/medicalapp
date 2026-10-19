@@ -39,7 +39,8 @@ export function StatCard({
         position: "relative",
         overflow: "hidden",
         cursor: onClick ? "pointer" : "default",
-        transition: "transform var(--transition-fast), box-shadow var(--transition-fast)",
+        transition:
+          "transform var(--transition-fast), box-shadow var(--transition-fast)",
       }}
     >
       <div>
@@ -110,7 +111,13 @@ export function StatCard({
         }}
       >
         {sub && (
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", margin: 0 }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-muted)",
+              margin: 0,
+            }}
+          >
             {sub}
           </p>
         )}
@@ -128,13 +135,13 @@ export function StatCard({
               background: trend.isNeutral
                 ? "var(--color-gray-100)"
                 : trend.isPositive
-                ? "rgba(16, 185, 129, 0.12)"
-                : "rgba(239, 68, 68, 0.12)",
+                  ? "rgba(16, 185, 129, 0.12)"
+                  : "rgba(239, 68, 68, 0.12)",
               color: trend.isNeutral
                 ? "var(--text-secondary)"
                 : trend.isPositive
-                ? "var(--color-success)"
-                : "var(--color-error)",
+                  ? "var(--color-success)"
+                  : "var(--color-error)",
             }}
           >
             {trend.isNeutral ? (

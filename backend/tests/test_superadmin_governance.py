@@ -10,10 +10,8 @@ from unittest.mock import AsyncMock, MagicMock, patch
 from app.db.models import (
     Product,
     StockBatch,
-    ShopkeeperProfile,
     User,
     UserRole,
-    AutomationCircuitBreaker,
     HighRiskApproval,
 )
 from app.graphql.resolvers.superadmin_governance import (
@@ -62,7 +60,9 @@ class TestSuperAdminGovernance:
         query = SuperAdminGovernanceQuery()
         info = make_mock_info(role=UserRole.SUPER_ADMIN.value)
 
-        with patch("app.graphql.resolvers.superadmin_governance.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.superadmin_governance.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
 
             # Simulate 10% discount
@@ -94,7 +94,9 @@ class TestSuperAdminGovernance:
 
         # Admin attempting to apply live changes must fail
         admin_info = make_mock_info(role=UserRole.ADMIN.value)
-        with pytest.raises(Exception, match="Only Super Admin can apply live bulk pricing updates"):
+        with pytest.raises(
+            Exception, match="Only Super Admin can apply live bulk pricing updates"
+        ):
             await mutation.apply_bulk_price_update(
                 info=admin_info,
                 action="PERCENTAGE_DISCOUNT",
@@ -133,7 +135,9 @@ class TestSuperAdminGovernance:
         mutation = SuperAdminGovernanceMutation()
         info = make_mock_info(user_id=str(caller_id), role=UserRole.SUPER_ADMIN.value)
 
-        with patch("app.graphql.resolvers.superadmin_governance.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.superadmin_governance.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
 
             res = await mutation.toggle_automation_circuit(
@@ -178,9 +182,13 @@ class TestSuperAdminGovernance:
 
         mutation = SuperAdminGovernanceMutation()
         # Same user attempting to approve their own request
-        info = make_mock_info(user_id=str(initiator_id), role=UserRole.SUPER_ADMIN.value)
+        info = make_mock_info(
+            user_id=str(initiator_id), role=UserRole.SUPER_ADMIN.value
+        )
 
-        with patch("app.graphql.resolvers.superadmin_governance.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.superadmin_governance.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
 
             with pytest.raises(Exception, match="Two-Man Rule Violation"):
@@ -228,13 +236,19 @@ class TestSuperAdminGovernance:
         mock_profile_res = MagicMock()
         mock_profile_res.scalar_one_or_none.return_value = None
 
-        mock_session.execute.side_effect = [mock_req_res, mock_approver_res, mock_profile_res]
+        mock_session.execute.side_effect = [
+            mock_req_res,
+            mock_approver_res,
+            mock_profile_res,
+        ]
 
         mutation = SuperAdminGovernanceMutation()
         # Different user (Mary) approving
         info = make_mock_info(user_id=str(approver_id), role=UserRole.SUPER_ADMIN.value)
 
-        with patch("app.graphql.resolvers.superadmin_governance.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.superadmin_governance.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
 
             res = await mutation.review_high_risk_approval(
@@ -269,7 +283,9 @@ class TestSuperAdminGovernance:
         query = SuperAdminGovernanceQuery()
         info = make_mock_info(role=UserRole.SUPER_ADMIN.value)
 
-        with patch("app.graphql.resolvers.superadmin_governance.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.superadmin_governance.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             res = await query.super_admin_governance_overview(info=info)
 
@@ -291,7 +307,9 @@ class TestSuperAdminGovernance:
         mutation = SuperAdminGovernanceMutation()
         info = make_mock_info(role=UserRole.SUPER_ADMIN.value)
 
-        with patch("app.graphql.resolvers.superadmin_governance.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.superadmin_governance.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             res = await mutation.toggle_mfa_enforcement(info=info, enable=True)
 
@@ -310,7 +328,9 @@ class TestSuperAdminGovernance:
         mutation = SuperAdminGovernanceMutation()
         info = make_mock_info(role=UserRole.SUPER_ADMIN.value)
 
-        with patch("app.graphql.resolvers.superadmin_governance.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.superadmin_governance.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             res = await mutation.resolve_supplier_reconciliation(
                 info=info,
@@ -321,4 +341,3 @@ class TestSuperAdminGovernance:
 
             assert res.status == "RESOLVED"
             assert res.id == "recon-1"
-

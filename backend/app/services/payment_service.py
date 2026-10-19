@@ -7,7 +7,13 @@ from datetime import date
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import AdvancePayment, PaymentMethod, ShopkeeperProfile, User, LedgerEntryType
+from app.db.models import (
+    AdvancePayment,
+    PaymentMethod,
+    ShopkeeperProfile,
+    User,
+    LedgerEntryType,
+)
 from app.services.ledger_service import record_ledger_entry
 from app.core.logger import logger
 

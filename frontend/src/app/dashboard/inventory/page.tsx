@@ -172,18 +172,25 @@ export default function InventoryPage() {
 
   // Physical Stock Adjustment State (Checklist #71 & #78)
   const [adjustmentDelta, setAdjustmentDelta] = useState<number>(-2);
-  const [adjustmentType, setAdjustmentType] = useState<string>("DAMAGE_WRITE_OFF");
-  const [adjustmentReason, setAdjustmentReason] = useState<string>("Damaged packaging on lower shelf during forklift transit");
-  const [evidenceUrl, setEvidenceUrl] = useState<string>("https://evidence.pharmacyfantasy.internal/stock/adj-proof-2026.jpg");
-  const [adjustmentHistory, setAdjustmentHistory] = useState<Array<{
-    id: string;
-    batchNumber: string;
-    adjustmentType: string;
-    quantityDelta: number;
-    reason: string;
-    isRepeated: boolean;
-    createdAt: string;
-  }>>([
+  const [adjustmentType, setAdjustmentType] =
+    useState<string>("DAMAGE_WRITE_OFF");
+  const [adjustmentReason, setAdjustmentReason] = useState<string>(
+    "Damaged packaging on lower shelf during forklift transit",
+  );
+  const [evidenceUrl, setEvidenceUrl] = useState<string>(
+    "https://evidence.pharmacyfantasy.internal/stock/adj-proof-2026.jpg",
+  );
+  const [adjustmentHistory, setAdjustmentHistory] = useState<
+    Array<{
+      id: string;
+      batchNumber: string;
+      adjustmentType: string;
+      quantityDelta: number;
+      reason: string;
+      isRepeated: boolean;
+      createdAt: string;
+    }>
+  >([
     {
       id: "adj-demo-1",
       batchNumber: "2619001188",
@@ -192,12 +199,16 @@ export default function InventoryPage() {
       reason: "Broken ampoules during unboxing",
       isRepeated: true,
       createdAt: "12 Oct 2026",
-    }
+    },
   ]);
   const [isSubmittingAdjustment, setIsSubmittingAdjustment] = useState(false);
-  const [adjustmentFeedback, setAdjustmentFeedback] = useState<string | null>(null);
+  const [adjustmentFeedback, setAdjustmentFeedback] = useState<string | null>(
+    null,
+  );
 
-  const [recordStockAdjustmentMutation] = useMutation(RECORD_STOCK_ADJUSTMENT_MUTATION);
+  const [recordStockAdjustmentMutation] = useMutation(
+    RECORD_STOCK_ADJUSTMENT_MUTATION,
+  );
 
   const handleRecordAdjustment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -205,7 +216,9 @@ export default function InventoryPage() {
     setIsSubmittingAdjustment(true);
     setAdjustmentFeedback(null);
     try {
-      const prevAdjustments = adjustmentHistory.filter(a => a.batchNumber === selectedBatch.batchNumber);
+      const prevAdjustments = adjustmentHistory.filter(
+        (a) => a.batchNumber === selectedBatch.batchNumber,
+      );
       const isRepeated = prevAdjustments.length > 0;
 
       if (selectedBatch.id.length > 20 && !selectedBatch.id.startsWith("b")) {
@@ -216,13 +229,22 @@ export default function InventoryPage() {
             quantityDelta: Number(adjustmentDelta),
             reason: adjustmentReason,
             evidenceUrl: evidenceUrl || null,
-          }
+          },
         });
       }
 
-      const newQty = Math.max(0, selectedBatch.quantityAvailable + Number(adjustmentDelta));
-      setBatches(prev => prev.map(b => b.id === selectedBatch.id ? { ...b, quantityAvailable: newQty } : b));
-      setSelectedBatch(prev => prev ? { ...prev, quantityAvailable: newQty } : null);
+      const newQty = Math.max(
+        0,
+        selectedBatch.quantityAvailable + Number(adjustmentDelta),
+      );
+      setBatches((prev) =>
+        prev.map((b) =>
+          b.id === selectedBatch.id ? { ...b, quantityAvailable: newQty } : b,
+        ),
+      );
+      setSelectedBatch((prev) =>
+        prev ? { ...prev, quantityAvailable: newQty } : null,
+      );
 
       const newAdj = {
         id: `adj-${Date.now()}`,
@@ -237,7 +259,7 @@ export default function InventoryPage() {
       setAdjustmentFeedback(
         isRepeated
           ? "⚠️ Repeated adjustment logged! Flagged for Supervisor Audit & Sign-off."
-          : "✓ Stock adjustment recorded and inventory ledger updated."
+          : "✓ Stock adjustment recorded and inventory ledger updated.",
       );
     } catch (err: any) {
       setAdjustmentFeedback("Adjustment recorded in local session ledger.");
@@ -264,7 +286,9 @@ export default function InventoryPage() {
       composition: "Antibiotic line",
       manufacturer: "Certified Pharma Supplier",
       packSize: "10S",
-      batchNumber: newBatch.batchNumber || `261900${Math.floor(100 + Math.random() * 900)}`,
+      batchNumber:
+        newBatch.batchNumber ||
+        `261900${Math.floor(100 + Math.random() * 900)}`,
       expiryDate: newBatch.expiryDate || "12/2028",
       expiryStatus: "healthy",
       purchaseRate: newBatch.purchaseRate,
@@ -279,23 +303,33 @@ export default function InventoryPage() {
     setShowAddDrawer(false);
   };
 
-  const criticalCount = batches.filter((b) => b.expiryStatus === "critical").length;
-  const warningCount = batches.filter((b) => b.expiryStatus === "warning").length;
+  const criticalCount = batches.filter(
+    (b) => b.expiryStatus === "critical",
+  ).length;
+  const warningCount = batches.filter(
+    (b) => b.expiryStatus === "warning",
+  ).length;
 
   const filteredBatches = batches.filter((b) => {
     const matchesSearch =
       b.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       b.batchNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
       b.composition.toLowerCase().includes(searchTerm.toLowerCase());
-    if (filterExpiry === "healthy") return matchesSearch && b.expiryStatus === "healthy";
-    if (filterExpiry === "warning") return matchesSearch && (b.expiryStatus === "warning" || b.expiryStatus === "critical");
-    if (filterExpiry === "critical") return matchesSearch && b.expiryStatus === "critical";
+    if (filterExpiry === "healthy")
+      return matchesSearch && b.expiryStatus === "healthy";
+    if (filterExpiry === "warning")
+      return (
+        matchesSearch &&
+        (b.expiryStatus === "warning" || b.expiryStatus === "critical")
+      );
+    if (filterExpiry === "critical")
+      return matchesSearch && b.expiryStatus === "critical";
     return matchesSearch;
   });
 
   const totalInventoryValue = batches.reduce(
     (acc, b) => acc + b.quantityAvailable * b.purchaseRate,
-    0
+    0,
   );
   const totalUnits = batches.reduce((acc, b) => acc + b.quantityAvailable, 0);
 
@@ -317,7 +351,8 @@ export default function InventoryPage() {
             Warehouse Inventory & Batch Tracking
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
-            FEFO (First Expiring, First Out) batch tracking with wholesale margin calculation
+            FEFO (First Expiring, First Out) batch tracking with wholesale
+            margin calculation
           </p>
         </div>
         <button
@@ -339,23 +374,54 @@ export default function InventoryPage() {
         }}
       >
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
             TOTAL STOCK VALUE
           </p>
-          <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-primary-600)" }}>
-            ₹{totalInventoryValue.toLocaleString("en-IN", { maximumFractionDigits: 0 })}
+          <p
+            style={{
+              fontSize: "var(--font-size-2xl)",
+              fontWeight: 800,
+              color: "var(--color-primary-600)",
+            }}
+          >
+            ₹
+            {totalInventoryValue.toLocaleString("en-IN", {
+              maximumFractionDigits: 0,
+            })}
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>At net purchase rate</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            At net purchase rate
+          </p>
         </div>
 
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
             TOTAL AVAILABLE UNITS
           </p>
-          <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-primary-600)" }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-2xl)",
+              fontWeight: 800,
+              color: "var(--color-primary-600)",
+            }}
+          >
             {totalUnits.toLocaleString("en-IN")} packs
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Across all warehouse racks</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Across all warehouse racks
+          </p>
         </div>
 
         <div
@@ -363,17 +429,36 @@ export default function InventoryPage() {
           style={{
             padding: "var(--space-4)",
             cursor: "pointer",
-            border: filterExpiry === "critical" ? "2px solid var(--color-error)" : undefined,
+            border:
+              filterExpiry === "critical"
+                ? "2px solid var(--color-error)"
+                : undefined,
           }}
-          onClick={() => setFilterExpiry(filterExpiry === "critical" ? "all" : "critical")}
+          onClick={() =>
+            setFilterExpiry(filterExpiry === "critical" ? "all" : "critical")
+          }
         >
-          <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-error)", fontWeight: 700 }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: "var(--color-error)",
+              fontWeight: 700,
+            }}
+          >
             CRITICAL EXPIRY (&lt;30D)
           </p>
-          <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-error)" }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-2xl)",
+              fontWeight: 800,
+              color: "var(--color-error)",
+            }}
+          >
             {criticalCount} Batches
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Click to filter critical</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Click to filter critical
+          </p>
         </div>
 
         <div
@@ -381,27 +466,60 @@ export default function InventoryPage() {
           style={{
             padding: "var(--space-4)",
             cursor: "pointer",
-            border: filterExpiry === "warning" ? "2px solid var(--color-warning)" : undefined,
+            border:
+              filterExpiry === "warning"
+                ? "2px solid var(--color-warning)"
+                : undefined,
           }}
-          onClick={() => setFilterExpiry(filterExpiry === "warning" ? "all" : "warning")}
+          onClick={() =>
+            setFilterExpiry(filterExpiry === "warning" ? "all" : "warning")
+          }
         >
-          <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-warning)", fontWeight: 700 }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: "var(--color-warning)",
+              fontWeight: 700,
+            }}
+          >
             NEAR EXPIRY (&lt;90D)
           </p>
-          <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-warning)" }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-2xl)",
+              fontWeight: 800,
+              color: "var(--color-warning)",
+            }}
+          >
             {warningCount} Batches
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Click to filter near-expiry</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Click to filter near-expiry
+          </p>
         </div>
 
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
             EXPIRY SAFETY
           </p>
-          <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-success)" }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-2xl)",
+              fontWeight: 800,
+              color: "var(--color-success)",
+            }}
+          >
             FEFO Active
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Automated dispatch prioritization</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Automated dispatch prioritization
+          </p>
         </div>
       </div>
 
@@ -428,8 +546,12 @@ export default function InventoryPage() {
           style={{ width: "270px" }}
         >
           <option value="all">All Shelf Lives ({batches.length})</option>
-          <option value="critical">🔴 Critical Expiry (&lt; 30 Days) ({criticalCount})</option>
-          <option value="warning">🟡 Near Expiry (&lt; 90 Days) ({warningCount})</option>
+          <option value="critical">
+            🔴 Critical Expiry (&lt; 30 Days) ({criticalCount})
+          </option>
+          <option value="warning">
+            🟡 Near Expiry (&lt; 90 Days) ({warningCount})
+          </option>
           <option value="healthy">🟢 Healthy Shelf Life (&gt; 90 Days)</option>
         </select>
       </div>
@@ -454,32 +576,67 @@ export default function InventoryPage() {
           <tbody>
             {filteredBatches.length === 0 ? (
               <tr>
-                <td colSpan={10} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                <td
+                  colSpan={10}
+                  style={{
+                    textAlign: "center",
+                    padding: "var(--space-8)",
+                    color: "var(--text-muted)",
+                  }}
+                >
                   No matching warehouse stock batches found.
                 </td>
               </tr>
             ) : (
               filteredBatches.map((b) => {
-                const margin = ((b.sellingRate - b.purchaseRate) / b.sellingRate) * 100;
-                const isInconsistent = b.purchaseRate >= b.sellingRate || b.mrp < b.sellingRate;
+                const margin =
+                  ((b.sellingRate - b.purchaseRate) / b.sellingRate) * 100;
+                const isInconsistent =
+                  b.purchaseRate >= b.sellingRate || b.mrp < b.sellingRate;
                 return (
-                  <tr key={b.id} style={{ cursor: "pointer" }} onClick={() => setSelectedBatch(b)}>
+                  <tr
+                    key={b.id}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => setSelectedBatch(b)}
+                  >
                     <td>
                       <div style={{ fontWeight: 700 }}>{b.productName}</div>
-                      <div style={{ fontSize: "var(--font-size-xs)", color: "var(--text-muted)" }}>
+                      <div
+                        style={{
+                          fontSize: "var(--font-size-xs)",
+                          color: "var(--text-muted)",
+                        }}
+                      >
                         {b.composition} • {b.packSize}
                       </div>
-                      <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)", marginTop: "2px" }}>
-                        📍 {b.rackLocation || "Unassigned"} • 🏷️ {b.barcode || "No Barcode"}
+                      <div
+                        style={{
+                          fontSize: "0.7rem",
+                          color: "var(--text-secondary)",
+                          marginTop: "2px",
+                        }}
+                      >
+                        📍 {b.rackLocation || "Unassigned"} • 🏷️{" "}
+                        {b.barcode || "No Barcode"}
                       </div>
                       {isInconsistent && (
-                        <span className="badge badge-danger" style={{ fontSize: "0.68rem", marginTop: "4px" }}>
+                        <span
+                          className="badge badge-danger"
+                          style={{ fontSize: "0.68rem", marginTop: "4px" }}
+                        >
                           ⚠️ Inconsistent Metadata
                         </span>
                       )}
                     </td>
                     <td>
-                      <code style={{ background: "var(--bg-secondary)", padding: "0.2rem 0.5rem", borderRadius: "var(--radius-sm)", fontWeight: 700 }}>
+                      <code
+                        style={{
+                          background: "var(--bg-secondary)",
+                          padding: "0.2rem 0.5rem",
+                          borderRadius: "var(--radius-sm)",
+                          fontWeight: 700,
+                        }}
+                      >
                         {b.batchNumber}
                       </code>
                     </td>
@@ -489,36 +646,71 @@ export default function InventoryPage() {
                           b.expiryStatus === "healthy"
                             ? "badge-success"
                             : b.expiryStatus === "critical"
-                            ? "badge-danger"
-                            : "badge-warning"
+                              ? "badge-danger"
+                              : "badge-warning"
                         }`}
                       >
-                        {b.expiryStatus === "critical" ? "🔴 " : b.expiryStatus === "warning" ? "🟡 " : "🟢 "}
+                        {b.expiryStatus === "critical"
+                          ? "🔴 "
+                          : b.expiryStatus === "warning"
+                            ? "🟡 "
+                            : "🟢 "}
                         {b.expiryDate}
                       </span>
                     </td>
-                    <td style={{ fontWeight: 600 }}>₹{b.purchaseRate.toFixed(2)}</td>
-                    <td style={{ fontWeight: 700, color: "var(--color-primary-600)" }}>₹{b.sellingRate.toFixed(2)}</td>
-                    <td style={{ color: "var(--text-secondary)" }}>₹{b.mrp.toFixed(2)}</td>
+                    <td style={{ fontWeight: 600 }}>
+                      ₹{b.purchaseRate.toFixed(2)}
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: 700,
+                        color: "var(--color-primary-600)",
+                      }}
+                    >
+                      ₹{b.sellingRate.toFixed(2)}
+                    </td>
+                    <td style={{ color: "var(--text-secondary)" }}>
+                      ₹{b.mrp.toFixed(2)}
+                    </td>
                     <td>
-                      <span className="badge badge-neutral" style={{ fontSize: "0.75rem" }}>
+                      <span
+                        className="badge badge-neutral"
+                        style={{ fontSize: "0.75rem" }}
+                      >
                         +{margin.toFixed(1)}%
                       </span>
                     </td>
                     <td>
                       <div style={{ fontWeight: 800, fontSize: "1rem" }}>
-                        {b.quantityAvailable} <span style={{ fontSize: "0.75rem", fontWeight: 400, color: "var(--text-muted)" }}>packs</span>
+                        {b.quantityAvailable}{" "}
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            fontWeight: 400,
+                            color: "var(--text-muted)",
+                          }}
+                        >
+                          packs
+                        </span>
                       </div>
                     </td>
                     <td>
-                      <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                      <span
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--text-muted)",
+                        }}
+                      >
                         {b.supplierInvoice}
                       </span>
                     </td>
                     <td onClick={(e) => e.stopPropagation()}>
                       <button
                         className="btn btn-secondary"
-                        style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
+                        style={{
+                          padding: "0.25rem 0.6rem",
+                          fontSize: "0.75rem",
+                        }}
                         onClick={() => setSelectedBatch(b)}
                       >
                         Inspect
@@ -537,17 +729,31 @@ export default function InventoryPage() {
         isOpen={Boolean(selectedBatch)}
         onClose={() => setSelectedBatch(null)}
         title={selectedBatch ? `Batch ${selectedBatch.batchNumber}` : ""}
-        subtitle={selectedBatch ? `${selectedBatch.productName} • ${selectedBatch.manufacturer}` : ""}
+        subtitle={
+          selectedBatch
+            ? `${selectedBatch.productName} • ${selectedBatch.manufacturer}`
+            : ""
+        }
         footer={
-          <button className="btn btn-secondary" onClick={() => setSelectedBatch(null)}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => setSelectedBatch(null)}
+          >
             Close Inspection
           </button>
         }
       >
         {selectedBatch && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--space-4)",
+            }}
+          >
             {/* Inconsistency Warning (Item #58) */}
-            {(selectedBatch.purchaseRate >= selectedBatch.sellingRate || selectedBatch.mrp < selectedBatch.sellingRate) && (
+            {(selectedBatch.purchaseRate >= selectedBatch.sellingRate ||
+              selectedBatch.mrp < selectedBatch.sellingRate) && (
               <div
                 style={{
                   background: "rgba(239, 68, 68, 0.12)",
@@ -558,78 +764,223 @@ export default function InventoryPage() {
                   color: "var(--color-error)",
                 }}
               >
-                <strong>⚠️ Metadata Inconsistency Flagged:</strong> Purchase rate (₹{selectedBatch.purchaseRate.toFixed(2)}) is ≥ Selling rate (₹{selectedBatch.sellingRate.toFixed(2)}) or Selling rate exceeds MRP. Surfaced for operations audit without blocking stock receipt.
+                <strong>⚠️ Metadata Inconsistency Flagged:</strong> Purchase
+                rate (₹{selectedBatch.purchaseRate.toFixed(2)}) is ≥ Selling
+                rate (₹{selectedBatch.sellingRate.toFixed(2)}) or Selling rate
+                exceeds MRP. Surfaced for operations audit without blocking
+                stock receipt.
               </div>
             )}
 
-            <div style={{ background: "var(--bg-secondary)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)" }}>
-              <div style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: "var(--space-2)" }}>
+            <div
+              style={{
+                background: "var(--bg-secondary)",
+                padding: "var(--space-4)",
+                borderRadius: "var(--radius-lg)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  color: "var(--text-secondary)",
+                  marginBottom: "var(--space-2)",
+                }}
+              >
                 Stock & Location Verification (Item #19)
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "var(--space-3)",
+                }}
+              >
                 <div>
-                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Received Quantity</span>
-                  <div style={{ fontSize: "1.1rem", fontWeight: 800 }}>{selectedBatch.quantityReceived} packs</div>
+                  <span
+                    style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}
+                  >
+                    Received Quantity
+                  </span>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 800 }}>
+                    {selectedBatch.quantityReceived} packs
+                  </div>
                 </div>
                 <div>
-                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Available for FEFO</span>
-                  <div style={{ fontSize: "1.1rem", fontWeight: 800, color: "var(--color-primary-600)" }}>
+                  <span
+                    style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}
+                  >
+                    Available for FEFO
+                  </span>
+                  <div
+                    style={{
+                      fontSize: "1.1rem",
+                      fontWeight: 800,
+                      color: "var(--color-primary-600)",
+                    }}
+                  >
                     {selectedBatch.quantityAvailable} packs
                   </div>
                 </div>
                 <div>
-                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Rack / Bay</span>
-                  <div style={{ fontSize: "0.95rem", fontWeight: 700 }}>{selectedBatch.rackLocation || "Rack A - Bay 01"}</div>
+                  <span
+                    style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}
+                  >
+                    Rack / Bay
+                  </span>
+                  <div style={{ fontSize: "0.95rem", fontWeight: 700 }}>
+                    {selectedBatch.rackLocation || "Rack A - Bay 01"}
+                  </div>
                 </div>
                 <div>
-                  <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Barcode (EAN-13)</span>
-                  <div style={{ fontSize: "0.9rem", fontFamily: "monospace", fontWeight: 700 }}>
+                  <span
+                    style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}
+                  >
+                    Barcode (EAN-13)
+                  </span>
+                  <div
+                    style={{
+                      fontSize: "0.9rem",
+                      fontFamily: "monospace",
+                      fontWeight: 700,
+                    }}
+                  >
                     {selectedBatch.barcode || "8901083000703"}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div style={{ background: "var(--bg-secondary)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", fontSize: "0.85rem" }}>
-              <div style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: "var(--space-3)" }}>
+            <div
+              style={{
+                background: "var(--bg-secondary)",
+                padding: "var(--space-4)",
+                borderRadius: "var(--radius-lg)",
+                fontSize: "0.85rem",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  color: "var(--text-secondary)",
+                  marginBottom: "var(--space-3)",
+                }}
+              >
                 Pricing & Margins
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "0.3rem",
+                }}
+              >
                 <span>Supplier Purchase Rate:</span>
                 <span>₹{selectedBatch.purchaseRate.toFixed(2)}</span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "0.3rem",
+                }}
+              >
                 <span>Wholesale Selling Rate:</span>
-                <span style={{ fontWeight: 700, color: "var(--color-primary-600)" }}>₹{selectedBatch.sellingRate.toFixed(2)}</span>
+                <span
+                  style={{ fontWeight: 700, color: "var(--color-primary-600)" }}
+                >
+                  ₹{selectedBatch.sellingRate.toFixed(2)}
+                </span>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "0.3rem",
+                }}
+              >
                 <span>Maximum Retail Price (MRP):</span>
                 <span>₹{selectedBatch.mrp.toFixed(2)}</span>
               </div>
-              <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "0.4rem", marginTop: "0.4rem", display: "flex", justifyContent: "space-between", fontWeight: 700 }}>
+              <div
+                style={{
+                  borderTop: "1px solid var(--border-color)",
+                  paddingTop: "0.4rem",
+                  marginTop: "0.4rem",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  fontWeight: 700,
+                }}
+              >
                 <span>Gross Distribution Spread:</span>
-                <span style={{ color: selectedBatch.sellingRate >= selectedBatch.purchaseRate ? "var(--color-success)" : "var(--color-error)" }}>
-                  +₹{(selectedBatch.sellingRate - selectedBatch.purchaseRate).toFixed(2)} / pack
+                <span
+                  style={{
+                    color:
+                      selectedBatch.sellingRate >= selectedBatch.purchaseRate
+                        ? "var(--color-success)"
+                        : "var(--color-error)",
+                  }}
+                >
+                  +₹
+                  {(
+                    selectedBatch.sellingRate - selectedBatch.purchaseRate
+                  ).toFixed(2)}{" "}
+                  / pack
                 </span>
               </div>
             </div>
 
             {/* Physical Stock Audit & Adjustment Panel (Items #71 & #78) */}
-            <div style={{ border: "1px solid var(--border-color)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-2)" }}>
-                <span style={{ fontSize: "0.8rem", fontWeight: 800, textTransform: "uppercase", color: "var(--text-primary)" }}>
+            <div
+              style={{
+                border: "1px solid var(--border-color)",
+                padding: "var(--space-4)",
+                borderRadius: "var(--radius-lg)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "var(--space-2)",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "0.8rem",
+                    fontWeight: 800,
+                    textTransform: "uppercase",
+                    color: "var(--text-primary)",
+                  }}
+                >
                   ⚖️ Physical Stock Audit & Adjustment
                 </span>
-                <span className="badge badge-neutral" style={{ fontSize: "0.7rem" }}>
+                <span
+                  className="badge badge-neutral"
+                  style={{ fontSize: "0.7rem" }}
+                >
                   Audited Ledger
                 </span>
               </div>
-              <p style={{ fontSize: "0.78rem", color: "var(--text-secondary)", marginBottom: "var(--space-3)" }}>
-                Adjust stock levels post cycle count or quarantine damaged blister packs with photo proof.
+              <p
+                style={{
+                  fontSize: "0.78rem",
+                  color: "var(--text-secondary)",
+                  marginBottom: "var(--space-3)",
+                }}
+              >
+                Adjust stock levels post cycle count or quarantine damaged
+                blister packs with photo proof.
               </p>
 
               {/* Repeated Adjustment Warning (Item #78) */}
-              {adjustmentHistory.some(a => a.batchNumber === selectedBatch.batchNumber) && (
+              {adjustmentHistory.some(
+                (a) => a.batchNumber === selectedBatch.batchNumber,
+              ) && (
                 <div
                   style={{
                     background: "rgba(245, 158, 11, 0.12)",
@@ -642,20 +993,26 @@ export default function InventoryPage() {
                     fontWeight: 700,
                   }}
                 >
-                  ⚠️ Repeated Adjustment Warning: Multiple stock write-offs logged for this batch in the past 30 days. Requires Supervisor Review.
+                  ⚠️ Repeated Adjustment Warning: Multiple stock write-offs
+                  logged for this batch in the past 30 days. Requires Supervisor
+                  Review.
                 </div>
               )}
 
               {adjustmentFeedback && (
                 <div
                   style={{
-                    background: adjustmentFeedback.includes("⚠️") ? "rgba(245, 158, 11, 0.12)" : "rgba(34, 197, 94, 0.12)",
+                    background: adjustmentFeedback.includes("⚠️")
+                      ? "rgba(245, 158, 11, 0.12)"
+                      : "rgba(34, 197, 94, 0.12)",
                     border: `1px solid ${adjustmentFeedback.includes("⚠️") ? "var(--color-warning)" : "var(--color-success)"}`,
                     borderRadius: "var(--radius-sm)",
                     padding: "var(--space-2)",
                     marginBottom: "var(--space-3)",
                     fontSize: "0.78rem",
-                    color: adjustmentFeedback.includes("⚠️") ? "var(--color-warning)" : "var(--color-success)",
+                    color: adjustmentFeedback.includes("⚠️")
+                      ? "var(--color-warning)"
+                      : "var(--color-success)",
                     fontWeight: 600,
                   }}
                 >
@@ -663,38 +1020,69 @@ export default function InventoryPage() {
                 </div>
               )}
 
-              <form onSubmit={handleRecordAdjustment} style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+              <form
+                onSubmit={handleRecordAdjustment}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--space-3)",
+                }}
+              >
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "var(--space-3)",
+                  }}
+                >
                   <div>
-                    <label className="label" style={{ fontSize: "0.75rem" }}>Adjustment Type</label>
+                    <label className="label" style={{ fontSize: "0.75rem" }}>
+                      Adjustment Type
+                    </label>
                     <select
                       className="input"
                       style={{ fontSize: "0.8rem", padding: "0.4rem" }}
                       value={adjustmentType}
                       onChange={(e) => setAdjustmentType(e.target.value)}
                     >
-                      <option value="DAMAGE_WRITE_OFF">Damaged in Rack (Write-off)</option>
-                      <option value="EXPIRY_REMOVAL">Near-Expiry / Expired Removal</option>
-                      <option value="PILFERAGE_SHORTAGE">Pilferage / Unexplained Shortage</option>
-                      <option value="CYCLE_COUNT_CORRECTION">Cycle Count Correction</option>
-                      <option value="FOUND_SURPLUS">Found Extra Units in Bay</option>
+                      <option value="DAMAGE_WRITE_OFF">
+                        Damaged in Rack (Write-off)
+                      </option>
+                      <option value="EXPIRY_REMOVAL">
+                        Near-Expiry / Expired Removal
+                      </option>
+                      <option value="PILFERAGE_SHORTAGE">
+                        Pilferage / Unexplained Shortage
+                      </option>
+                      <option value="CYCLE_COUNT_CORRECTION">
+                        Cycle Count Correction
+                      </option>
+                      <option value="FOUND_SURPLUS">
+                        Found Extra Units in Bay
+                      </option>
                     </select>
                   </div>
                   <div>
-                    <label className="label" style={{ fontSize: "0.75rem" }}>Quantity Delta (Packs)</label>
+                    <label className="label" style={{ fontSize: "0.75rem" }}>
+                      Quantity Delta (Packs)
+                    </label>
                     <input
                       type="number"
                       className="input"
                       style={{ fontSize: "0.8rem", padding: "0.4rem" }}
                       value={adjustmentDelta}
-                      onChange={(e) => setAdjustmentDelta(Number(e.target.value))}
+                      onChange={(e) =>
+                        setAdjustmentDelta(Number(e.target.value))
+                      }
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="label" style={{ fontSize: "0.75rem" }}>Reason & Findings</label>
+                  <label className="label" style={{ fontSize: "0.75rem" }}>
+                    Reason & Findings
+                  </label>
                   <input
                     className="input"
                     style={{ fontSize: "0.8rem", padding: "0.4rem" }}
@@ -726,16 +1114,31 @@ export default function InventoryPage() {
                   style={{ fontSize: "0.8rem", padding: "0.4rem 0.8rem" }}
                   disabled={isSubmittingAdjustment}
                 >
-                  {isSubmittingAdjustment ? "Recording Adjustment..." : "Commit Stock Adjustment"}
+                  {isSubmittingAdjustment
+                    ? "Recording Adjustment..."
+                    : "Commit Stock Adjustment"}
                 </button>
               </form>
             </div>
 
             <div>
-              <span style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)" }}>
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  color: "var(--text-muted)",
+                }}
+              >
                 Source Ingestion Bill Reference
               </span>
-              <p style={{ fontSize: "0.9rem", fontWeight: 600, marginTop: "4px" }}>
+              <p
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: 600,
+                  marginTop: "4px",
+                }}
+              >
                 {selectedBatch.supplierInvoice} (MAA Medical Agency)
               </p>
             </div>
@@ -750,26 +1153,45 @@ export default function InventoryPage() {
         title="Record Inward Stock Batch"
         subtitle="Ingest distributor purchase delivery into warehouse stock"
       >
-        <form onSubmit={handleAddBatch} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <form
+          onSubmit={handleAddBatch}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           <div>
             <label className="label">Select Medicine</label>
             <select
               className="input"
               value={newBatch.productName}
-              onChange={(e) => setNewBatch({ ...newBatch, productName: e.target.value })}
+              onChange={(e) =>
+                setNewBatch({ ...newBatch, productName: e.target.value })
+              }
             >
-              <option value="AZITHRAL 500MG TAB">AZITHRAL 500MG TAB (Alembic)</option>
+              <option value="AZITHRAL 500MG TAB">
+                AZITHRAL 500MG TAB (Alembic)
+              </option>
               <option value="HIFENAC MR TAB">HIFENAC MR TAB (Intas)</option>
               <option value="PAN D CAP">PAN D CAP (Alkem)</option>
               <option value="TELMA 40MG TAB">TELMA 40MG TAB (Glenmark)</option>
               <option value="MONTEK LC TAB">MONTEK LC TAB (Sun Pharma)</option>
               <option value="AUGMENTIN 625 DUO">AUGMENTIN 625 DUO (GSK)</option>
               <option value="CALPOL 650MG TAB">CALPOL 650MG TAB (GSK)</option>
-              <option value="DOLO 650MG TAB">DOLO 650MG TAB (Micro Labs)</option>
+              <option value="DOLO 650MG TAB">
+                DOLO 650MG TAB (Micro Labs)
+              </option>
             </select>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "var(--space-3)",
+            }}
+          >
             <div>
               <label className="label">Batch Number</label>
               <input
@@ -777,7 +1199,9 @@ export default function InventoryPage() {
                 placeholder="e.g. 261900112"
                 required
                 value={newBatch.batchNumber}
-                onChange={(e) => setNewBatch({ ...newBatch, batchNumber: e.target.value })}
+                onChange={(e) =>
+                  setNewBatch({ ...newBatch, batchNumber: e.target.value })
+                }
               />
             </div>
             <div>
@@ -787,12 +1211,20 @@ export default function InventoryPage() {
                 placeholder="e.g. 10/2028"
                 required
                 value={newBatch.expiryDate}
-                onChange={(e) => setNewBatch({ ...newBatch, expiryDate: e.target.value })}
+                onChange={(e) =>
+                  setNewBatch({ ...newBatch, expiryDate: e.target.value })
+                }
               />
             </div>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "var(--space-3)" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: "var(--space-3)",
+            }}
+          >
             <div>
               <label className="label">Purchase Rate (₹)</label>
               <input
@@ -801,7 +1233,12 @@ export default function InventoryPage() {
                 className="input"
                 required
                 value={newBatch.purchaseRate}
-                onChange={(e) => setNewBatch({ ...newBatch, purchaseRate: Number(e.target.value) })}
+                onChange={(e) =>
+                  setNewBatch({
+                    ...newBatch,
+                    purchaseRate: Number(e.target.value),
+                  })
+                }
               />
             </div>
             <div>
@@ -812,7 +1249,9 @@ export default function InventoryPage() {
                 className="input"
                 required
                 value={newBatch.mrp}
-                onChange={(e) => setNewBatch({ ...newBatch, mrp: Number(e.target.value) })}
+                onChange={(e) =>
+                  setNewBatch({ ...newBatch, mrp: Number(e.target.value) })
+                }
               />
             </div>
             <div>
@@ -822,7 +1261,12 @@ export default function InventoryPage() {
                 className="input"
                 required
                 value={newBatch.quantityReceived}
-                onChange={(e) => setNewBatch({ ...newBatch, quantityReceived: Number(e.target.value) })}
+                onChange={(e) =>
+                  setNewBatch({
+                    ...newBatch,
+                    quantityReceived: Number(e.target.value),
+                  })
+                }
               />
             </div>
           </div>
@@ -832,12 +1276,25 @@ export default function InventoryPage() {
             <input
               className="input"
               value={newBatch.supplierInvoice}
-              onChange={(e) => setNewBatch({ ...newBatch, supplierInvoice: e.target.value })}
+              onChange={(e) =>
+                setNewBatch({ ...newBatch, supplierInvoice: e.target.value })
+              }
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
-            <button type="button" className="btn btn-secondary" onClick={() => setShowAddDrawer(false)}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-3)",
+              marginTop: "var(--space-2)",
+            }}
+          >
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowAddDrawer(false)}
+            >
               Cancel
             </button>
             <button type="submit" className="btn btn-primary">

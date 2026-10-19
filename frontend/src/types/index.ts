@@ -3,11 +3,7 @@
  */
 
 export type UserRole =
-  | "SUPER_ADMIN"
-  | "ADMIN"
-  | "WAREHOUSE"
-  | "DELIVERY"
-  | "SHOPKEEPER";
+  "SUPER_ADMIN" | "ADMIN" | "WAREHOUSE" | "DELIVERY" | "SHOPKEEPER";
 
 export type OrderStatus =
   | "DRAFT"
@@ -20,11 +16,7 @@ export type OrderStatus =
   | "CANCELLED";
 
 export type DeliveryStatus =
-  | "ASSIGNED"
-  | "PICKED_UP"
-  | "IN_TRANSIT"
-  | "DELIVERED"
-  | "FAILED";
+  "ASSIGNED" | "PICKED_UP" | "IN_TRANSIT" | "DELIVERED" | "FAILED";
 
 export type PaymentMethod = "CASH" | "UPI" | "BANK_TRANSFER" | "CHEQUE";
 

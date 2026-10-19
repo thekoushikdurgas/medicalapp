@@ -11,7 +11,9 @@ from app.graphql.resolvers.auth import AuthMutation
 from app.graphql.types import CreateUserInput
 
 
-def make_mock_info(user_id: str | None = None, role: str | None = None, has_auth_header: bool = True):
+def make_mock_info(
+    user_id: str | None = None, role: str | None = None, has_auth_header: bool = True
+):
     info = MagicMock()
     if not has_auth_header and user_id is None:
         info.context = {}
@@ -43,7 +45,11 @@ class TestAuthRBACGuards:
     @pytest.mark.asyncio
     async def test_non_admin_cannot_create_user(self):
         """Warehouse, Delivery, or Shopkeeper roles cannot create users."""
-        for unauthorized_role in [UserRole.WAREHOUSE.value, UserRole.DELIVERY.value, UserRole.SHOPKEEPER.value]:
+        for unauthorized_role in [
+            UserRole.WAREHOUSE.value,
+            UserRole.DELIVERY.value,
+            UserRole.SHOPKEEPER.value,
+        ]:
             info = make_mock_info(user_id=str(uuid.uuid4()), role=unauthorized_role)
             input_data = CreateUserInput(
                 full_name="New Person",
@@ -67,7 +73,9 @@ class TestAuthRBACGuards:
             password="password123",
             role=UserRole.SUPER_ADMIN.value,
         )
-        with pytest.raises(Exception, match="Operations Admin cannot create Super Admin or Admin"):
+        with pytest.raises(
+            Exception, match="Operations Admin cannot create Super Admin or Admin"
+        ):
             await AuthMutation().create_user(info, input_data)
 
     @pytest.mark.asyncio
@@ -82,7 +90,9 @@ class TestAuthRBACGuards:
             password="password123",
             role=UserRole.ADMIN.value,
         )
-        with pytest.raises(Exception, match="Operations Admin cannot create Super Admin or Admin"):
+        with pytest.raises(
+            Exception, match="Operations Admin cannot create Super Admin or Admin"
+        ):
             await AuthMutation().create_user(info, input_data)
 
     @pytest.mark.asyncio
@@ -92,8 +102,12 @@ class TestAuthRBACGuards:
         target_id = uuid.uuid4()
         info = make_mock_info(user_id=admin_id, role=UserRole.ADMIN.value)
 
-        with pytest.raises(Exception, match="Operations Admin cannot assign Admin or Super Admin"):
-            await AuthMutation().assign_user_role(info, target_id, UserRole.SUPER_ADMIN.value)
+        with pytest.raises(
+            Exception, match="Operations Admin cannot assign Admin or Super Admin"
+        ):
+            await AuthMutation().assign_user_role(
+                info, target_id, UserRole.SUPER_ADMIN.value
+            )
 
     @pytest.mark.asyncio
     async def test_admin_cannot_modify_super_admin(self):
@@ -117,8 +131,12 @@ class TestAuthRBACGuards:
 
         with patch("app.graphql.resolvers.auth.async_session_factory") as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
-            with pytest.raises(Exception, match="Operations Admin cannot modify Super Admin or Admin"):
-                await AuthMutation().assign_user_role(info, super_admin_target.id, UserRole.WAREHOUSE.value)
+            with pytest.raises(
+                Exception, match="Operations Admin cannot modify Super Admin or Admin"
+            ):
+                await AuthMutation().assign_user_role(
+                    info, super_admin_target.id, UserRole.WAREHOUSE.value
+                )
 
     @pytest.mark.asyncio
     async def test_shopkeeper_cannot_assign_role(self):

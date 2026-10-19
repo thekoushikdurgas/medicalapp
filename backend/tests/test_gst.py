@@ -18,9 +18,7 @@ class TestCalculateLineTotal:
 
     def test_with_discount1(self):
         """Single discount of 14% — like HIFENAC MR TAB in invoice A004448."""
-        result = calculate_line_total(
-            quantity=20, rate=88.01, discount1_pct=14.0
-        )
+        result = calculate_line_total(quantity=20, rate=88.01, discount1_pct=14.0)
         assert result["base_amount"] == 1760.20
         # After 14% discount: 1760.20 * 0.86 = 1513.77
         assert result["taxable"] == 1513.77
@@ -38,9 +36,7 @@ class TestCalculateLineTotal:
         Qty=36(3S), Rate=96.56, DIS1=12%, SGST=2.5%, CGST=2.5%
         Expected amount ≈ ₹3476.16
         """
-        result = calculate_line_total(
-            quantity=36, rate=96.56, discount1_pct=12.0
-        )
+        result = calculate_line_total(quantity=36, rate=96.56, discount1_pct=12.0)
         assert result["base_amount"] == 3476.16
         assert result["taxable"] == 3059.02
         assert result["total"] == 3211.97

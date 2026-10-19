@@ -1,0 +1,14 @@
+{
+  "_comment": "Configuration overrides for scripts/api_checker.py for Pharmacy Fantasy backend.",
+  "ignore_points": [81, 84],
+  "_ignore_points_doc": "81: docker-compose.yml (using Dockerfile directly), 84: .github/workflows CI check.",
+  "skip_categories": [],
+  "require_docker_compose": false,
+  "require_ci_workflow": false,
+  "import_scan_roots": ["app", "tests", "scripts"],
+  "max_delayed_module_imports_app": 5,
+  "max_delayed_module_imports_total": 15,
+  "max_nested_imports_app": 5,
+  "max_nested_imports_total": 30,
+  "nested_import_warn_threshold": 120
+}

@@ -1,0 +1,665 @@
+type AccountAuditLogType {
+  id: UUID!
+  userId: UUID!
+  action: String!
+  details: String!
+  performedById: UUID!
+  createdAt: DateTime!
+  performedByName: String
+}
+
+type AdvancePaymentType {
+  id: UUID!
+  receiptNumber: String!
+  shopkeeperId: UUID!
+  amount: Float!
+  paymentMethod: String!
+  referenceNo: String
+  notes: String
+  paidAt: DateTime!
+  shopkeeperName: String
+}
+
+type AuthPayload {
+  accessToken: String!
+  refreshToken: String!
+  user: UserType!
+}
+
+type AutomationCircuitType {
+  subsystem: String!
+  isPaused: Boolean!
+  pausedBy: String
+  pauseReason: String
+  updatedAt: DateTime!
+}
+
+type AutomationJobType {
+  id: UUID!
+  jobType: String!
+  payload: String
+  status: String!
+  retryCount: Int!
+  maxRetries: Int!
+  errorMessage: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type BarcodeVerificationResult {
+  isValid: Boolean!
+  matchedSku: String!
+  matchedBatch: String!
+  message: String!
+}
+
+type BulkPricePreviewItem {
+  productId: UUID!
+  productName: String!
+  packSize: String!
+  category: String
+  currentMrp: Float!
+  newMrp: Float!
+  currentPtr: Float!
+  newPtr: Float!
+  projectedMarginPct: Float!
+  warning: String
+}
+
+type BulkPriceSimulationResult {
+  dryRun: Boolean!
+  totalMatched: Int!
+  totalAffected: Int!
+  canApply: Boolean!
+  previewItems: [BulkPricePreviewItem!]!
+  validationWarnings: [String!]!
+  auditId: String
+}
+
+type ChallanItemType {
+  id: UUID!
+  productId: UUID!
+  stockBatchId: UUID!
+  quantity: Int!
+  freeQuantity: Int!
+  productName: String
+}
+
+input ChallanReturnLineInput {
+  productId: UUID!
+  stockBatchId: UUID!
+  quantity: Int!
+}
+
+type ChallanReturnType {
+  id: UUID!
+  challanId: UUID!
+  returnNumber: String!
+  returnDate: Date!
+  reason: String
+  createdAt: DateTime!
+}
+
+input CompleteDeliveryInput {
+  assignmentId: UUID!
+  otp: String!
+  cashCollected: Float! = 0
+  upiCollected: Float! = 0
+  paymentReference: String = null
+  notes: String = null
+  proofImageUrl: String = null
+}
+
+input CreateChallanInput {
+  orderId: UUID!
+  transporterName: String = null
+  vehicleNumber: String = null
+  totalCartons: Int! = 1
+}
+
+input CreateChallanReturnInput {
+  challanId: UUID!
+  items: [ChallanReturnLineInput!]!
+  reason: String = null
+}
+
+input CreateInvoiceReturnInput {
+  invoiceId: UUID!
+  items: [InvoiceReturnLineInput!]!
+  restockStatus: String! = "RESTOCKED"
+  reason: String = null
+}
+
+input CreateUserInput {
+  email: String = null
+  phone: String = null
+  password: String!
+  fullName: String!
+  role: String!
+  shopName: String = null
+  shopAddress: String = null
+  gstin: String = null
+  vehicleType: String = null
+  vehicleNumber: String = null
+  assignedArea: String = null
+}
+
+type DashboardStats {
+  totalOrders: Int!
+  pendingOrders: Int!
+  todaySales: Float!
+  lowStockCount: Int!
+  expiringBatchesCount: Int!
+  outstandingPayments: Float!
+}
+
+"""Date (isoformat)"""
+scalar Date
+
+"""Date with time (isoformat)"""
+scalar DateTime
+
+type DeliveryAssignmentType {
+  id: UUID!
+  orderId: UUID
+  orderNumber: String
+  deliveryBoyId: UUID
+  deliveryBoyName: String
+  shopName: String
+  shopAddress: String
+  status: String!
+  deliveryNotes: String
+  proofImageUrl: String
+  deliveryOtp: String
+  cashCollected: Float!
+  upiCollected: Float!
+  paymentReference: String
+  failureReason: String
+  failurePhotoUrl: String
+  assignedAt: DateTime!
+  deliveredAt: DateTime
+}
+
+type DeliveryChallanType {
+  id: UUID!
+  orderId: UUID!
+  challanNumber: String!
+  challanDate: Date!
+  transporterName: String
+  vehicleNumber: String
+  totalCartons: Int!
+  createdAt: DateTime!
+  items: [ChallanItemType!]!
+  returns: [ChallanReturnType!]!
+}
+
+type DeliveryRosterType {
+  id: UUID!
+  deliveryBoyId: UUID!
+  shiftDate: Date!
+  shiftType: String!
+  assignedZone: String
+  status: String!
+  notes: String
+}
+
+type DeliveryShiftSummaryType {
+  totalAssigned: Int!
+  totalDelivered: Int!
+  totalFailed: Int!
+  cashCollected: Float!
+  upiCollected: Float!
+  totalCollected: Float!
+  pendingHandover: Float!
+}
+
+type HighRiskApprovalType {
+  id: UUID!
+  actionType: String!
+  targetId: String
+  description: String!
+  status: String!
+  requestedById: UUID!
+  requestedByName: String!
+  approvedById: UUID
+  approvedByName: String
+  rejectionReason: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type IntegrationHealthType {
+  databaseStatus: String!
+  databaseLatencyMs: Float!
+  gstEinvoicePortal: String!
+  gstLatencyMs: Float!
+  smsDltGateway: String!
+  whatsappApi: String!
+  redisEventQueue: String!
+  failedJobsCount: Int!
+  failedNotificationsCount: Int!
+  activeWorkers: Int!
+}
+
+type InvoiceReturnItemType {
+  id: UUID!
+  productId: UUID!
+  stockBatchId: UUID!
+  quantity: Int!
+  rate: Float!
+  discountPct: Float!
+  productName: String
+}
+
+input InvoiceReturnLineInput {
+  productId: UUID!
+  stockBatchId: UUID!
+  quantity: Int!
+  rate: Float!
+  discountPct: Float! = 0
+}
+
+type InvoiceReturnType {
+  id: UUID!
+  invoiceId: UUID!
+  creditNoteNo: String!
+  returnDate: Date!
+  refundSubtotal: Float!
+  refundSgst: Float!
+  refundCgst: Float!
+  grandRefund: Float!
+  reason: String
+  restockStatus: String!
+  createdAt: DateTime!
+  items: [InvoiceReturnItemType!]!
+}
+
+type LedgerRecordType {
+  id: UUID!
+  shopkeeperId: UUID!
+  entryType: String!
+  amount: Float!
+  balanceAfter: Float!
+  referenceNumber: String!
+  description: String!
+  createdAt: DateTime!
+  shopkeeperName: String
+}
+
+type Mutation {
+  login(email: String!, password: String!): AuthPayload!
+  register(input: RegisterInput!): AuthPayload!
+  assignUserRole(userId: UUID!, newRole: String!): UserType!
+  createUser(input: CreateUserInput!): UserType!
+  refreshToken(refreshToken: String!): AuthPayload!
+  updateShopkeeperKyc(shopkeeperId: UUID!, status: String!, notes: String = null): ShopkeeperProfileType!
+  updateShopkeeperCreditLimit(shopkeeperId: UUID!, newLimit: Float!, reason: String!): ShopkeeperProfileType!
+  addProduct(input: ProductInput!): ProductType!
+  addStockBatch(input: StockBatchInput!): StockBatchType!
+  placeOrder(input: PlaceOrderInput!, shopkeeperId: UUID = null): OrderType!
+  confirmOrder(orderId: UUID!): OrderType!
+  updateOrderStatus(orderId: UUID!, status: String!): OrderType!
+  cancelOrder(orderId: UUID!, reason: String = null): OrderType!
+  rateOrder(input: RateOrderInput!): OrderType!
+  disputeDelivery(orderId: UUID!, reason: String!): OrderType!
+  assignDelivery(orderId: UUID!, deliveryBoyId: UUID!, assignedBy: UUID = null): DeliveryAssignmentType!
+  updateDeliveryStatus(assignmentId: UUID!, status: String!, notes: String = null, proofImageUrl: String = null): DeliveryAssignmentType!
+  completeDeliveryWithOtp(input: CompleteDeliveryInput!): DeliveryAssignmentType!
+  reportDeliveryFailure(input: ReportDeliveryFailureInput!): DeliveryAssignmentType!
+  reconcileCashHandover(deliveryBoyId: UUID!, amountReceived: Float!, cashierNotes: String = null): Boolean!
+  createDeliveryChallan(input: CreateChallanInput!): DeliveryChallanType!
+  createChallanReturn(input: CreateChallanReturnInput!): ChallanReturnType!
+  createInvoiceReturn(input: CreateInvoiceReturnInput!): InvoiceReturnType!
+  recordAdvancePayment(input: RecordAdvancePaymentInput!): AdvancePaymentType!
+  submitReturnClaim(input: SubmitReturnRequestInput!): ReturnClaimType!
+  reviewReturnClaim(input: ReviewReturnRequestInput!): ReturnClaimType!
+  markNotificationAsRead(notificationId: UUID!): Boolean!
+  updateNotificationPreferences(input: UpdateNotificationPreferencesInput!): Boolean!
+  retryFailedJob(jobId: UUID!): AutomationJobType!
+  createAutomationJob(jobType: String!, payload: String = null): AutomationJobType!
+  assignStaffWorkQueue(userId: UUID!, workQueue: String!): UserType!
+  triggerUserPasswordReset(userId: UUID!): Boolean!
+  sendRetailerPaymentReminder(shopkeeperId: UUID!): Boolean!
+  applyBulkPriceUpdate(action: String!, value: Float!, reason: String!, category: String = null): BulkPriceSimulationResult!
+  toggleAutomationCircuit(subsystem: String!, paused: Boolean!, reason: String = null): AutomationCircuitType!
+  requestHighRiskApproval(actionType: String!, description: String!, targetId: String = null): HighRiskApprovalType!
+  reviewHighRiskApproval(requestId: UUID!, approve: Boolean!, reason: String = null): HighRiskApprovalType!
+  toggleMfaEnforcement(enable: Boolean!): Boolean!
+  resolveSupplierReconciliation(recordId: String!, status: String!, notes: String = null): SupplierReconciliationItemType!
+  recordStockAdjustment(batchId: UUID!, adjustmentType: String!, quantityDelta: Int!, reason: String!, evidenceUrl: String = null): StockAdjustmentType!
+  verifyPickingLineBarcode(orderItemId: UUID!, scannedBarcode: String!): BarcodeVerificationResult!
+  completeOrderPicking(orderId: UUID!): Boolean!
+}
+
+type NotificationType {
+  id: UUID!
+  userId: UUID!
+  title: String!
+  message: String!
+  category: String!
+  isRead: Boolean!
+  createdAt: DateTime!
+}
+
+type OperationsIncidentSummaryType {
+  breachedSlaOrdersCount: Int!
+  unresolvedDisputesCount: Int!
+  criticalAlertsCount: Int!
+  activeWarehousePickers: Int!
+  activeDeliveryCouriers: Int!
+  avgPickerOrdersLoad: Float!
+  avgRetailerKycReviewMinutes: Float!
+  flaggedLatePayersCount: Int!
+  lowStockReplenishmentCount: Int!
+  authFailureAttempts24h: Int!
+  reportingDataBalanced: Boolean!
+}
+
+input OrderItemInput {
+  productId: UUID!
+  quantity: Int!
+}
+
+type OrderType {
+  id: UUID!
+  orderNumber: String!
+  status: String!
+  totalAmount: Float!
+  discountAmount: Float!
+  gstAmount: Float!
+  netAmount: Float!
+  placedAt: DateTime
+  confirmedAt: DateTime
+  deliveredAt: DateTime
+  remarks: String
+  itemCount: Int
+  deliveryOtp: String
+  rating: Int
+  feedbackText: String
+  estimatedArrivalWindow: String
+}
+
+type PaginatedOrders {
+  items: [OrderType!]!
+  totalCount: Int!
+  hasNextPage: Boolean!
+}
+
+type PaginatedProducts {
+  items: [ProductType!]!
+  totalCount: Int!
+  hasNextPage: Boolean!
+}
+
+input PlaceOrderInput {
+  items: [OrderItemInput!]!
+  remarks: String = null
+}
+
+type ProductChangeAuditItemType {
+  id: String!
+  productName: String!
+  category: String
+  changeType: String!
+  oldValue: String!
+  newValue: String!
+  performedBy: String!
+  createdAt: DateTime!
+}
+
+input ProductInput {
+  name: String!
+  composition: String = null
+  manufacturer: String = null
+  packSize: String!
+  hsnCode: String = null
+  category: String = null
+  defaultMrp: Float = null
+  defaultSgstRate: Float! = 2.5
+  defaultCgstRate: Float! = 2.5
+}
+
+type ProductType {
+  id: UUID!
+  name: String!
+  composition: String
+  manufacturer: String
+  packSize: String!
+  hsnCode: String
+  category: String
+  defaultMrp: Float
+  availableStock: Int
+}
+
+type Query {
+  me: UserType!
+  users(role: String = null, search: String = null, page: Int! = 1, perPage: Int! = 50): [UserType!]!
+  shopkeepers(search: String = null, status: String = null, page: Int! = 1, perPage: Int! = 50): [ShopkeeperProfileType!]!
+  products(search: String = null, category: String = null, page: Int! = 1, perPage: Int! = 20): PaginatedProducts!
+  product(id: UUID!): ProductType!
+  stockBatches(productId: UUID!): [StockBatchType!]!
+  orders(status: String = null, page: Int! = 1, perPage: Int! = 20): PaginatedOrders!
+  order(id: UUID!): OrderType!
+  dashboardStats: DashboardStats!
+  myDeliveries(deliveryBoyId: UUID = null, status: String = null): [DeliveryAssignmentType!]!
+  deliveryShiftSummary(deliveryBoyId: UUID = null): DeliveryShiftSummaryType!
+  deliveryRosters(deliveryBoyId: UUID = null): [DeliveryRosterType!]!
+  deliveryChallans(page: Int! = 1, perPage: Int! = 50): [DeliveryChallanType!]!
+  deliveryChallan(id: UUID!): DeliveryChallanType
+  invoiceReturns(page: Int! = 1, perPage: Int! = 50): [InvoiceReturnType!]!
+  advancePayments(shopkeeperId: UUID = null, page: Int! = 1, perPage: Int! = 50): [AdvancePaymentType!]!
+  myLedger(shopkeeperId: UUID = null, limit: Int! = 50, offset: Int! = 0): [LedgerRecordType!]!
+  returnClaims(status: String = null, page: Int! = 1, perPage: Int! = 50): [ReturnClaimType!]!
+  notifications(isRead: Boolean = null): [NotificationType!]!
+  notificationPreferences: String!
+  automationJobs(status: String = null): [AutomationJobType!]!
+  integrationHealth: IntegrationHealthType!
+  operationsIncidentSummary: OperationsIncidentSummaryType!
+  accountAuditLogs(userId: UUID!): [AccountAuditLogType!]!
+  simulateBulkPriceUpdate(action: String!, value: Float!, category: String = null): BulkPriceSimulationResult!
+  automationCircuits: [AutomationCircuitType!]!
+  highRiskApprovals(status: String = null): [HighRiskApprovalType!]!
+  superAdminGovernanceOverview: SuperAdminGovernanceOverviewType!
+  warehousePickingSlip(orderId: UUID!): WarehousePickingSlipType!
+  stockAdjustments(batchId: UUID = null): [StockAdjustmentType!]!
+}
+
+input RateOrderInput {
+  orderId: UUID!
+  rating: Int!
+  feedback: String = null
+}
+
+input RecordAdvancePaymentInput {
+  shopkeeperId: UUID!
+  amount: Float!
+  paymentMethod: String! = "CASH"
+  referenceNo: String = null
+  notes: String = null
+}
+
+input RegisterInput {
+  role: String!
+  fullName: String!
+  phone: String!
+  password: String!
+  email: String = null
+  shopName: String = null
+  shopAddress: String = null
+  gstin: String = null
+  drugLicenseNo: String = null
+  area: String = null
+  city: String = null
+  vehicleType: String = null
+  vehicleNumber: String = null
+  assignedArea: String = null
+}
+
+input ReportDeliveryFailureInput {
+  assignmentId: UUID!
+  reason: String!
+  notes: String = null
+  photoUrl: String = null
+}
+
+type ReturnClaimType {
+  id: UUID!
+  requestNumber: String!
+  shopkeeperId: UUID!
+  productId: UUID!
+  productName: String
+  stockBatchId: UUID
+  batchNumber: String
+  quantity: Int!
+  reason: String!
+  remarks: String
+  imageUrl: String
+  status: String!
+  reviewedBy: UUID
+  rejectionReason: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  shopkeeperName: String
+}
+
+input ReviewReturnRequestInput {
+  requestId: UUID!
+  action: String!
+  rejectionReason: String = null
+}
+
+type ShopkeeperProfileType {
+  id: UUID!
+  shopName: String!
+  shopAddress: String!
+  gstin: String
+  drugLicenseNo: String
+  area: String
+  city: String
+  creditLimit: Float!
+  outstandingBalance: Float!
+  userId: UUID
+  verificationStatus: String!
+  verificationNotes: String
+  creditLimitReason: String
+  ownerName: String
+  phone: String
+  email: String
+  totalOrders: Int
+}
+
+type StockAdjustmentType {
+  id: UUID!
+  stockBatchId: UUID!
+  batchNumber: String!
+  productName: String!
+  adjustmentType: String!
+  quantityDelta: Int!
+  reason: String!
+  evidenceUrl: String
+  isRepeated: Boolean!
+  adjustedByName: String!
+  createdAt: DateTime!
+}
+
+input StockBatchInput {
+  productId: UUID!
+  batchNumber: String!
+  expiryDate: Date!
+  purchaseRate: Float!
+  mrp: Float!
+  quantityReceived: Int!
+  supplierInvoiceNo: String = null
+}
+
+type StockBatchType {
+  id: UUID!
+  batchNumber: String!
+  expiryDate: Date!
+  mrp: Float!
+  purchaseRate: Float!
+  quantityAvailable: Int!
+  quantitySold: Int!
+}
+
+input SubmitReturnRequestInput {
+  productId: UUID!
+  quantity: Int!
+  reason: String!
+  stockBatchId: UUID = null
+  remarks: String = null
+  imageUrl: String = null
+}
+
+type SuperAdminGovernanceOverviewType {
+  pendingSupplierInvoicesCount: Int!
+  purchaseReconciliationExceptionsCount: Int!
+  supplierDiscrepanciesCount: Int!
+  supplierReconciliations: [SupplierReconciliationItemType!]!
+  mfaEnforced: Boolean!
+  privilegedAccountsCount: Int!
+  unusualSigninAlertsCount: Int!
+  unresolvedAuditExceptionsCount: Int!
+  catalogChangeHistory: [ProductChangeAuditItemType!]!
+  unusualPricingAlertsCount: Int!
+  bankReconciledPercentage: Float!
+  pendingExternalSettlementsCount: Int!
+  automationRulesVersion: String!
+}
+
+type SupplierReconciliationItemType {
+  id: String!
+  supplierName: String!
+  poNumber: String!
+  invoiceNumber: String!
+  invoiceAmount: Float!
+  receivedAmount: Float!
+  discrepancyAmount: Float!
+  discrepancyType: String!
+  status: String!
+  notes: String
+  createdAt: DateTime!
+}
+
+scalar UUID
+
+input UpdateNotificationPreferencesInput {
+  inApp: Boolean!
+  sms: Boolean!
+  whatsapp: Boolean!
+}
+
+type UserType {
+  id: UUID!
+  email: String
+  phone: String
+  fullName: String!
+  role: String!
+  isActive: Boolean!
+  createdAt: DateTime!
+  assignedWorkQueue: String
+}
+
+type WarehousePickingLineType {
+  itemId: UUID!
+  productName: String!
+  packSize: String!
+  batchNumber: String!
+  expiryDate: String!
+  rackLocation: String!
+  quantityToPick: Int!
+  barcode: String!
+  isPicked: Boolean!
+  barcodeVerified: Boolean!
+}
+
+type WarehousePickingSlipType {
+  orderId: UUID!
+  orderNumber: String!
+  shopkeeperName: String!
+  deliveryArea: String!
+  priority: String!
+  totalItemsCount: Int!
+  pickingLines: [WarehousePickingLineType!]!
+  isFullyPicked: Boolean!
+}

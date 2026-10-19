@@ -36,14 +36,11 @@ export function useAuth() {
     }
   }, []);
 
-  const login = useCallback(
-    (accessToken: string, user: User) => {
-      localStorage.setItem(AUTH_KEYS.TOKEN, accessToken);
-      localStorage.setItem(AUTH_KEYS.USER, JSON.stringify(user));
-      setState({ user, isAuthenticated: true, isLoading: false });
-    },
-    []
-  );
+  const login = useCallback((accessToken: string, user: User) => {
+    localStorage.setItem(AUTH_KEYS.TOKEN, accessToken);
+    localStorage.setItem(AUTH_KEYS.USER, JSON.stringify(user));
+    setState({ user, isAuthenticated: true, isLoading: false });
+  }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem(AUTH_KEYS.TOKEN);

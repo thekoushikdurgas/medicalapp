@@ -13,10 +13,6 @@ from app.db.models import (
     LedgerEntry,
     ReturnRequest,
     ReturnRequestStatus,
-    Product,
-    StockBatch,
-    ShopkeeperProfile,
-    User,
     UserRole,
 )
 from app.db.session import async_session_factory
@@ -30,17 +26,17 @@ from app.graphql.types import (
 from app.services.ledger_service import get_shopkeeper_ledger
 
 
-def _ledger_to_type(l: LedgerEntry) -> LedgerRecordType:
-    s_name = l.shopkeeper.full_name if getattr(l, "shopkeeper", None) else None
+def _ledger_to_type(entry: LedgerEntry) -> LedgerRecordType:
+    s_name = entry.shopkeeper.full_name if getattr(entry, "shopkeeper", None) else None
     return LedgerRecordType(
-        id=l.id,
-        shopkeeper_id=l.shopkeeper_id,
-        entry_type=l.entry_type.value,
-        amount=float(l.amount),
-        balance_after=float(l.balance_after),
-        reference_number=l.reference_number,
-        description=l.description,
-        created_at=l.created_at,
+        id=entry.id,
+        shopkeeper_id=entry.shopkeeper_id,
+        entry_type=entry.entry_type.value,
+        amount=float(entry.amount),
+        balance_after=float(entry.balance_after),
+        reference_number=entry.reference_number,
+        description=entry.description,
+        created_at=entry.created_at,
         shopkeeper_name=s_name,
     )
 
@@ -91,7 +87,9 @@ class LedgerQuery:
             target_sk_id = uuid.UUID(user_id_str)
         elif role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
             if not shopkeeper_id:
-                raise Exception("Shopkeeper ID is required when viewing ledger as Admin.")
+                raise Exception(
+                    "Shopkeeper ID is required when viewing ledger as Admin."
+                )
             target_sk_id = shopkeeper_id
         else:
             raise Exception("Permission denied: You cannot view financial ledgers.")
@@ -120,13 +118,10 @@ class LedgerQuery:
         """
         user_id_str, role = _get_caller(info)
         async with async_session_factory() as session:
-            stmt = (
-                select(ReturnRequest)
-                .options(
-                    selectinload(ReturnRequest.product),
-                    selectinload(ReturnRequest.stock_batch),
-                    selectinload(ReturnRequest.shopkeeper),
-                )
+            stmt = select(ReturnRequest).options(
+                selectinload(ReturnRequest.product),
+                selectinload(ReturnRequest.stock_batch),
+                selectinload(ReturnRequest.shopkeeper),
             )
 
             if role == UserRole.SHOPKEEPER.value:
@@ -217,7 +212,9 @@ class LedgerMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: Only Admin or Warehouse Staff can review return claims.")
+            raise Exception(
+                "Permission denied: Only Admin or Warehouse Staff can review return claims."
+            )
 
         reviewer_id = uuid.UUID(user_id_str)
         action = input.action.upper()
@@ -244,7 +241,9 @@ class LedgerMutation:
             else:
                 claim.status = ReturnRequestStatus.REJECTED
                 claim.reviewed_by = reviewer_id
-                claim.rejection_reason = input.rejection_reason or "Claim rejected by administrator."
+                claim.rejection_reason = (
+                    input.rejection_reason or "Claim rejected by administrator."
+                )
 
             claim.updated_at = datetime.now(timezone.utc)
             await session.commit()

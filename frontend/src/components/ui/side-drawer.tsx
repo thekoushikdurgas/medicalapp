@@ -40,11 +40,23 @@ export function SideDrawer({
       <div className="side-drawer-panel" onClick={(e) => e.stopPropagation()}>
         <div className="side-drawer-header">
           <div>
-            <h3 style={{ fontSize: "var(--font-size-lg)", fontWeight: 700, margin: 0 }}>
+            <h3
+              style={{
+                fontSize: "var(--font-size-lg)",
+                fontWeight: 700,
+                margin: 0,
+              }}
+            >
               {title}
             </h3>
             {subtitle && (
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", margin: "2px 0 0" }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  margin: "2px 0 0",
+                }}
+              >
                 {subtitle}
               </p>
             )}
@@ -52,7 +64,11 @@ export function SideDrawer({
           <button
             onClick={onClose}
             className="btn btn-secondary"
-            style={{ padding: "4px 10px", fontSize: "16px", borderRadius: "var(--radius-full)" }}
+            style={{
+              padding: "4px 10px",
+              fontSize: "16px",
+              borderRadius: "var(--radius-full)",
+            }}
             aria-label="Close panel"
           >
             ✕

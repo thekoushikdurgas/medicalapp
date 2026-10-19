@@ -58,7 +58,9 @@ class OpsAutomationQuery:
         """Review the automation background job registry (Admin only)."""
         _, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Operations Admin or Super Admin can inspect jobs.")
+            raise Exception(
+                "Permission denied: Only Operations Admin or Super Admin can inspect jobs."
+            )
 
         async with async_session_factory() as session:
             stmt = select(AutomationJob)
@@ -75,19 +77,25 @@ class OpsAutomationQuery:
         """Monitor integration and API health alerts (Admin only)."""
         _, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Operations Admin or Super Admin can view integration health.")
+            raise Exception(
+                "Permission denied: Only Operations Admin or Super Admin can view integration health."
+            )
 
         t0 = time.perf_counter()
         async with async_session_factory() as session:
             # DB ping test
             failed_jobs_res = await session.execute(
-                select(func.count(AutomationJob.id)).where(AutomationJob.status == JobStatus.FAILED)
+                select(func.count(AutomationJob.id)).where(
+                    AutomationJob.status == JobStatus.FAILED
+                )
             )
             failed_jobs_count = failed_jobs_res.scalar() or 0
 
             # Failed/undelivered notifications test
             failed_notifs_res = await session.execute(
-                select(func.count(Notification.id)).where(Notification.is_read.is_(False))
+                select(func.count(Notification.id)).where(
+                    Notification.is_read.is_(False)
+                )
             )
             failed_notifs_count = failed_notifs_res.scalar() or 0
         db_latency = round((time.perf_counter() - t0) * 1000, 2)
@@ -106,7 +114,9 @@ class OpsAutomationQuery:
         )
 
     @strawberry.field
-    async def operations_incident_summary(self, info: Info) -> OperationsIncidentSummaryType:
+    async def operations_incident_summary(
+        self, info: Info
+    ) -> OperationsIncidentSummaryType:
         """Consolidated operations metrics across SLA, staff workload, credit anomalies and inventory."""
         _, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
@@ -123,13 +133,17 @@ class OpsAutomationQuery:
 
             # Warehouse pickers count
             pickers_res = await session.execute(
-                select(func.count(User.id)).where(User.role == UserRole.WAREHOUSE, User.is_active.is_(True))
+                select(func.count(User.id)).where(
+                    User.role == UserRole.WAREHOUSE, User.is_active.is_(True)
+                )
             )
             active_pickers = pickers_res.scalar() or 0
 
             # Delivery couriers count
             couriers_res = await session.execute(
-                select(func.count(User.id)).where(User.role == UserRole.DELIVERY, User.is_active.is_(True))
+                select(func.count(User.id)).where(
+                    User.role == UserRole.DELIVERY, User.is_active.is_(True)
+                )
             )
             active_couriers = couriers_res.scalar() or 0
 
@@ -156,14 +170,20 @@ class OpsAutomationQuery:
             )
 
     @strawberry.field
-    async def account_audit_logs(self, info: Info, user_id: uuid.UUID) -> list[AccountAuditLogType]:
+    async def account_audit_logs(
+        self, info: Info, user_id: uuid.UUID
+    ) -> list[AccountAuditLogType]:
         """Fetch account audit trail history for a user."""
         _, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
             raise Exception("Permission denied: Operations Admin or Super Admin only.")
 
         async with async_session_factory() as session:
-            stmt = select(AccountAuditLog).where(AccountAuditLog.user_id == user_id).order_by(AccountAuditLog.created_at.desc())
+            stmt = (
+                select(AccountAuditLog)
+                .where(AccountAuditLog.user_id == user_id)
+                .order_by(AccountAuditLog.created_at.desc())
+            )
             res = await session.execute(stmt)
             logs = res.scalars().all()
             if not logs:
@@ -180,15 +200,15 @@ class OpsAutomationQuery:
                 ]
             return [
                 AccountAuditLogType(
-                    id=l.id,
-                    user_id=l.user_id,
-                    action=l.action,
-                    details=l.details,
-                    performed_by_id=l.performed_by_id,
-                    created_at=l.created_at,
+                    id=log_item.id,
+                    user_id=log_item.user_id,
+                    action=log_item.action,
+                    details=log_item.details,
+                    performed_by_id=log_item.performed_by_id,
+                    created_at=log_item.created_at,
                     performed_by_name="Operations Admin",
                 )
-                for l in logs
+                for log_item in logs
             ]
 
 
@@ -203,7 +223,9 @@ class OpsAutomationMutation:
         """Safely retry an eligible failed background job with idempotency verification."""
         _, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Operations Admin or Super Admin can retry jobs.")
+            raise Exception(
+                "Permission denied: Only Operations Admin or Super Admin can retry jobs."
+            )
 
         async with async_session_factory() as session:
             stmt = select(AutomationJob).where(AutomationJob.id == job_id)
@@ -213,11 +235,15 @@ class OpsAutomationMutation:
                 raise Exception("Automation job not found.")
 
             if job.retry_count >= job.max_retries:
-                raise Exception(f"Max retries ({job.max_retries}) exceeded for job {job_id}. Manual intervention required.")
+                raise Exception(
+                    f"Max retries ({job.max_retries}) exceeded for job {job_id}. Manual intervention required."
+                )
 
             job.retry_count += 1
             job.status = JobStatus.COMPLETED
-            job.error_message = f"Recovered on retry #{job.retry_count} via Admin console"
+            job.error_message = (
+                f"Recovered on retry #{job.retry_count} via Admin console"
+            )
             await session.commit()
             await session.refresh(job)
             return _job_to_type(job)
@@ -232,7 +258,9 @@ class OpsAutomationMutation:
         """Enqueue or register a new background automation job."""
         _, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Operations Admin or Super Admin can register jobs.")
+            raise Exception(
+                "Permission denied: Only Operations Admin or Super Admin can register jobs."
+            )
 
         async with async_session_factory() as session:
             job = AutomationJob(

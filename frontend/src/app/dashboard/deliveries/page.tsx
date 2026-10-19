@@ -34,7 +34,10 @@ interface RosterShift {
 const FAILURE_REASONS = [
   { code: "SHOP_CLOSED", label: "Shop Closed / Premises Locked" },
   { code: "RECIPIENT_UNAVAILABLE", label: "Authorized Pharmacist Unavailable" },
-  { code: "ADDRESS_INCORRECT", label: "Incorrect / Untraceable Pharmacy Address" },
+  {
+    code: "ADDRESS_INCORRECT",
+    label: "Incorrect / Untraceable Pharmacy Address",
+  },
   { code: "PREMISES_BLOCKED", label: "Premises Access Blocked / Road Closed" },
   { code: "DAMAGED_CARTON", label: "Carton Damaged in Transit (Refused)" },
   { code: "REFUSED_BY_CHEMIST", label: "Refused by Chemist (Order Dispute)" },
@@ -84,8 +87,10 @@ export default function DeliveriesPage() {
     },
   ]);
 
-  const [activeDeliveryForHandover, setActiveDeliveryForHandover] = useState<DeliveryItem | null>(null);
-  const [activeDeliveryForFailure, setActiveDeliveryForFailure] = useState<DeliveryItem | null>(null);
+  const [activeDeliveryForHandover, setActiveDeliveryForHandover] =
+    useState<DeliveryItem | null>(null);
+  const [activeDeliveryForFailure, setActiveDeliveryForFailure] =
+    useState<DeliveryItem | null>(null);
   const [showShiftSummary, setShowShiftSummary] = useState(false);
   const [showRoster, setShowRoster] = useState(false);
 
@@ -98,7 +103,8 @@ export default function DeliveriesPage() {
   const [counterPhotoInput, setCounterPhotoInput] = useState<string>("");
 
   // Form states for Exception Reporting
-  const [selectedFailureReason, setSelectedFailureReason] = useState<string>("SHOP_CLOSED");
+  const [selectedFailureReason, setSelectedFailureReason] =
+    useState<string>("SHOP_CLOSED");
   const [failureNotesInput, setFailureNotesInput] = useState<string>("");
   const [failurePhotoInput, setFailurePhotoInput] = useState<string>("");
 
@@ -106,17 +112,25 @@ export default function DeliveriesPage() {
 
   // Push Notification state (Checklist #5)
   const [pushEnabled, setPushEnabled] = useState(true);
-  const [activePushAlert, setActivePushAlert] = useState<{ orderNumber: string; shopName: string; time: string } | null>({
+  const [activePushAlert, setActivePushAlert] = useState<{
+    orderNumber: string;
+    shopName: string;
+    time: string;
+  } | null>({
     orderNumber: "ORD-2026-004448",
     shopName: "Cheap Medical Stores",
     time: "09:30 AM",
   });
 
   // Automated TSP Route Optimizer state (Checklist #31)
-  const [tspOptimizedBanner, setTspOptimizedBanner] = useState<string | null>(null);
+  const [tspOptimizedBanner, setTspOptimizedBanner] = useState<string | null>(
+    null,
+  );
 
   // Bank Webhook Verification for UPI (Checklist #129)
-  const [upiWebhookStatus, setUpiWebhookStatus] = useState<"IDLE" | "VERIFYING" | "VERIFIED">("IDLE");
+  const [upiWebhookStatus, setUpiWebhookStatus] = useState<
+    "IDLE" | "VERIFYING" | "VERIFIED"
+  >("IDLE");
 
   // Offline Sync Queue (Checklist #165)
   const [isOfflineMode, setIsOfflineMode] = useState(false);
@@ -132,7 +146,9 @@ export default function DeliveriesPage() {
       return a.address.localeCompare(b.address);
     });
     setDeliveries(reordered);
-    setTspOptimizedBanner("✓ TSP Route Optimization Complete: Ordered stops to minimize transit distance. Estimated savings: 4.8 km & 25 minutes.");
+    setTspOptimizedBanner(
+      "✓ TSP Route Optimization Complete: Ordered stops to minimize transit distance. Estimated savings: 4.8 km & 25 minutes.",
+    );
     setTimeout(() => setTspOptimizedBanner(null), 6000);
   };
 
@@ -147,11 +163,15 @@ export default function DeliveriesPage() {
     if (!isOfflineMode) {
       setIsOfflineMode(true);
       setOfflineBufferCount(1);
-      setSyncFeedback("📱 Switched to Offline Sync Mode: Handover events will be buffered locally in IndexedDB cache.");
+      setSyncFeedback(
+        "📱 Switched to Offline Sync Mode: Handover events will be buffered locally in IndexedDB cache.",
+      );
     } else {
       setIsOfflineMode(false);
       setOfflineBufferCount(0);
-      setSyncFeedback("🔄 Reconnected to Warehouse Master: Flushed local buffer. All deliveries synchronized!");
+      setSyncFeedback(
+        "🔄 Reconnected to Warehouse Master: Flushed local buffer. All deliveries synchronized!",
+      );
       setTimeout(() => setSyncFeedback(null), 4000);
     }
   };
@@ -183,21 +203,35 @@ export default function DeliveriesPage() {
     setDeliveries((prev) =>
       prev.map((d) => {
         if (d.id !== id) return d;
-        if (d.status === "ASSIGNED") return { ...d, status: "PICKED_UP", notes: "Picked up from Benachity warehouse bay." };
-        if (d.status === "PICKED_UP") return { ...d, status: "IN_TRANSIT", notes: "En route to shopkeeper destination." };
+        if (d.status === "ASSIGNED")
+          return {
+            ...d,
+            status: "PICKED_UP",
+            notes: "Picked up from Benachity warehouse bay.",
+          };
+        if (d.status === "PICKED_UP")
+          return {
+            ...d,
+            status: "IN_TRANSIT",
+            notes: "En route to shopkeeper destination.",
+          };
         return d;
-      })
+      }),
     );
   };
 
   const handleConfirmHandover = () => {
     if (!activeDeliveryForHandover) return;
     if (!deliveryOtpInput.trim() || deliveryOtpInput.trim().length < 4) {
-      alert("Please enter the 4-digit Delivery Handshake OTP provided by the retailer.");
+      alert(
+        "Please enter the 4-digit Delivery Handshake OTP provided by the retailer.",
+      );
       return;
     }
     if (!capturedSignature) {
-      alert("Please collect the recipient's signature before confirming delivery.");
+      alert(
+        "Please collect the recipient's signature before confirming delivery.",
+      );
       return;
     }
 
@@ -214,17 +248,21 @@ export default function DeliveriesPage() {
           podImage: `Signed by ${recipientName || "Pharmacist"} [OTP: ${deliveryOtpInput}]`,
           counterPhotoUrl: counterPhotoInput || undefined,
         };
-      })
+      }),
     );
 
-    setActionSuccess(`Order ${activeDeliveryForHandover.orderNumber} delivered, OTP verified & ePOD saved! Remitted: ₹${cash + upi}`);
+    setActionSuccess(
+      `Order ${activeDeliveryForHandover.orderNumber} delivered, OTP verified & ePOD saved! Remitted: ₹${cash + upi}`,
+    );
     setActiveDeliveryForHandover(null);
   };
 
   const handleReportFailure = () => {
     if (!activeDeliveryForFailure) return;
 
-    const reasonLabel = FAILURE_REASONS.find((r) => r.code === selectedFailureReason)?.label || selectedFailureReason;
+    const reasonLabel =
+      FAILURE_REASONS.find((r) => r.code === selectedFailureReason)?.label ||
+      selectedFailureReason;
 
     setDeliveries((prev) =>
       prev.map((d) => {
@@ -236,10 +274,12 @@ export default function DeliveriesPage() {
           failurePhotoUrl: failurePhotoInput || undefined,
           notes: `Non-delivery logged: ${reasonLabel}. ${failureNotesInput}`,
         };
-      })
+      }),
     );
 
-    setActionSuccess(`Delivery failure recorded for ${activeDeliveryForFailure.orderNumber} (${reasonLabel}). Dispatched return alert to warehouse.`);
+    setActionSuccess(
+      `Delivery failure recorded for ${activeDeliveryForFailure.orderNumber} (${reasonLabel}). Dispatched return alert to warehouse.`,
+    );
     setActiveDeliveryForFailure(null);
     setFailureNotesInput("");
     setFailurePhotoInput("");
@@ -252,7 +292,9 @@ export default function DeliveriesPage() {
       case "PICKED_UP":
         return <span className="badge badge-warning">📦 Picked Up</span>;
       case "IN_TRANSIT":
-        return <span className="badge badge-info">🛵 In Transit (En Route)</span>;
+        return (
+          <span className="badge badge-info">🛵 In Transit (En Route)</span>
+        );
       case "DELIVERED":
         return <span className="badge badge-success">✓ Handed Over</span>;
       case "FAILED":
@@ -260,9 +302,13 @@ export default function DeliveriesPage() {
     }
   };
 
-  const totalDelivered = deliveries.filter((d) => d.status === "DELIVERED").length;
+  const totalDelivered = deliveries.filter(
+    (d) => d.status === "DELIVERED",
+  ).length;
   const totalFailed = deliveries.filter((d) => d.status === "FAILED").length;
-  const totalInTransit = deliveries.filter((d) => d.status === "IN_TRANSIT" || d.status === "PICKED_UP").length;
+  const totalInTransit = deliveries.filter(
+    (d) => d.status === "IN_TRANSIT" || d.status === "PICKED_UP",
+  ).length;
 
   return (
     <div className="animate-fade-in">
@@ -282,14 +328,21 @@ export default function DeliveriesPage() {
             Delivery Fleet Operations
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
-            Live dispatch run sheet, turn-by-turn navigation, electronic proof of delivery (ePOD), and cash remittance
+            Live dispatch run sheet, turn-by-turn navigation, electronic proof
+            of delivery (ePOD), and cash remittance
           </p>
         </div>
-        <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>
+        <div
+          style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}
+        >
           <button
             type="button"
             className="btn btn-secondary"
-            style={{ borderColor: "var(--color-primary-500)", color: "var(--color-primary-700)", fontWeight: 700 }}
+            style={{
+              borderColor: "var(--color-primary-500)",
+              color: "var(--color-primary-700)",
+              fontWeight: 700,
+            }}
             onClick={handleOptimizeRoute}
             title="Calculate shortest beat route to minimize travel distance (Checklist #31)"
           >
@@ -344,7 +397,10 @@ export default function DeliveriesPage() {
           }}
         >
           <div style={{ fontSize: "0.85rem" }}>
-            <strong>🔔 New Delivery Assignment Alert:</strong> Consignment <strong>{activePushAlert.orderNumber}</strong> assigned for delivery to <strong>{activePushAlert.shopName}</strong> ({activePushAlert.time}). Sound &amp; vibration active.
+            <strong>🔔 New Delivery Assignment Alert:</strong> Consignment{" "}
+            <strong>{activePushAlert.orderNumber}</strong> assigned for delivery
+            to <strong>{activePushAlert.shopName}</strong> (
+            {activePushAlert.time}). Sound &amp; vibration active.
           </div>
           <button
             type="button"
@@ -379,8 +435,12 @@ export default function DeliveriesPage() {
       <div
         style={{
           padding: "var(--space-2) var(--space-4)",
-          background: isOfflineMode ? "rgba(245, 158, 11, 0.12)" : "rgba(16, 185, 129, 0.08)",
-          border: isOfflineMode ? "1px solid var(--color-warning)" : "1px solid rgba(16, 185, 129, 0.2)",
+          background: isOfflineMode
+            ? "rgba(245, 158, 11, 0.12)"
+            : "rgba(16, 185, 129, 0.08)",
+          border: isOfflineMode
+            ? "1px solid var(--color-warning)"
+            : "1px solid rgba(16, 185, 129, 0.2)",
           borderRadius: "var(--radius-md)",
           marginBottom: "var(--space-4)",
           display: "flex",
@@ -391,7 +451,9 @@ export default function DeliveriesPage() {
       >
         <div>
           <span style={{ fontWeight: 700 }}>
-            {isOfflineMode ? "⚠️ Mobile Sync Engine (Offline Buffer Active):" : "🟢 Mobile Sync Engine (Online):"}
+            {isOfflineMode
+              ? "⚠️ Mobile Sync Engine (Offline Buffer Active):"
+              : "🟢 Mobile Sync Engine (Online):"}
           </span>{" "}
           {isOfflineMode
             ? `${offlineBufferCount} action(s) cached locally in IndexedDB buffer. Will flush automatically upon reconnect.`
@@ -403,7 +465,9 @@ export default function DeliveriesPage() {
           style={{ fontSize: "0.7rem", padding: "0.2rem 0.5rem" }}
           onClick={handleToggleOfflineMode}
         >
-          {isOfflineMode ? "🔄 Reconnect & Replay Sync" : "⚡ Simulate Signal Loss"}
+          {isOfflineMode
+            ? "🔄 Reconnect & Replay Sync"
+            : "⚡ Simulate Signal Loss"}
         </button>
       </div>
 
@@ -446,28 +510,73 @@ export default function DeliveriesPage() {
         <div
           className="card"
           style={{
-            background: "linear-gradient(135deg, rgba(238, 242, 255, 0.9), rgba(243, 244, 246, 0.6))",
+            background:
+              "linear-gradient(135deg, rgba(238, 242, 255, 0.9), rgba(243, 244, 246, 0.6))",
             border: "1px solid var(--color-primary-200)",
             marginBottom: "var(--space-6)",
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--space-2)" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "var(--space-2)",
+            }}
+          >
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-2)",
+                }}
+              >
                 <span style={{ fontSize: "1.2rem" }}>🛵</span>
-                <h3 style={{ fontSize: "1.1rem", fontWeight: 700 }}>Planned Courier Shift &amp; Delivery Beat Roster</h3>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: 700 }}>
+                  Planned Courier Shift &amp; Delivery Beat Roster
+                </h3>
                 <span className="badge badge-success">Active Duty</span>
               </div>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", marginTop: "4px" }}>
-                <strong>Shift:</strong> {currentRoster.shiftType} ({currentRoster.shiftDate}) • <strong>Zone:</strong> {currentRoster.assignedZone}
+              <p
+                style={{
+                  fontSize: "0.85rem",
+                  color: "var(--text-secondary)",
+                  marginTop: "4px",
+                }}
+              >
+                <strong>Shift:</strong> {currentRoster.shiftType} (
+                {currentRoster.shiftDate}) • <strong>Zone:</strong>{" "}
+                {currentRoster.assignedZone}
               </p>
-              <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "2px" }}>
+              <p
+                style={{
+                  fontSize: "0.8rem",
+                  color: "var(--text-muted)",
+                  marginTop: "2px",
+                }}
+              >
                 {currentRoster.notes}
               </p>
             </div>
             <div style={{ textAlign: "right" }}>
-              <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "var(--text-secondary)" }}>VEHICLE FITNESS CHECK</span>
-              <div style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--color-success)" }}>
+              <span
+                style={{
+                  fontSize: "0.75rem",
+                  fontWeight: 600,
+                  color: "var(--text-secondary)",
+                }}
+              >
+                VEHICLE FITNESS CHECK
+              </span>
+              <div
+                style={{
+                  fontSize: "0.85rem",
+                  fontWeight: 700,
+                  color: "var(--color-success)",
+                }}
+              >
                 ✓ Fuel, Battery, Tyres Verified
               </div>
             </div>
@@ -485,35 +594,99 @@ export default function DeliveriesPage() {
         }}
       >
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>ASSIGNED / PACKING</p>
-          <p style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-primary-600)" }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
+            ASSIGNED / PACKING
+          </p>
+          <p
+            style={{
+              fontSize: "1.75rem",
+              fontWeight: 800,
+              color: "var(--color-primary-600)",
+            }}
+          >
             {deliveries.filter((d) => d.status === "ASSIGNED").length}
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Awaiting bay loading</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Awaiting bay loading
+          </p>
         </div>
 
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>ON THE ROAD (TRANSIT)</p>
-          <p style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-info)" }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
+            ON THE ROAD (TRANSIT)
+          </p>
+          <p
+            style={{
+              fontSize: "1.75rem",
+              fontWeight: 800,
+              color: "var(--color-info)",
+            }}
+          >
             {totalInTransit}
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Active couriers traveling</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Active couriers traveling
+          </p>
         </div>
 
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>DELIVERED TODAY</p>
-          <p style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-success)" }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
+            DELIVERED TODAY
+          </p>
+          <p
+            style={{
+              fontSize: "1.75rem",
+              fontWeight: 800,
+              color: "var(--color-success)",
+            }}
+          >
             {totalDelivered}
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Handed over &amp; OTP verified</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Handed over &amp; OTP verified
+          </p>
         </div>
 
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>EXCEPTIONS / FAILED</p>
-          <p style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-danger)" }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
+            EXCEPTIONS / FAILED
+          </p>
+          <p
+            style={{
+              fontSize: "1.75rem",
+              fontWeight: 800,
+              color: "var(--color-danger)",
+            }}
+          >
             {totalFailed}
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Closed or refused drops</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Closed or refused drops
+          </p>
         </div>
       </div>
 
@@ -526,42 +699,94 @@ export default function DeliveriesPage() {
           marginBottom: "var(--space-6)",
         }}
       >
-        <div className="card" style={{ background: "linear-gradient(135deg, rgba(240,253,250,0.8), rgba(244,244,245,0.4))" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div
+          className="card"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(240,253,250,0.8), rgba(244,244,245,0.4))",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "0.5rem",
+            }}
+          >
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
               <span style={{ fontSize: "1.3rem" }}>🏍️</span>
               <div>
                 <p style={{ fontWeight: 700 }}>Rahul Sharma</p>
-                <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>Hero Splendor (WB-40-AB-3421) • +91 98000 00004</p>
+                <p
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "var(--text-secondary)",
+                  }}
+                >
+                  Hero Splendor (WB-40-AB-3421) • +91 98000 00004
+                </p>
               </div>
             </div>
             <span className="badge badge-success">On Route</span>
           </div>
           <p style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-            Assigned: <strong>ORD-2026-004448</strong> to Benachity. ETA: 15 mins.
+            Assigned: <strong>ORD-2026-004448</strong> to Benachity. ETA: 15
+            mins.
           </p>
         </div>
 
-        <div className="card" style={{ background: "linear-gradient(135deg, rgba(240,253,250,0.8), rgba(244,244,245,0.4))" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        <div
+          className="card"
+          style={{
+            background:
+              "linear-gradient(135deg, rgba(240,253,250,0.8), rgba(244,244,245,0.4))",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "0.5rem",
+            }}
+          >
+            <div
+              style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}
+            >
               <span style={{ fontSize: "1.3rem" }}>🚐</span>
               <div>
                 <p style={{ fontWeight: 700 }}>Bikash Roy</p>
-                <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>Delivery Van (WB-40-CD-8812) • +91 98000 00005</p>
+                <p
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "var(--text-secondary)",
+                  }}
+                >
+                  Delivery Van (WB-40-CD-8812) • +91 98000 00005
+                </p>
               </div>
             </div>
             <span className="badge badge-warning">At Warehouse</span>
           </div>
           <p style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-            Assigned: <strong>ORD-2026-000538</strong> to City Centre. Loading scheduled.
+            Assigned: <strong>ORD-2026-000538</strong> to City Centre. Loading
+            scheduled.
           </p>
         </div>
       </div>
 
       {/* Assignments Table */}
       <div className="card">
-        <h2 style={{ fontSize: "var(--font-size-lg)", fontWeight: 700, marginBottom: "var(--space-4)" }}>
+        <h2
+          style={{
+            fontSize: "var(--font-size-lg)",
+            fontWeight: 700,
+            marginBottom: "var(--space-4)",
+          }}
+        >
           Active Delivery Run Sheet &amp; Navigation Stops
         </h2>
         <div className="table-wrapper">
@@ -580,20 +805,43 @@ export default function DeliveriesPage() {
               {deliveries.map((del) => (
                 <tr key={del.id}>
                   <td>
-                    <div style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+                    <div
+                      style={{
+                        fontWeight: 700,
+                        color: "var(--color-primary-700)",
+                      }}
+                    >
                       {del.orderNumber}
                     </div>
                     <div style={{ fontSize: "0.85rem", fontWeight: 700 }}>
-                      ₹{del.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                      ₹
+                      {del.amount.toLocaleString("en-IN", {
+                        minimumFractionDigits: 2,
+                      })}
                     </div>
-                    <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{del.assignedAt}</div>
+                    <div
+                      style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}
+                    >
+                      {del.assignedAt}
+                    </div>
                   </td>
                   <td>
                     <div style={{ fontWeight: 600 }}>{del.shopName}</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                    <div
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
                       {del.address}
                     </div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--color-primary-600)", fontWeight: 600 }}>
+                    <div
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--color-primary-600)",
+                        fontWeight: 600,
+                      }}
+                    >
                       📞 {del.phone}
                     </div>
                   </td>
@@ -603,7 +851,13 @@ export default function DeliveriesPage() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn btn-secondary"
-                      style={{ padding: "0.3rem 0.6rem", fontSize: "0.75rem", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}
+                      style={{
+                        padding: "0.3rem 0.6rem",
+                        fontSize: "0.75rem",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.3rem",
+                      }}
                       title="Launch turn-by-turn navigation in Google Maps"
                     >
                       🗺️ Map Route
@@ -611,23 +865,44 @@ export default function DeliveriesPage() {
                   </td>
                   <td>
                     <div style={{ fontWeight: 600 }}>{del.courierName}</div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                    <div
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--text-muted)",
+                      }}
+                    >
                       {del.vehicle}
                     </div>
                   </td>
                   <td>
                     <div>{getStatusBadge(del.status)}</div>
-                    <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.2rem" }}>
+                    <div
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "var(--text-muted)",
+                        marginTop: "0.2rem",
+                      }}
+                    >
                       {del.notes}
                     </div>
                   </td>
                   <td>
-                    <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap", alignItems: "center" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "var(--space-2)",
+                        flexWrap: "wrap",
+                        alignItems: "center",
+                      }}
+                    >
                       {del.status === "ASSIGNED" && (
                         <button
                           type="button"
                           className="btn btn-secondary"
-                          style={{ padding: "0.3rem 0.6rem", fontSize: "0.75rem" }}
+                          style={{
+                            padding: "0.3rem 0.6rem",
+                            fontSize: "0.75rem",
+                          }}
                           onClick={() => handleAdvanceStatus(del.id)}
                         >
                           📦 Mark Picked Up
@@ -637,7 +912,10 @@ export default function DeliveriesPage() {
                         <button
                           type="button"
                           className="btn btn-primary"
-                          style={{ padding: "0.3rem 0.6rem", fontSize: "0.75rem" }}
+                          style={{
+                            padding: "0.3rem 0.6rem",
+                            fontSize: "0.75rem",
+                          }}
                           onClick={() => handleAdvanceStatus(del.id)}
                         >
                           🛵 Start Trip
@@ -648,7 +926,12 @@ export default function DeliveriesPage() {
                           <button
                             type="button"
                             className="btn btn-primary"
-                            style={{ padding: "0.3rem 0.6rem", fontSize: "0.75rem", background: "var(--color-success)", borderColor: "var(--color-success)" }}
+                            style={{
+                              padding: "0.3rem 0.6rem",
+                              fontSize: "0.75rem",
+                              background: "var(--color-success)",
+                              borderColor: "var(--color-success)",
+                            }}
                             onClick={() => handleAdvanceStatus(del.id)}
                           >
                             ✓ Complete Handover
@@ -656,7 +939,12 @@ export default function DeliveriesPage() {
                           <button
                             type="button"
                             className="btn btn-secondary"
-                            style={{ padding: "0.3rem 0.6rem", fontSize: "0.75rem", color: "var(--color-danger)", borderColor: "var(--color-danger)" }}
+                            style={{
+                              padding: "0.3rem 0.6rem",
+                              fontSize: "0.75rem",
+                              color: "var(--color-danger)",
+                              borderColor: "var(--color-danger)",
+                            }}
                             onClick={() => {
                               setActiveDeliveryForFailure(del);
                               setSelectedFailureReason("SHOP_CLOSED");
@@ -669,12 +957,24 @@ export default function DeliveriesPage() {
                         </>
                       )}
                       {del.status === "DELIVERED" && (
-                        <span style={{ fontSize: "0.75rem", color: "var(--color-success)", fontWeight: 700 }}>
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--color-success)",
+                            fontWeight: 700,
+                          }}
+                        >
                           ✓ {del.podImage || "ePOD Verified"}
                         </span>
                       )}
                       {del.status === "FAILED" && (
-                        <span style={{ fontSize: "0.75rem", color: "var(--color-danger)", fontWeight: 700 }}>
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--color-danger)",
+                            fontWeight: 700,
+                          }}
+                        >
                           ❌ {del.failureReason || "Non-delivery"}
                         </span>
                       )}
@@ -694,7 +994,13 @@ export default function DeliveriesPage() {
         title="✍️ Electronic Proof of Delivery (ePOD)"
         subtitle={`Confirm handover for ${activeDeliveryForHandover?.orderNumber} to ${activeDeliveryForHandover?.shopName}`}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           <div
             style={{
               padding: "var(--space-3)",
@@ -706,16 +1012,37 @@ export default function DeliveriesPage() {
             <div style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
               {activeDeliveryForHandover?.shopName}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "2px" }}>
+            <div
+              style={{
+                fontSize: "0.75rem",
+                color: "var(--text-secondary)",
+                marginTop: "2px",
+              }}
+            >
               {activeDeliveryForHandover?.address}
             </div>
-            <div style={{ fontSize: "0.85rem", fontWeight: 700, marginTop: "6px" }}>
-              Invoice Payable: ₹{activeDeliveryForHandover?.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+            <div
+              style={{ fontSize: "0.85rem", fontWeight: 700, marginTop: "6px" }}
+            >
+              Invoice Payable: ₹
+              {activeDeliveryForHandover?.amount.toLocaleString("en-IN", {
+                minimumFractionDigits: 2,
+              })}
             </div>
           </div>
 
-          <div style={{ background: "rgba(37, 99, 235, 0.06)", border: "1px dashed var(--color-primary-400)", padding: "var(--space-3)", borderRadius: "var(--radius-md)" }}>
-            <label className="label" style={{ color: "var(--color-primary-800)", fontWeight: 700 }}>
+          <div
+            style={{
+              background: "rgba(37, 99, 235, 0.06)",
+              border: "1px dashed var(--color-primary-400)",
+              padding: "var(--space-3)",
+              borderRadius: "var(--radius-md)",
+            }}
+          >
+            <label
+              className="label"
+              style={{ color: "var(--color-primary-800)", fontWeight: 700 }}
+            >
               🔐 Retailer Delivery Handshake OTP *
             </label>
             <input
@@ -725,14 +1052,31 @@ export default function DeliveriesPage() {
               placeholder="Enter 4-digit OTP from Shopkeeper app"
               value={deliveryOtpInput}
               onChange={(e) => setDeliveryOtpInput(e.target.value)}
-              style={{ fontSize: "1.1rem", letterSpacing: "3px", fontWeight: 700, textAlign: "center" }}
+              style={{
+                fontSize: "1.1rem",
+                letterSpacing: "3px",
+                fontWeight: 700,
+                textAlign: "center",
+              }}
             />
-            <p style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "4px" }}>
+            <p
+              style={{
+                fontSize: "0.72rem",
+                color: "var(--text-muted)",
+                marginTop: "4px",
+              }}
+            >
               Shopkeeper views this OTP on their &ldquo;My Orders&rdquo; screen.
             </p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "var(--space-3)",
+            }}
+          >
             <div>
               <label className="label">💵 Cash Collected (₹)</label>
               <input
@@ -762,11 +1106,21 @@ export default function DeliveriesPage() {
                   onClick={handleVerifyUpiWebhook}
                   disabled={upiWebhookStatus === "VERIFYING"}
                 >
-                  {upiWebhookStatus === "VERIFYING" ? "Checking Webhook..." : "⚡ Verify NPCI Bank Webhook (Item #129)"}
+                  {upiWebhookStatus === "VERIFYING"
+                    ? "Checking Webhook..."
+                    : "⚡ Verify NPCI Bank Webhook (Item #129)"}
                 </button>
                 {upiWebhookStatus === "VERIFIED" && (
-                  <div style={{ fontSize: "0.72rem", color: "var(--color-success)", fontWeight: 700, marginTop: "4px" }}>
-                    ✓ Bank Webhook Confirmed: UTR #20261020093849102 credited to distributor IndusInd current account!
+                  <div
+                    style={{
+                      fontSize: "0.72rem",
+                      color: "var(--color-success)",
+                      fontWeight: 700,
+                      marginTop: "4px",
+                    }}
+                  >
+                    ✓ Bank Webhook Confirmed: UTR #20261020093849102 credited to
+                    distributor IndusInd current account!
                   </div>
                 )}
               </div>
@@ -784,7 +1138,9 @@ export default function DeliveriesPage() {
           </div>
 
           <div>
-            <label className="label">📸 Counter Stamp / Shopfront Photo (Optional URL)</label>
+            <label className="label">
+              📸 Counter Stamp / Shopfront Photo (Optional URL)
+            </label>
             <input
               className="input"
               placeholder="e.g. https://storage.pharmacyfantasy.com/pod/stamp-10492.jpg"
@@ -794,14 +1150,23 @@ export default function DeliveriesPage() {
           </div>
 
           <div>
-            <label className="label">Pharmacist Digital Signature (Canvas) *</label>
+            <label className="label">
+              Pharmacist Digital Signature (Canvas) *
+            </label>
             <SignaturePad
               onSave={(dataUrl) => setCapturedSignature(dataUrl)}
               onClear={() => setCapturedSignature("")}
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-3)",
+              marginTop: "var(--space-4)",
+            }}
+          >
             <button
               type="button"
               className="btn btn-secondary"
@@ -812,7 +1177,10 @@ export default function DeliveriesPage() {
             <button
               type="button"
               className="btn btn-primary"
-              style={{ background: "var(--color-success)", borderColor: "var(--color-success)" }}
+              style={{
+                background: "var(--color-success)",
+                borderColor: "var(--color-success)",
+              }}
               onClick={handleConfirmHandover}
             >
               ✓ Complete Handover &amp; Save ePOD
@@ -828,7 +1196,13 @@ export default function DeliveriesPage() {
         title="⚠️ Report Non-Delivery Exception"
         subtitle={`Log failure reason for ${activeDeliveryForFailure?.orderNumber} to ${activeDeliveryForFailure?.shopName}`}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           <div
             style={{
               padding: "var(--space-3)",
@@ -838,9 +1212,18 @@ export default function DeliveriesPage() {
               fontSize: "0.85rem",
             }}
           >
-            <strong>Consignment:</strong> {activeDeliveryForFailure?.orderNumber} (₹{activeDeliveryForFailure?.amount.toLocaleString("en-IN")})
-            <div style={{ color: "var(--text-secondary)", fontSize: "0.75rem", marginTop: "2px" }}>
-              {activeDeliveryForFailure?.shopName} • {activeDeliveryForFailure?.address}
+            <strong>Consignment:</strong>{" "}
+            {activeDeliveryForFailure?.orderNumber} (₹
+            {activeDeliveryForFailure?.amount.toLocaleString("en-IN")})
+            <div
+              style={{
+                color: "var(--text-secondary)",
+                fontSize: "0.75rem",
+                marginTop: "2px",
+              }}
+            >
+              {activeDeliveryForFailure?.shopName} •{" "}
+              {activeDeliveryForFailure?.address}
             </div>
           </div>
 
@@ -848,7 +1231,13 @@ export default function DeliveriesPage() {
             <label className="label" style={{ fontWeight: 700 }}>
               Standardized Failure Reason *
             </label>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--space-2)",
+              }}
+            >
               {FAILURE_REASONS.map((r) => (
                 <label
                   key={r.code}
@@ -858,8 +1247,14 @@ export default function DeliveriesPage() {
                     gap: "var(--space-2)",
                     padding: "var(--space-2) var(--space-3)",
                     borderRadius: "var(--radius-md)",
-                    border: selectedFailureReason === r.code ? "2px solid var(--color-danger)" : "1px solid var(--border-color)",
-                    background: selectedFailureReason === r.code ? "rgba(239, 68, 68, 0.04)" : "transparent",
+                    border:
+                      selectedFailureReason === r.code
+                        ? "2px solid var(--color-danger)"
+                        : "1px solid var(--border-color)",
+                    background:
+                      selectedFailureReason === r.code
+                        ? "rgba(239, 68, 68, 0.04)"
+                        : "transparent",
                     cursor: "pointer",
                     fontSize: "0.85rem",
                     fontWeight: selectedFailureReason === r.code ? 700 : 500,
@@ -890,7 +1285,9 @@ export default function DeliveriesPage() {
           </div>
 
           <div>
-            <label className="label">📸 Supporting Photo URL (e.g., Closed Shutter / Damaged Carton)</label>
+            <label className="label">
+              📸 Supporting Photo URL (e.g., Closed Shutter / Damaged Carton)
+            </label>
             <input
               className="input"
               placeholder="https://storage.pharmacyfantasy.com/exceptions/closed-shutter.jpg"
@@ -899,7 +1296,14 @@ export default function DeliveriesPage() {
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-3)",
+              marginTop: "var(--space-4)",
+            }}
+          >
             <button
               type="button"
               className="btn btn-secondary"
@@ -910,7 +1314,10 @@ export default function DeliveriesPage() {
             <button
               type="button"
               className="btn btn-primary"
-              style={{ background: "var(--color-danger)", borderColor: "var(--color-danger)" }}
+              style={{
+                background: "var(--color-danger)",
+                borderColor: "var(--color-danger)",
+              }}
               onClick={handleReportFailure}
             >
               Submit Failure &amp; Return to Bay
@@ -926,62 +1333,138 @@ export default function DeliveriesPage() {
         title="📄 Daily Delivery Remittance & Cashier Handover"
         subtitle="End-of-shift cash/UPI reconciliation voucher for warehouse cashier acknowledgement"
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           <div
             style={{
               padding: "var(--space-4)",
-              background: "linear-gradient(135deg, rgba(240, 253, 250, 0.9), rgba(244, 244, 245, 0.7))",
+              background:
+                "linear-gradient(135deg, rgba(240, 253, 250, 0.9), rgba(244, 244, 245, 0.7))",
               border: "1px solid var(--color-primary-300)",
               borderRadius: "var(--radius-lg)",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-3)" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "var(--space-3)",
+              }}
+            >
               <div>
-                <h3 style={{ fontWeight: 800, fontSize: "1.1rem" }}>Shift Remittance Voucher</h3>
-                <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                <h3 style={{ fontWeight: 800, fontSize: "1.1rem" }}>
+                  Shift Remittance Voucher
+                </h3>
+                <p
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "var(--text-secondary)",
+                  }}
+                >
                   Courier: <strong>Rahul Sharma</strong> • WB-40-AB-3421
                 </p>
               </div>
               <span className="badge badge-success">VOUCHER-2026-REM-08</span>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)", fontSize: "0.85rem", marginTop: "var(--space-3)" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "var(--space-3)",
+                fontSize: "0.85rem",
+                marginTop: "var(--space-3)",
+              }}
+            >
               <div>
-                <span style={{ color: "var(--text-secondary)" }}>Total Assigned Stops:</span>
+                <span style={{ color: "var(--text-secondary)" }}>
+                  Total Assigned Stops:
+                </span>
                 <p style={{ fontWeight: 700 }}>{deliveries.length} drops</p>
               </div>
               <div>
-                <span style={{ color: "var(--text-secondary)" }}>Delivered &amp; OTP Verified:</span>
-                <p style={{ fontWeight: 700, color: "var(--color-success)" }}>{totalDelivered} drops</p>
+                <span style={{ color: "var(--text-secondary)" }}>
+                  Delivered &amp; OTP Verified:
+                </span>
+                <p style={{ fontWeight: 700, color: "var(--color-success)" }}>
+                  {totalDelivered} drops
+                </p>
               </div>
               <div>
-                <span style={{ color: "var(--text-secondary)" }}>Non-Delivery Exceptions:</span>
-                <p style={{ fontWeight: 700, color: "var(--color-danger)" }}>{totalFailed} drops</p>
+                <span style={{ color: "var(--text-secondary)" }}>
+                  Non-Delivery Exceptions:
+                </span>
+                <p style={{ fontWeight: 700, color: "var(--color-danger)" }}>
+                  {totalFailed} drops
+                </p>
               </div>
               <div>
-                <span style={{ color: "var(--text-secondary)" }}>Pending Delivery:</span>
-                <p style={{ fontWeight: 700, color: "var(--color-info)" }}>{totalInTransit} drops</p>
+                <span style={{ color: "var(--text-secondary)" }}>
+                  Pending Delivery:
+                </span>
+                <p style={{ fontWeight: 700, color: "var(--color-info)" }}>
+                  {totalInTransit} drops
+                </p>
               </div>
             </div>
 
-            <hr style={{ margin: "var(--space-3) 0", borderColor: "rgba(0,0,0,0.1)" }} />
+            <hr
+              style={{
+                margin: "var(--space-3) 0",
+                borderColor: "rgba(0,0,0,0.1)",
+              }}
+            />
 
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.95rem", fontWeight: 800 }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: "0.95rem",
+                fontWeight: 800,
+              }}
+            >
               <span>Total Remittance Handover:</span>
               <span style={{ color: "var(--color-primary-800)" }}>
-                ₹{deliveries.filter((d) => d.status === "DELIVERED").reduce((a, b) => a + b.amount, 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                ₹
+                {deliveries
+                  .filter((d) => d.status === "DELIVERED")
+                  .reduce((a, b) => a + b.amount, 0)
+                  .toLocaleString("en-IN", { minimumFractionDigits: 2 })}
               </span>
             </div>
           </div>
 
-          <div style={{ background: "var(--bg-secondary)", padding: "var(--space-3)", borderRadius: "var(--radius-md)", fontSize: "0.8rem" }}>
-            <p style={{ fontWeight: 700, marginBottom: "4px" }}>Warehouse Cashier Acknowledgment</p>
+          <div
+            style={{
+              background: "var(--bg-secondary)",
+              padding: "var(--space-3)",
+              borderRadius: "var(--radius-md)",
+              fontSize: "0.8rem",
+            }}
+          >
+            <p style={{ fontWeight: 700, marginBottom: "4px" }}>
+              Warehouse Cashier Acknowledgment
+            </p>
             <p style={{ color: "var(--text-secondary)" }}>
-              Hand over collected physical cash and deposit slips to the warehouse cashier counter. The cashier confirms receipt to release courier clearance for the shift.
+              Hand over collected physical cash and deposit slips to the
+              warehouse cashier counter. The cashier confirms receipt to release
+              courier clearance for the shift.
             </p>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-2)" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-2)",
+            }}
+          >
             <button
               type="button"
               className="btn btn-secondary"
@@ -993,7 +1476,9 @@ export default function DeliveriesPage() {
               type="button"
               className="btn btn-primary"
               onClick={() => {
-                setActionSuccess("Remittance acknowledged by warehouse cashier counter!");
+                setActionSuccess(
+                  "Remittance acknowledged by warehouse cashier counter!",
+                );
                 setShowShiftSummary(false);
               }}
             >

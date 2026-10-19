@@ -9,7 +9,7 @@ from sqlalchemy import select
 import strawberry
 from strawberry.types import Info
 
-from app.db.models import Notification, ShopkeeperProfile, User
+from app.db.models import Notification, ShopkeeperProfile
 from app.db.session import async_session_factory
 from app.graphql.resolvers.auth import _get_caller
 from app.graphql.types import (

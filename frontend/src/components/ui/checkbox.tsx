@@ -2,7 +2,10 @@
 
 import React from "react";
 
-interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
+interface CheckboxProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "type"
+> {
   label?: React.ReactNode;
   description?: string;
   error?: string;
@@ -10,7 +13,8 @@ interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>
 
 export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
   ({ label, description, error, className = "", id, ...props }, ref) => {
-    const inputId = id || React.useId();
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
 
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
@@ -47,7 +51,12 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
                 </span>
               )}
               {description && (
-                <span style={{ fontSize: "var(--font-size-xs)", color: "var(--text-muted)" }}>
+                <span
+                  style={{
+                    fontSize: "var(--font-size-xs)",
+                    color: "var(--text-muted)",
+                  }}
+                >
                   {description}
                 </span>
               )}
@@ -55,13 +64,18 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
           )}
         </label>
         {error && (
-          <span style={{ fontSize: "var(--font-size-xs)", color: "var(--color-error)" }}>
+          <span
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: "var(--color-error)",
+            }}
+          >
             {error}
           </span>
         )}
       </div>
     );
-  }
+  },
 );
 
 Checkbox.displayName = "Checkbox";

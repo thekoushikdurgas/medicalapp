@@ -145,5 +145,7 @@ async def process_challan_return(
             batch.quantity_available += qty
             batch.quantity_sold = max(0, batch.quantity_sold - qty)
 
-    logger.info(f"Processed challan return {return_num} for challan {challan.challan_number}")
+    logger.info(
+        f"Processed challan return {return_num} for challan {challan.challan_number}"
+    )
     return challan_return

@@ -1,7 +1,7 @@
 # 🏗️ Pharmacy Fantasy — Backend System Design
 
 > **Micro-Architecture & Core Subsystem Specification**  
-> *Target:* Backend Core Engineers & Architects
+> _Target:_ Backend Core Engineers & Architects
 
 ---
 
@@ -36,6 +36,7 @@ The backend follows a layered Clean Architecture pattern:
 Resolvers currently contain direct database operations. The target architecture delegates this to dedicated service classes:
 
 ### 2.1 `OrderService` (`app/services/order_service.py`)
+
 - `place_order(shopkeeper_id, items, remarks)`:
   1. Validates shopkeeper credit limit against outstanding balance.
   2. Calculates GST, discounts, and line totals via `app.utils.gst`.
@@ -50,6 +51,7 @@ Resolvers currently contain direct database operations. The target architecture 
   3. Sets status to `CANCELLED`.
 
 ### 2.2 `InventoryService` (`app/services/inventory_service.py`)
+
 - `allocate_batch_fefo(product_id, required_quantity)`:
   - Queries active batches ordered by `expiry_date ASC`.
   - Filters where `quantity_available > 0`.
@@ -77,7 +79,7 @@ def calculate_line_gst(
     total_disc_pct = discount1_pct + discount2_pct
     discount_amount = round(base_amount * (total_disc_pct / 100.0), 2)
     taxable_value = round(base_amount - discount_amount, 2)
-    
+
     sgst_amount = round(taxable_value * (sgst_pct / 100.0), 2)
     cgst_amount = round(taxable_value * (cgst_pct / 100.0), 2)
     line_total = round(taxable_value + sgst_amount + cgst_amount, 2)

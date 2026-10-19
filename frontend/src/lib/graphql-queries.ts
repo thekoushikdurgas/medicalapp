@@ -146,12 +146,21 @@ export const SEND_RETAILER_PAYMENT_REMINDER_MUTATION = gql`
   }
 `;
 
-
 // ── Products ────────────────────────────────────────────
 
 export const PRODUCTS_QUERY = gql`
-  query Products($search: String, $category: String, $page: Int, $perPage: Int) {
-    products(search: $search, category: $category, page: $page, perPage: $perPage) {
+  query Products(
+    $search: String
+    $category: String
+    $page: Int
+    $perPage: Int
+  ) {
+    products(
+      search: $search
+      category: $category
+      page: $page
+      perPage: $perPage
+    ) {
       items {
         id
         name
@@ -283,7 +292,6 @@ export const COMPLETE_DELIVERY_WITH_OTP_MUTATION = gql`
   }
 `;
 
-
 // ── Dashboard ───────────────────────────────────────────
 
 export const DASHBOARD_STATS_QUERY = gql`
@@ -400,7 +408,11 @@ export const CREATE_INVOICE_RETURN_MUTATION = gql`
 
 export const GET_ADVANCE_PAYMENTS_QUERY = gql`
   query GetAdvancePayments($shopkeeperId: UUID, $page: Int, $perPage: Int) {
-    advancePayments(shopkeeperId: $shopkeeperId, page: $page, perPage: $perPage) {
+    advancePayments(
+      shopkeeperId: $shopkeeperId
+      page: $page
+      perPage: $perPage
+    ) {
       id
       receiptNumber
       shopkeeperId
@@ -491,8 +503,18 @@ export const REVIEW_RETURN_CLAIM_MUTATION = gql`
 // ── Shopkeepers / Retail Pharmacies KYC & Credit ──────────
 
 export const SHOPKEEPERS_QUERY = gql`
-  query Shopkeepers($search: String, $status: String, $page: Int, $perPage: Int) {
-    shopkeepers(search: $search, status: $status, page: $page, perPage: $perPage) {
+  query Shopkeepers(
+    $search: String
+    $status: String
+    $page: Int
+    $perPage: Int
+  ) {
+    shopkeepers(
+      search: $search
+      status: $status
+      page: $page
+      perPage: $perPage
+    ) {
       id
       userId
       shopName
@@ -515,8 +537,16 @@ export const SHOPKEEPERS_QUERY = gql`
 `;
 
 export const UPDATE_SHOPKEEPER_KYC_MUTATION = gql`
-  mutation UpdateShopkeeperKyc($shopkeeperId: UUID!, $status: String!, $notes: String) {
-    updateShopkeeperKyc(shopkeeperId: $shopkeeperId, status: $status, notes: $notes) {
+  mutation UpdateShopkeeperKyc(
+    $shopkeeperId: UUID!
+    $status: String!
+    $notes: String
+  ) {
+    updateShopkeeperKyc(
+      shopkeeperId: $shopkeeperId
+      status: $status
+      notes: $notes
+    ) {
       id
       userId
       shopName
@@ -527,8 +557,16 @@ export const UPDATE_SHOPKEEPER_KYC_MUTATION = gql`
 `;
 
 export const UPDATE_SHOPKEEPER_CREDIT_LIMIT_MUTATION = gql`
-  mutation UpdateShopkeeperCreditLimit($shopkeeperId: UUID!, $newLimit: Float!, $reason: String!) {
-    updateShopkeeperCreditLimit(shopkeeperId: $shopkeeperId, newLimit: $newLimit, reason: $reason) {
+  mutation UpdateShopkeeperCreditLimit(
+    $shopkeeperId: UUID!
+    $newLimit: Float!
+    $reason: String!
+  ) {
+    updateShopkeeperCreditLimit(
+      shopkeeperId: $shopkeeperId
+      newLimit: $newLimit
+      reason: $reason
+    ) {
       id
       userId
       shopName
@@ -586,7 +624,9 @@ export const NOTIFICATION_PREFERENCES_QUERY = gql`
 `;
 
 export const UPDATE_NOTIFICATION_PREFERENCES_MUTATION = gql`
-  mutation UpdateNotificationPreferences($input: UpdateNotificationPreferencesInput!) {
+  mutation UpdateNotificationPreferences(
+    $input: UpdateNotificationPreferencesInput!
+  ) {
     updateNotificationPreferences(input: $input)
   }
 `;
@@ -642,7 +682,11 @@ export const RETRY_FAILED_JOB_MUTATION = gql`
 
 export const SIMULATE_BULK_PRICE_QUERY = gql`
   query SimulateBulkPrice($action: String!, $value: Float!, $category: String) {
-    simulateBulkPriceUpdate(action: $action, value: $value, category: $category) {
+    simulateBulkPriceUpdate(
+      action: $action
+      value: $value
+      category: $category
+    ) {
       dryRun
       totalMatched
       totalAffected
@@ -929,10 +973,3 @@ export const RESOLVE_SUPPLIER_RECONCILIATION_MUTATION = gql`
     }
   }
 `;
-
-
-
-
-
-
-

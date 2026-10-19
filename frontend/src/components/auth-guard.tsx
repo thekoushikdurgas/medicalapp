@@ -45,8 +45,18 @@ export default function AuthGuard({ children, allowedRoles }: Props) {
 
   if (!ready) {
     return (
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
-        <div className="skeleton" style={{ width: 48, height: 48, borderRadius: "var(--radius-full)" }} />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "60vh",
+        }}
+      >
+        <div
+          className="skeleton"
+          style={{ width: 48, height: 48, borderRadius: "var(--radius-full)" }}
+        />
       </div>
     );
   }

@@ -120,9 +120,7 @@ class ShopkeeperProfile(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("users.id"), unique=True
-    )
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), unique=True)
     shop_name: Mapped[str] = mapped_column(String(255))
     shop_address: Mapped[str] = mapped_column(Text)
     gstin: Mapped[str | None] = mapped_column(String(15), nullable=True)
@@ -147,9 +145,7 @@ class DeliveryProfile(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("users.id"), unique=True
-    )
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), unique=True)
     vehicle_type: Mapped[str | None] = mapped_column(String(50), nullable=True)
     vehicle_number: Mapped[str | None] = mapped_column(String(20), nullable=True)
     assigned_area: Mapped[str | None] = mapped_column(String(100), nullable=True)
@@ -201,9 +197,7 @@ class StockBatch(Base):
         String(50), nullable=True, default="Rack A - Bay 01"
     )
     barcode: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    supplier_invoice_no: Mapped[str | None] = mapped_column(
-        String(50), nullable=True
-    )
+    supplier_invoice_no: Mapped[str | None] = mapped_column(String(50), nullable=True)
     received_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     product: Mapped[Product] = relationship(back_populates="stock_batches")
@@ -301,9 +295,7 @@ class Invoice(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    order_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("orders.id"), unique=True
-    )
+    order_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("orders.id"), unique=True)
     invoice_number: Mapped[str] = mapped_column(String(30), unique=True)
     invoice_date: Mapped[date] = mapped_column(Date)
     subtotal: Mapped[float] = mapped_column(Numeric(12, 2))
@@ -329,9 +321,7 @@ class DeliveryAssignment(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    order_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("orders.id"), unique=True
-    )
+    order_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("orders.id"), unique=True)
     delivery_boy_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     assigned_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     status: Mapped[DeliveryStatus] = mapped_column(
@@ -391,9 +381,7 @@ class Payment(Base):
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
     paid_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
-    __table_args__ = (
-        Index("idx_payments_shopkeeper", "shopkeeper_id", "paid_at"),
-    )
+    __table_args__ = (Index("idx_payments_shopkeeper", "shopkeeper_id", "paid_at"),)
 
 
 # ── Purchase Entries (Incoming Stock) ────────────────────
@@ -510,7 +498,9 @@ class ChallanReturnItem(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    challan_return_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("challan_returns.id"))
+    challan_return_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("challan_returns.id")
+    )
     product_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("products.id"))
     stock_batch_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("stock_batches.id"))
     quantity: Mapped[int] = mapped_column(Integer)
@@ -553,7 +543,9 @@ class InvoiceReturnItem(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    invoice_return_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("invoice_returns.id"))
+    invoice_return_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("invoice_returns.id")
+    )
     product_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("products.id"))
     stock_batch_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("stock_batches.id"))
     quantity: Mapped[int] = mapped_column(Integer)
@@ -606,9 +598,7 @@ class LedgerEntry(Base):
 
     shopkeeper: Mapped[User] = relationship(foreign_keys=[shopkeeper_id])
 
-    __table_args__ = (
-        Index("idx_ledger_shopkeeper", "shopkeeper_id", "created_at"),
-    )
+    __table_args__ = (Index("idx_ledger_shopkeeper", "shopkeeper_id", "created_at"),)
 
 
 # ── Return Claims / Requests ─────────────────────────────
@@ -746,7 +736,9 @@ class StockAdjustment(Base):
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     stock_batch_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("stock_batches.id"))
-    adjustment_type: Mapped[str] = mapped_column(String(50))  # DAMAGED, EXPIRED, COUNT_DISCREPANCY, LEAKAGE
+    adjustment_type: Mapped[str] = mapped_column(
+        String(50)
+    )  # DAMAGED, EXPIRED, COUNT_DISCREPANCY, LEAKAGE
     quantity_delta: Mapped[int] = mapped_column(Integer)
     reason: Mapped[str] = mapped_column(Text)
     evidence_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
@@ -768,7 +760,9 @@ class AccountAuditLog(Base):
         Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
-    action: Mapped[str] = mapped_column(String(100))  # ROLE_CHANGE, PASSWORD_RESET_TRIGGERED, STATUS_TOGGLE, WORK_QUEUE_ASSIGNED
+    action: Mapped[str] = mapped_column(
+        String(100)
+    )  # ROLE_CHANGE, PASSWORD_RESET_TRIGGERED, STATUS_TOGGLE, WORK_QUEUE_ASSIGNED
     details: Mapped[str] = mapped_column(Text)
     performed_by_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
@@ -789,8 +783,12 @@ class SystemGovernancePolicy(Base):
     policy_key: Mapped[str] = mapped_column(String(100), unique=True)
     is_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
     policy_value: Mapped[str | None] = mapped_column(String(255), nullable=True)
-    updated_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
-    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
+    updated_by_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), onupdate=func.now()
+    )
 
     updated_by: Mapped[User | None] = relationship(foreign_keys=[updated_by_id])
 
@@ -810,17 +808,19 @@ class SupplierReconciliationRecord(Base):
     invoice_amount: Mapped[float] = mapped_column(Numeric(12, 2))
     received_amount: Mapped[float] = mapped_column(Numeric(12, 2))
     discrepancy_amount: Mapped[float] = mapped_column(Numeric(12, 2), default=0.0)
-    discrepancy_type: Mapped[str] = mapped_column(String(100))  # PRICE_MISMATCH, QUANTITY_SHORTAGE, TAX_MISMATCH, DUPLICATE_INVOICE
-    status: Mapped[str] = mapped_column(String(50), default="PENDING_REVIEW")  # PENDING_REVIEW, RESOLVED, CREDIT_NOTE_ISSUED
+    discrepancy_type: Mapped[str] = mapped_column(
+        String(100)
+    )  # PRICE_MISMATCH, QUANTITY_SHORTAGE, TAX_MISMATCH, DUPLICATE_INVOICE
+    status: Mapped[str] = mapped_column(
+        String(50), default="PENDING_REVIEW"
+    )  # PENDING_REVIEW, RESOLVED, CREDIT_NOTE_ISSUED
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)
-    resolved_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    resolved_by_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), onupdate=func.now()
+    )
 
     resolved_by: Mapped[User | None] = relationship(foreign_keys=[resolved_by_id])
-
-
-
-
-
-

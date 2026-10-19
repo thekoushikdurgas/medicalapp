@@ -43,7 +43,8 @@ export default function LandingPage() {
                 width: 32,
                 height: 32,
                 borderRadius: "var(--radius-md)",
-                background: "linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700))",
+                background:
+                  "linear-gradient(135deg, var(--color-primary-500), var(--color-primary-700))",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -58,10 +59,18 @@ export default function LandingPage() {
 
           {/* Desktop links */}
           <div style={styles.navLinks} className="desktop-only">
-            <a href="#features" style={styles.navLink}>Features</a>
-            <a href="#roles" style={styles.navLink}>Who It&apos;s For</a>
-            <a href="#pipeline" style={styles.navLink}>Fulfillment Pipeline</a>
-            <a href="#contact" style={styles.navLink}>Contact</a>
+            <a href="#features" style={styles.navLink}>
+              Features
+            </a>
+            <a href="#roles" style={styles.navLink}>
+              Who It&apos;s For
+            </a>
+            <a href="#pipeline" style={styles.navLink}>
+              Fulfillment Pipeline
+            </a>
+            <a href="#contact" style={styles.navLink}>
+              Contact
+            </a>
             <div style={{ marginLeft: "var(--space-2)" }}>
               <ThemeToggle />
             </div>
@@ -75,7 +84,11 @@ export default function LandingPage() {
             <Link
               href="/register"
               className="btn btn-primary"
-              style={{ padding: "0.4rem 1.1rem", fontSize: "0.85rem", gap: "4px" }}
+              style={{
+                padding: "0.4rem 1.1rem",
+                fontSize: "0.85rem",
+                gap: "4px",
+              }}
             >
               <span>Get Started</span>
               <ArrowRight size={14} />
@@ -83,7 +96,14 @@ export default function LandingPage() {
           </div>
 
           {/* Mobile hamburger toggle */}
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }} className="mobile-only">
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-2)",
+            }}
+            className="mobile-only"
+          >
             <ThemeToggle />
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -111,36 +131,64 @@ export default function LandingPage() {
             <a
               href="#features"
               onClick={() => setMobileMenuOpen(false)}
-              style={{ color: "#f8fafc", padding: "8px 0", textDecoration: "none" }}
+              style={{
+                color: "#f8fafc",
+                padding: "8px 0",
+                textDecoration: "none",
+              }}
             >
               Features
             </a>
             <a
               href="#roles"
               onClick={() => setMobileMenuOpen(false)}
-              style={{ color: "#f8fafc", padding: "8px 0", textDecoration: "none" }}
+              style={{
+                color: "#f8fafc",
+                padding: "8px 0",
+                textDecoration: "none",
+              }}
             >
               Who It&apos;s For
             </a>
             <a
               href="#pipeline"
               onClick={() => setMobileMenuOpen(false)}
-              style={{ color: "#f8fafc", padding: "8px 0", textDecoration: "none" }}
+              style={{
+                color: "#f8fafc",
+                padding: "8px 0",
+                textDecoration: "none",
+              }}
             >
               Fulfillment Pipeline
             </a>
-            <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "var(--space-3)",
+                marginTop: "var(--space-2)",
+              }}
+            >
               <Link
                 href="/login"
                 className="btn btn-secondary"
-                style={{ flex: 1, padding: "0.5rem", fontSize: "0.85rem", textAlign: "center" }}
+                style={{
+                  flex: 1,
+                  padding: "0.5rem",
+                  fontSize: "0.85rem",
+                  textAlign: "center",
+                }}
               >
                 Sign In
               </Link>
               <Link
                 href="/register"
                 className="btn btn-primary"
-                style={{ flex: 1, padding: "0.5rem", fontSize: "0.85rem", textAlign: "center" }}
+                style={{
+                  flex: 1,
+                  padding: "0.5rem",
+                  fontSize: "0.85rem",
+                  textAlign: "center",
+                }}
               >
                 Get Started
               </Link>
@@ -171,15 +219,21 @@ export default function LandingPage() {
         </h1>
 
         <p style={styles.heroSub}>
-          End-to-end wholesale distribution management — from warehouse FEFO inventory &amp; batch allocation
-          to GST-compliant invoicing, live route dispatching, and retail pharmacy portals.
+          End-to-end wholesale distribution management — from warehouse FEFO
+          inventory &amp; batch allocation to GST-compliant invoicing, live
+          route dispatching, and retail pharmacy portals.
         </p>
 
         <div style={styles.heroCta}>
           <Link
             href="/register"
             className="btn btn-primary"
-            style={{ padding: "0.85rem 2.25rem", fontSize: "1rem", fontWeight: 700, gap: "8px" }}
+            style={{
+              padding: "0.85rem 2.25rem",
+              fontSize: "1rem",
+              fontWeight: 700,
+              gap: "8px",
+            }}
           >
             <span>Start Free Trial</span>
             <ArrowRight size={16} />
@@ -187,7 +241,11 @@ export default function LandingPage() {
           <Link
             href="/login"
             className="btn btn-secondary"
-            style={{ padding: "0.85rem 2.25rem", fontSize: "1rem", fontWeight: 600 }}
+            style={{
+              padding: "0.85rem 2.25rem",
+              fontSize: "1rem",
+              fontWeight: 600,
+            }}
           >
             Sign In to Dashboard
           </Link>
@@ -231,9 +289,12 @@ export default function LandingPage() {
           >
             Enterprise Capabilities
           </span>
-          <h2 style={styles.sectionTitle}>Engineered for Pharmaceutical Wholesalers &amp; C&amp;F Agents</h2>
+          <h2 style={styles.sectionTitle}>
+            Engineered for Pharmaceutical Wholesalers &amp; C&amp;F Agents
+          </h2>
           <p style={styles.sectionSub}>
-            Purpose-built for pharmaceutical distributors, bulk warehouses, and retail pharmacy networks across India.
+            Purpose-built for pharmaceutical distributors, bulk warehouses, and
+            retail pharmacy networks across India.
           </p>
         </div>
 
@@ -258,7 +319,14 @@ export default function LandingPage() {
       </section>
 
       {/* Fulfillment Pipeline Banner */}
-      <section id="pipeline" style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem 1.5rem 4rem" }}>
+      <section
+        id="pipeline"
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          padding: "2rem 1.5rem 4rem",
+        }}
+      >
         <div
           className="card"
           style={{
@@ -269,14 +337,30 @@ export default function LandingPage() {
           }}
         >
           <div style={{ textAlign: "center", marginBottom: "var(--space-6)" }}>
-            <span className="badge badge-primary" style={{ marginBottom: "var(--space-2)" }}>
+            <span
+              className="badge badge-primary"
+              style={{ marginBottom: "var(--space-2)" }}
+            >
               Lifecycle Flow
             </span>
-            <h2 style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "#f8fafc" }}>
+            <h2
+              style={{
+                fontSize: "var(--font-size-2xl)",
+                fontWeight: 800,
+                color: "#f8fafc",
+              }}
+            >
               The 5-Stage Wholesale Supply Chain Pipeline
             </h2>
-            <p style={{ fontSize: "var(--font-size-sm)", color: "#94a3b8", marginTop: "4px" }}>
-              Zero paper friction, seamless tracking from order placement to OTP cash collection.
+            <p
+              style={{
+                fontSize: "var(--font-size-sm)",
+                color: "#94a3b8",
+                marginTop: "4px",
+              }}
+            >
+              Zero paper friction, seamless tracking from order placement to OTP
+              cash collection.
             </p>
           </div>
 
@@ -331,7 +415,13 @@ export default function LandingPage() {
                   gap: "var(--space-2)",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "var(--space-2)",
+                  }}
+                >
                   <div
                     style={{
                       width: 24,
@@ -348,10 +438,28 @@ export default function LandingPage() {
                   >
                     {p.step}
                   </div>
-                  <div style={{ color: "var(--color-primary-400)" }}>{p.icon}</div>
+                  <div style={{ color: "var(--color-primary-400)" }}>
+                    {p.icon}
+                  </div>
                 </div>
-                <h4 style={{ fontSize: "0.95rem", fontWeight: 700, color: "#f8fafc" }}>{p.title}</h4>
-                <p style={{ fontSize: "0.78rem", color: "#94a3b8", lineHeight: 1.5 }}>{p.desc}</p>
+                <h4
+                  style={{
+                    fontSize: "0.95rem",
+                    fontWeight: 700,
+                    color: "#f8fafc",
+                  }}
+                >
+                  {p.title}
+                </h4>
+                <p
+                  style={{
+                    fontSize: "0.78rem",
+                    color: "#94a3b8",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {p.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -361,8 +469,13 @@ export default function LandingPage() {
       {/* Role-Based Dashboards Grid */}
       <section id="roles" style={styles.roles}>
         <div style={{ textAlign: "center", marginBottom: "var(--space-8)" }}>
-          <h2 style={styles.sectionTitle}>Dedicated Portals for Every Supply Chain Role</h2>
-          <p style={styles.sectionSub}>Each team member sees exactly what they need — zero cognitive clutter.</p>
+          <h2 style={styles.sectionTitle}>
+            Dedicated Portals for Every Supply Chain Role
+          </h2>
+          <p style={styles.sectionSub}>
+            Each team member sees exactly what they need — zero cognitive
+            clutter.
+          </p>
         </div>
 
         <div style={styles.rolesGrid}>
@@ -379,10 +492,25 @@ export default function LandingPage() {
               >
                 {r.icon}
               </div>
-              <h3 style={{ fontSize: "1.1rem", fontWeight: 700, color: "#f8fafc", marginBottom: "0.5rem" }}>
+              <h3
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: 700,
+                  color: "#f8fafc",
+                  marginBottom: "0.5rem",
+                }}
+              >
                 {r.title}
               </h3>
-              <p style={{ fontSize: "0.85rem", color: "#94a3b8", lineHeight: 1.6 }}>{r.desc}</p>
+              <p
+                style={{
+                  fontSize: "0.85rem",
+                  color: "#94a3b8",
+                  lineHeight: 1.6,
+                }}
+              >
+                {r.desc}
+              </p>
               <ul style={styles.roleFeatures}>
                 {r.features.map((feat, j) => (
                   <li key={j} style={styles.roleFeatureItem}>
@@ -418,14 +546,26 @@ export default function LandingPage() {
               margin: "0 auto var(--space-6)",
             }}
           >
-            Join pharmaceutical distributors and wholesale agencies across West Bengal who rely on Pharmacy Fantasy
-            for high-speed, compliant wholesale fulfillment.
+            Join pharmaceutical distributors and wholesale agencies across West
+            Bengal who rely on Pharmacy Fantasy for high-speed, compliant
+            wholesale fulfillment.
           </p>
-          <div style={{ display: "flex", gap: "var(--space-3)", justifyContent: "center", flexWrap: "wrap" }}>
+          <div
+            style={{
+              display: "flex",
+              gap: "var(--space-3)",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
             <Link
               href="/register"
               className="btn btn-primary"
-              style={{ padding: "0.85rem 2.5rem", fontSize: "1rem", fontWeight: 700 }}
+              style={{
+                padding: "0.85rem 2.5rem",
+                fontSize: "1rem",
+                fontWeight: 700,
+              }}
             >
               Create Wholesaler Account →
             </Link>
@@ -444,7 +584,14 @@ export default function LandingPage() {
       <footer id="contact" style={styles.footer}>
         <div style={styles.footerInner}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                marginBottom: "0.75rem",
+              }}
+            >
               <div
                 style={{
                   width: 28,
@@ -459,20 +606,52 @@ export default function LandingPage() {
               >
                 <Pill size={16} />
               </div>
-              <span style={{ fontWeight: 700, fontSize: "1.1rem", color: "#f8fafc" }}>Pharmacy Fantasy</span>
+              <span
+                style={{
+                  fontWeight: 700,
+                  fontSize: "1.1rem",
+                  color: "#f8fafc",
+                }}
+              >
+                Pharmacy Fantasy
+              </span>
             </div>
-            <p style={{ fontSize: "0.8rem", color: "#64748b", maxWidth: "340px", lineHeight: 1.6 }}>
-              B2B Pharmaceutical Wholesale &amp; Supply Chain Logistics Platform.
-              Engineered for statutory Indian drug distribution compliance.
+            <p
+              style={{
+                fontSize: "0.8rem",
+                color: "#64748b",
+                maxWidth: "340px",
+                lineHeight: 1.6,
+              }}
+            >
+              B2B Pharmaceutical Wholesale &amp; Supply Chain Logistics
+              Platform. Engineered for statutory Indian drug distribution
+              compliance.
             </p>
           </div>
 
           <div style={{ textAlign: "right" }}>
-            <p style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}>Licensed Distribution Partner</p>
-            <p style={{ fontSize: "0.95rem", color: "var(--color-primary-400)", fontWeight: 700 }}>
+            <p
+              style={{ fontSize: "0.8rem", color: "#94a3b8", fontWeight: 600 }}
+            >
+              Licensed Distribution Partner
+            </p>
+            <p
+              style={{
+                fontSize: "0.95rem",
+                color: "var(--color-primary-400)",
+                fontWeight: 700,
+              }}
+            >
               MAA Eswari Pharmaceuticals
             </p>
-            <p style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "2px" }}>
+            <p
+              style={{
+                fontSize: "0.75rem",
+                color: "#64748b",
+                marginTop: "2px",
+              }}
+            >
               GSTIN: 19BKMPG6092H1ZO • Wholesale Drug License: DL-WB-BUR-2024
             </p>
           </div>
@@ -542,35 +721,60 @@ const ROLES = [
     title: "Super Admin",
     color: "#7c3aed",
     desc: "Full system control — multi-user administration, statutory GST audit reports, and master oversight.",
-    features: ["Manage all roles & permissions", "System configuration", "GST & margin P&L reports", "Full audit trail"],
+    features: [
+      "Manage all roles & permissions",
+      "System configuration",
+      "GST & margin P&L reports",
+      "Full audit trail",
+    ],
   },
   {
     icon: <ShieldCheck size={32} />,
     title: "Operations Admin",
     color: "#2563eb",
     desc: "Day-to-day operations management — wholesale order approvals, deliveries, and tax invoices.",
-    features: ["Review & approve bulk orders", "Assign delivery agents", "Generate statutory invoices", "Credit ledger monitoring"],
+    features: [
+      "Review & approve bulk orders",
+      "Assign delivery agents",
+      "Generate statutory invoices",
+      "Credit ledger monitoring",
+    ],
   },
   {
     icon: <Warehouse size={32} />,
     title: "Warehouse Staff",
     color: "#d97706",
     desc: "Warehouse floor logistics — purchase entry, batch racking, and FEFO picking queue.",
-    features: ["Batch receipt & rack allocation", "FEFO picking sheets", "Expiry alert monitoring", "Stock adjustment logs"],
+    features: [
+      "Batch receipt & rack allocation",
+      "FEFO picking sheets",
+      "Expiry alert monitoring",
+      "Stock adjustment logs",
+    ],
   },
   {
     icon: <Bike size={32} />,
     title: "Delivery Boy",
     color: "#059669",
     desc: "Mobile dispatch agent — assigned multi-stop runs, COD cash collection, and OTP confirmation.",
-    features: ["View route & shop stops", "Update trip status in real time", "OTP delivery verification", "Cash on delivery ledger"],
+    features: [
+      "View route & shop stops",
+      "Update trip status in real time",
+      "OTP delivery verification",
+      "Cash on delivery ledger",
+    ],
   },
   {
     icon: <Store size={32} />,
     title: "Retail Shopkeeper",
     color: "#dc2626",
     desc: "Independent pharmacy portal — 24/7 ordering, order tracking, and invoice downloads.",
-    features: ["Search 100+ wholesale lines", "Live order tracking", "Download tax invoices", "Credit balance tracking"],
+    features: [
+      "Search 100+ wholesale lines",
+      "Live order tracking",
+      "Download tax invoices",
+      "Credit balance tracking",
+    ],
   },
 ];
 
@@ -580,7 +784,8 @@ const styles: Record<string, React.CSSProperties> = {
     position: "fixed",
     inset: 0,
     zIndex: -2,
-    background: "linear-gradient(160deg, #020617 0%, #0f172a 40%, #064e3b 75%, #020617 100%)",
+    background:
+      "linear-gradient(160deg, #020617 0%, #0f172a 40%, #064e3b 75%, #020617 100%)",
   },
   bgOrbs: {
     position: "fixed",
@@ -608,9 +813,20 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
   },
   navBrand: { display: "flex", alignItems: "center", gap: "0.6rem" },
-  navBrandText: { fontWeight: 800, fontSize: "1.15rem", color: "#f8fafc", letterSpacing: "-0.02em" },
+  navBrandText: {
+    fontWeight: 800,
+    fontSize: "1.15rem",
+    color: "#f8fafc",
+    letterSpacing: "-0.02em",
+  },
   navLinks: { display: "flex", alignItems: "center", gap: "1.25rem" },
-  navLink: { fontSize: "0.85rem", color: "#94a3b8", fontWeight: 500, textDecoration: "none", transition: "color 150ms" },
+  navLink: {
+    fontSize: "0.85rem",
+    color: "#94a3b8",
+    fontWeight: 500,
+    textDecoration: "none",
+    transition: "color 150ms",
+  },
   hero: {
     maxWidth: "960px",
     margin: "0 auto",
@@ -659,10 +875,29 @@ const styles: Record<string, React.CSSProperties> = {
     gap: "2.5rem",
     flexWrap: "wrap",
   },
-  trustItem: { display: "flex", flexDirection: "column", alignItems: "center", gap: "0.2rem" },
-  trustNumber: { fontSize: "1.6rem", fontWeight: 800, color: "var(--color-primary-400)" },
-  trustLabel: { fontSize: "0.75rem", color: "#94a3b8", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" },
-  trustDivider: { width: "1px", height: "40px", background: "rgba(255,255,255,0.12)" },
+  trustItem: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "0.2rem",
+  },
+  trustNumber: {
+    fontSize: "1.6rem",
+    fontWeight: 800,
+    color: "var(--color-primary-400)",
+  },
+  trustLabel: {
+    fontSize: "0.75rem",
+    color: "#94a3b8",
+    fontWeight: 600,
+    textTransform: "uppercase",
+    letterSpacing: "0.06em",
+  },
+  trustDivider: {
+    width: "1px",
+    height: "40px",
+    background: "rgba(255,255,255,0.12)",
+  },
   features: {
     maxWidth: "1240px",
     margin: "0 auto",
@@ -693,7 +928,8 @@ const styles: Record<string, React.CSSProperties> = {
     border: "1px solid rgba(255,255,255,0.08)",
     backdropFilter: "blur(10px)",
     padding: "var(--space-6)",
-    transition: "transform var(--transition-fast), box-shadow var(--transition-fast)",
+    transition:
+      "transform var(--transition-fast), box-shadow var(--transition-fast)",
   },
   featureIcon: {
     width: "3.25rem",
@@ -704,7 +940,12 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "center",
     marginBottom: "var(--space-4)",
   },
-  featureTitle: { fontSize: "1.1rem", fontWeight: 700, color: "#f8fafc", marginBottom: "0.5rem" },
+  featureTitle: {
+    fontSize: "1.1rem",
+    fontWeight: 700,
+    color: "#f8fafc",
+    marginBottom: "0.5rem",
+  },
   featureDesc: { fontSize: "0.85rem", color: "#94a3b8", lineHeight: 1.6 },
   roles: { maxWidth: "1240px", margin: "0 auto", padding: "4rem 1.5rem" },
   rolesGrid: {
@@ -753,7 +994,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   ctaCard: {
     textAlign: "center",
-    background: "linear-gradient(135deg, rgba(5, 150, 105, 0.2), rgba(124, 58, 237, 0.12))",
+    background:
+      "linear-gradient(135deg, rgba(5, 150, 105, 0.2), rgba(124, 58, 237, 0.12))",
     border: "1px solid rgba(16, 185, 129, 0.25)",
     borderRadius: "var(--radius-2xl)",
     padding: "3.5rem 2rem",

@@ -25,7 +25,11 @@ interface UserItem {
 }
 
 export default function UsersPage() {
-  const [currentUser, setCurrentUser] = useState<{ role: UserRole; fullName: string; email: string } | null>(null);
+  const [currentUser, setCurrentUser] = useState<{
+    role: UserRole;
+    fullName: string;
+    email: string;
+  } | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,8 +38,11 @@ export default function UsersPage() {
   const [assigningId, setAssigningId] = useState<string | null>(null);
 
   // Work Queue, Password Reset & Audit States
-  const [selectedUserForAudit, setSelectedUserForAudit] = useState<UserItem | null>(null);
-  const [resettingPasswordId, setResettingPasswordId] = useState<string | null>(null);
+  const [selectedUserForAudit, setSelectedUserForAudit] =
+    useState<UserItem | null>(null);
+  const [resettingPasswordId, setResettingPasswordId] = useState<string | null>(
+    null,
+  );
   const [queueUpdatingId, setQueueUpdatingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -58,19 +65,28 @@ export default function UsersPage() {
     errorPolicy: "all",
   });
 
-  const [assignWorkQueueMutation] = useMutation(ASSIGN_STAFF_WORK_QUEUE_MUTATION, {
-    errorPolicy: "all",
-  });
+  const [assignWorkQueueMutation] = useMutation(
+    ASSIGN_STAFF_WORK_QUEUE_MUTATION,
+    {
+      errorPolicy: "all",
+    },
+  );
 
-  const [triggerPasswordResetMutation] = useMutation(TRIGGER_USER_PASSWORD_RESET_MUTATION, {
-    errorPolicy: "all",
-  });
+  const [triggerPasswordResetMutation] = useMutation(
+    TRIGGER_USER_PASSWORD_RESET_MUTATION,
+    {
+      errorPolicy: "all",
+    },
+  );
 
-  const { data: auditData, loading: auditLoading } = useQuery(ACCOUNT_AUDIT_LOGS_QUERY, {
-    variables: { userId: selectedUserForAudit?.id },
-    skip: !selectedUserForAudit,
-    fetchPolicy: "network-only",
-  });
+  const { data: auditData, loading: auditLoading } = useQuery(
+    ACCOUNT_AUDIT_LOGS_QUERY,
+    {
+      variables: { userId: selectedUserForAudit?.id },
+      skip: !selectedUserForAudit,
+      fetchPolicy: "network-only",
+    },
+  );
 
   const [createUserMutation] = useMutation(CREATE_USER_MUTATION, {
     errorPolicy: "all",
@@ -103,7 +119,9 @@ export default function UsersPage() {
         refetch();
       }
     } catch (err: unknown) {
-      setActionError(err instanceof Error ? err.message : "Failed to assign role.");
+      setActionError(
+        err instanceof Error ? err.message : "Failed to assign role.",
+      );
     } finally {
       setAssigningId(null);
     }
@@ -114,7 +132,9 @@ export default function UsersPage() {
     setActionSuccess("");
     setActionError("");
     try {
-      const res = await assignWorkQueueMutation({ variables: { userId, workQueue: queue } });
+      const res = await assignWorkQueueMutation({
+        variables: { userId, workQueue: queue },
+      });
       if (res.errors && res.errors.length > 0) {
         setActionError(res.errors[0].message);
       } else {
@@ -122,7 +142,9 @@ export default function UsersPage() {
         refetch();
       }
     } catch (err: unknown) {
-      setActionError(err instanceof Error ? err.message : "Failed to assign work queue.");
+      setActionError(
+        err instanceof Error ? err.message : "Failed to assign work queue.",
+      );
     } finally {
       setQueueUpdatingId(null);
     }
@@ -133,14 +155,22 @@ export default function UsersPage() {
     setActionSuccess("");
     setActionError("");
     try {
-      const res = await triggerPasswordResetMutation({ variables: { userId: u.id } });
+      const res = await triggerPasswordResetMutation({
+        variables: { userId: u.id },
+      });
       if (res.errors && res.errors.length > 0) {
         setActionError(res.errors[0].message);
       } else {
-        setActionSuccess(`Temporary recovery OTP (739201) dispatched to ${u.fullName} (${u.phone || u.email})`);
+        setActionSuccess(
+          `Temporary recovery OTP (739201) dispatched to ${u.fullName} (${u.phone || u.email})`,
+        );
       }
     } catch (err: unknown) {
-      setActionError(err instanceof Error ? err.message : "Failed to trigger password reset.");
+      setActionError(
+        err instanceof Error
+          ? err.message
+          : "Failed to trigger password reset.",
+      );
     } finally {
       setResettingPasswordId(null);
     }
@@ -171,7 +201,9 @@ export default function UsersPage() {
       if (res.errors && res.errors.length > 0) {
         setActionError(res.errors[0].message);
       } else {
-        setActionSuccess(`Account for ${newUser.name} (${newUser.role}) created successfully!`);
+        setActionSuccess(
+          `Account for ${newUser.name} (${newUser.role}) created successfully!`,
+        );
         setShowAddModal(false);
         setNewUser({
           name: "",
@@ -185,7 +217,9 @@ export default function UsersPage() {
         refetch();
       }
     } catch (err: unknown) {
-      setActionError(err instanceof Error ? err.message : "Failed to create user account.");
+      setActionError(
+        err instanceof Error ? err.message : "Failed to create user account.",
+      );
     }
   };
 
@@ -194,15 +228,35 @@ export default function UsersPage() {
   const getRoleBadge = (role: UserItem["role"]) => {
     switch (role) {
       case "SUPER_ADMIN":
-        return <span className="badge badge-error" style={{ fontSize: "0.75rem" }}>👑 Super Admin</span>;
+        return (
+          <span className="badge badge-error" style={{ fontSize: "0.75rem" }}>
+            👑 Super Admin
+          </span>
+        );
       case "ADMIN":
-        return <span className="badge badge-primary" style={{ fontSize: "0.75rem" }}>🛡️ Operations Admin</span>;
+        return (
+          <span className="badge badge-primary" style={{ fontSize: "0.75rem" }}>
+            🛡️ Operations Admin
+          </span>
+        );
       case "WAREHOUSE":
-        return <span className="badge badge-warning" style={{ fontSize: "0.75rem" }}>📦 Warehouse Staff</span>;
+        return (
+          <span className="badge badge-warning" style={{ fontSize: "0.75rem" }}>
+            📦 Warehouse Staff
+          </span>
+        );
       case "DELIVERY":
-        return <span className="badge badge-info" style={{ fontSize: "0.75rem" }}>🛵 Delivery Boy</span>;
+        return (
+          <span className="badge badge-info" style={{ fontSize: "0.75rem" }}>
+            🛵 Delivery Boy
+          </span>
+        );
       case "SHOPKEEPER":
-        return <span className="badge badge-success" style={{ fontSize: "0.75rem" }}>🏪 Retail Shopkeeper</span>;
+        return (
+          <span className="badge badge-success" style={{ fontSize: "0.75rem" }}>
+            🏪 Retail Shopkeeper
+          </span>
+        );
       default:
         return <span className="badge">{role}</span>;
     }
@@ -234,7 +288,9 @@ export default function UsersPage() {
       >
         <div>
           <h1 style={{ fontSize: "var(--font-size-3xl)", fontWeight: 800 }}>
-            {isOperationsAdmin ? "Staff & Operations Management" : "Role-Based Access Control (RBAC)"}
+            {isOperationsAdmin
+              ? "Staff & Operations Management"
+              : "Role-Based Access Control (RBAC)"}
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
             {isOperationsAdmin
@@ -252,31 +308,35 @@ export default function UsersPage() {
       </div>
 
       {actionSuccess && (
-        <div style={{
-          padding: "var(--space-3) var(--space-4)",
-          background: "rgba(16, 185, 129, 0.12)",
-          color: "var(--color-primary-800)",
-          border: "1px solid rgba(16, 185, 129, 0.3)",
-          borderRadius: "var(--radius-lg)",
-          marginBottom: "var(--space-4)",
-          fontWeight: 600,
-          fontSize: "0.85rem",
-        }}>
+        <div
+          style={{
+            padding: "var(--space-3) var(--space-4)",
+            background: "rgba(16, 185, 129, 0.12)",
+            color: "var(--color-primary-800)",
+            border: "1px solid rgba(16, 185, 129, 0.3)",
+            borderRadius: "var(--radius-lg)",
+            marginBottom: "var(--space-4)",
+            fontWeight: 600,
+            fontSize: "0.85rem",
+          }}
+        >
           ✅ {actionSuccess}
         </div>
       )}
 
       {actionError && (
-        <div style={{
-          padding: "var(--space-3) var(--space-4)",
-          background: "rgba(239, 68, 68, 0.12)",
-          color: "var(--color-error)",
-          border: "1px solid rgba(239, 68, 68, 0.3)",
-          borderRadius: "var(--radius-lg)",
-          marginBottom: "var(--space-4)",
-          fontWeight: 600,
-          fontSize: "0.85rem",
-        }}>
+        <div
+          style={{
+            padding: "var(--space-3) var(--space-4)",
+            background: "rgba(239, 68, 68, 0.12)",
+            color: "var(--color-error)",
+            border: "1px solid rgba(239, 68, 68, 0.3)",
+            borderRadius: "var(--radius-lg)",
+            marginBottom: "var(--space-4)",
+            fontWeight: 600,
+            fontSize: "0.85rem",
+          }}
+        >
           ⚠️ {actionError}
         </div>
       )}
@@ -291,22 +351,67 @@ export default function UsersPage() {
         }}
       >
         {[
-          { label: "👑 Super Admins", count: users.filter((u) => u.role === "SUPER_ADMIN").length, color: "var(--color-error)" },
-          { label: "🛡️ Operations Admins", count: users.filter((u) => u.role === "ADMIN").length, color: "var(--color-primary-600)" },
-          { label: "📦 Warehouse Staff", count: users.filter((u) => u.role === "WAREHOUSE").length, color: "var(--color-warning)" },
-          { label: "🛵 Delivery Boys", count: users.filter((u) => u.role === "DELIVERY").length, color: "var(--color-info)" },
-          { label: "🏪 Retail Shopkeepers", count: users.filter((u) => u.role === "SHOPKEEPER").length, color: "var(--color-success)" },
+          {
+            label: "👑 Super Admins",
+            count: users.filter((u) => u.role === "SUPER_ADMIN").length,
+            color: "var(--color-error)",
+          },
+          {
+            label: "🛡️ Operations Admins",
+            count: users.filter((u) => u.role === "ADMIN").length,
+            color: "var(--color-primary-600)",
+          },
+          {
+            label: "📦 Warehouse Staff",
+            count: users.filter((u) => u.role === "WAREHOUSE").length,
+            color: "var(--color-warning)",
+          },
+          {
+            label: "🛵 Delivery Boys",
+            count: users.filter((u) => u.role === "DELIVERY").length,
+            color: "var(--color-info)",
+          },
+          {
+            label: "🏪 Retail Shopkeepers",
+            count: users.filter((u) => u.role === "SHOPKEEPER").length,
+            color: "var(--color-success)",
+          },
         ].map((item, idx) => (
-          <div key={idx} className="card" style={{ padding: "var(--space-4)", borderLeft: `4px solid ${item.color}` }}>
-            <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>{item.label}</p>
-            <p style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text-primary)" }}>{item.count}</p>
+          <div
+            key={idx}
+            className="card"
+            style={{
+              padding: "var(--space-4)",
+              borderLeft: `4px solid ${item.color}`,
+            }}
+          >
+            <p
+              style={{
+                fontSize: "0.75rem",
+                color: "var(--text-secondary)",
+                fontWeight: 600,
+              }}
+            >
+              {item.label}
+            </p>
+            <p
+              style={{
+                fontSize: "1.5rem",
+                fontWeight: 800,
+                color: "var(--text-primary)",
+              }}
+            >
+              {item.count}
+            </p>
           </div>
         ))}
       </div>
 
       {/* Filter and Search Bar */}
       <div className="card" style={{ marginBottom: "var(--space-6)" }}>
-        <div style={{ display: "flex", gap: "var(--space-4)", flexWrap: "wrap" }}>
+        <div
+          style={{ display: "flex", gap: "var(--space-4)", flexWrap: "wrap" }}
+        >
           <input
             className="input"
             placeholder="Search by name, mobile phone, or email..."
@@ -347,13 +452,27 @@ export default function UsersPage() {
             <tbody>
               {loading && users.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                  <td
+                    colSpan={6}
+                    style={{
+                      textAlign: "center",
+                      padding: "var(--space-8)",
+                      color: "var(--text-muted)",
+                    }}
+                  >
                     Loading active users...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                  <td
+                    colSpan={6}
+                    style={{
+                      textAlign: "center",
+                      padding: "var(--space-8)",
+                      color: "var(--text-muted)",
+                    }}
+                  >
                     No users found matching current filters.
                   </td>
                 </tr>
@@ -362,26 +481,48 @@ export default function UsersPage() {
                   <tr key={u.id}>
                     <td>
                       <div style={{ fontWeight: 700 }}>{u.fullName}</div>
-                      <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                      <div
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
                         {u.email || "No email linked"}
                       </div>
                     </td>
                     <td>{getRoleBadge(u.role)}</td>
                     <td>
-                      <code style={{ fontSize: "0.8rem", fontWeight: 600 }}>{u.phone || "—"}</code>
+                      <code style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                        {u.phone || "—"}
+                      </code>
                     </td>
                     <td>
-                      <span className={`badge ${u.isActive ? "badge-success" : "badge-error"}`}>
+                      <span
+                        className={`badge ${u.isActive ? "badge-success" : "badge-error"}`}
+                      >
                         {u.isActive ? "● Active" : "○ Inactive"}
                       </span>
                     </td>
                     <td>
-                      {isOperationsAdmin && (u.role === "SUPER_ADMIN" || u.role === "ADMIN") ? (
-                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontStyle: "italic" }}>
+                      {isOperationsAdmin &&
+                      (u.role === "SUPER_ADMIN" || u.role === "ADMIN") ? (
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--text-muted)",
+                            fontStyle: "italic",
+                          }}
+                        >
                           🔒 Protected (Admin Tier)
                         </span>
                       ) : (
-                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
                           <select
                             className="input"
                             style={{
@@ -393,16 +534,33 @@ export default function UsersPage() {
                             }}
                             value={u.role}
                             disabled={assigningId === u.id}
-                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                            onChange={(e) =>
+                              handleRoleChange(u.id, e.target.value)
+                            }
                           >
-                            {!isOperationsAdmin && <option value="SUPER_ADMIN">👑 Super Admin</option>}
-                            {!isOperationsAdmin && <option value="ADMIN">🛡️ Operations Admin</option>}
-                            <option value="WAREHOUSE">📦 Warehouse Staff</option>
+                            {!isOperationsAdmin && (
+                              <option value="SUPER_ADMIN">
+                                👑 Super Admin
+                              </option>
+                            )}
+                            {!isOperationsAdmin && (
+                              <option value="ADMIN">🛡️ Operations Admin</option>
+                            )}
+                            <option value="WAREHOUSE">
+                              📦 Warehouse Staff
+                            </option>
                             <option value="DELIVERY">🛵 Delivery Boy</option>
-                            <option value="SHOPKEEPER">🏪 Retail Shopkeeper</option>
+                            <option value="SHOPKEEPER">
+                              🏪 Retail Shopkeeper
+                            </option>
                           </select>
                           {assigningId === u.id && (
-                            <span style={{ fontSize: "0.75rem", color: "var(--color-primary-600)" }}>
+                            <span
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "var(--color-primary-600)",
+                              }}
+                            >
                               Saving...
                             </span>
                           )}
@@ -410,7 +568,14 @@ export default function UsersPage() {
                       )}
                     </td>
                     <td>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          flexWrap: "wrap",
+                        }}
+                      >
                         {/* Warehouse Work Queue selector (Item 33) */}
                         {u.role === "WAREHOUSE" ? (
                           <select
@@ -426,12 +591,22 @@ export default function UsersPage() {
                             }}
                             value={u.assignedWorkQueue || "GENERAL_STORAGE"}
                             disabled={queueUpdatingId === u.id}
-                            onChange={(e) => handleWorkQueueChange(u.id, e.target.value)}
+                            onChange={(e) =>
+                              handleWorkQueueChange(u.id, e.target.value)
+                            }
                           >
-                            <option value="INBOUND_INTAKE">📥 Inbound Intake</option>
-                            <option value="PICKING_PACKING">📦 Picking & Packing</option>
-                            <option value="DISPATCH_BAY">🚚 Dispatch Bay</option>
-                            <option value="GENERAL_STORAGE">🏬 General Storage</option>
+                            <option value="INBOUND_INTAKE">
+                              📥 Inbound Intake
+                            </option>
+                            <option value="PICKING_PACKING">
+                              📦 Picking & Packing
+                            </option>
+                            <option value="DISPATCH_BAY">
+                              🚚 Dispatch Bay
+                            </option>
+                            <option value="GENERAL_STORAGE">
+                              🏬 General Storage
+                            </option>
                           </select>
                         ) : null}
 
@@ -439,19 +614,29 @@ export default function UsersPage() {
                         <button
                           type="button"
                           className="btn btn-secondary"
-                          style={{ padding: "0.2rem 0.5rem", fontSize: "0.72rem", whiteSpace: "nowrap" }}
+                          style={{
+                            padding: "0.2rem 0.5rem",
+                            fontSize: "0.72rem",
+                            whiteSpace: "nowrap",
+                          }}
                           disabled={resettingPasswordId === u.id}
                           onClick={() => handleTriggerPasswordReset(u)}
                           title="Generate single-use OTP reset instructions for user"
                         >
-                          {resettingPasswordId === u.id ? "Sending..." : "🔑 Reset Pwd"}
+                          {resettingPasswordId === u.id
+                            ? "Sending..."
+                            : "🔑 Reset Pwd"}
                         </button>
 
                         {/* View Audit Trail (Item 39) */}
                         <button
                           type="button"
                           className="btn btn-secondary"
-                          style={{ padding: "0.2rem 0.5rem", fontSize: "0.72rem", whiteSpace: "nowrap" }}
+                          style={{
+                            padding: "0.2rem 0.5rem",
+                            fontSize: "0.72rem",
+                            whiteSpace: "nowrap",
+                          }}
                           onClick={() => setSelectedUserForAudit(u)}
                           title="View role changes & account access history"
                         >
@@ -485,14 +670,45 @@ export default function UsersPage() {
             padding: "var(--space-4)",
           }}
         >
-          <div className="card" style={{ maxWidth: "600px", width: "100%", background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-4)", borderBottom: "1px solid var(--border-color)", paddingBottom: "var(--space-3)" }}>
+          <div
+            className="card"
+            style={{
+              maxWidth: "600px",
+              width: "100%",
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
+              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "var(--space-4)",
+                borderBottom: "1px solid var(--border-color)",
+                paddingBottom: "var(--space-3)",
+              }}
+            >
               <div>
-                <h2 style={{ fontSize: "var(--font-size-lg)", fontWeight: 800, margin: 0 }}>
+                <h2
+                  style={{
+                    fontSize: "var(--font-size-lg)",
+                    fontWeight: 800,
+                    margin: 0,
+                  }}
+                >
                   📜 Account Audit Trail & Role History
                 </h2>
-                <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", margin: 0 }}>
-                  {selectedUserForAudit.fullName} • {selectedUserForAudit.role} ({selectedUserForAudit.phone || selectedUserForAudit.email})
+                <p
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "var(--text-secondary)",
+                    margin: 0,
+                  }}
+                >
+                  {selectedUserForAudit.fullName} • {selectedUserForAudit.role}{" "}
+                  ({selectedUserForAudit.phone || selectedUserForAudit.email})
                 </p>
               </div>
               <button
@@ -505,13 +721,33 @@ export default function UsersPage() {
               </button>
             </div>
 
-            <div style={{ maxHeight: "360px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+            <div
+              style={{
+                maxHeight: "360px",
+                overflowY: "auto",
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--space-3)",
+              }}
+            >
               {auditLoading ? (
-                <div style={{ textAlign: "center", padding: "var(--space-6)", color: "var(--text-muted)" }}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "var(--space-6)",
+                    color: "var(--text-muted)",
+                  }}
+                >
                   Loading security audit trail...
                 </div>
               ) : (auditData?.accountAuditLogs || []).length === 0 ? (
-                <div style={{ textAlign: "center", padding: "var(--space-6)", color: "var(--text-muted)" }}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "var(--space-6)",
+                    color: "var(--text-muted)",
+                  }}
+                >
                   No prior security events or permission changes recorded.
                 </div>
               ) : (
@@ -525,13 +761,38 @@ export default function UsersPage() {
                       borderRadius: "0 var(--radius-md) var(--radius-md) 0",
                     }}
                   >
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", marginBottom: "2px" }}>
-                      <strong style={{ color: "var(--color-primary-700)" }}>{log.action}</strong>
-                      <span style={{ color: "var(--text-muted)" }}>{new Date(log.createdAt).toLocaleString()}</span>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: "0.75rem",
+                        marginBottom: "2px",
+                      }}
+                    >
+                      <strong style={{ color: "var(--color-primary-700)" }}>
+                        {log.action}
+                      </strong>
+                      <span style={{ color: "var(--text-muted)" }}>
+                        {new Date(log.createdAt).toLocaleString()}
+                      </span>
                     </div>
-                    <div style={{ fontSize: "0.85rem", color: "var(--text-primary)" }}>{log.details}</div>
-                    <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "4px" }}>
-                      Authorized By: <strong>{log.performedByName || "Admin Security"}</strong>
+                    <div
+                      style={{
+                        fontSize: "0.85rem",
+                        color: "var(--text-primary)",
+                      }}
+                    >
+                      {log.details}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "var(--text-secondary)",
+                        marginTop: "4px",
+                      }}
+                    >
+                      Authorized By:{" "}
+                      <strong>{log.performedByName || "Admin Security"}</strong>
                     </div>
                   </div>
                 ))
@@ -559,77 +820,144 @@ export default function UsersPage() {
             padding: "var(--space-4)",
           }}
         >
-          <div className="card" style={{ maxWidth: "520px", width: "100%", background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-4)" }}>
+          <div
+            className="card"
+            style={{
+              maxWidth: "520px",
+              width: "100%",
+              background: "var(--bg-surface)",
+              border: "1px solid var(--border-subtle)",
+              boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "var(--space-4)",
+              }}
+            >
               <h2 style={{ fontSize: "var(--font-size-xl)", fontWeight: 800 }}>
-                {isOperationsAdmin ? "👤 Provision Staff or Partner" : "👤 Provision Internal Staff or Partner"}
+                {isOperationsAdmin
+                  ? "👤 Provision Staff or Partner"
+                  : "👤 Provision Internal Staff or Partner"}
               </h2>
               <button
                 onClick={() => setShowAddModal(false)}
-                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--text-secondary)" }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                  color: "var(--text-secondary)",
+                }}
                 aria-label="Close modal"
               >
                 ✕
               </button>
             </div>
-            <form onSubmit={handleAddUser} style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+            <form
+              onSubmit={handleAddUser}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--space-3)",
+              }}
+            >
               <div>
-                <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Full Legal Name *</label>
+                <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                  Full Legal Name *
+                </label>
                 <input
                   className="input"
                   placeholder="e.g. Subir Ghosh"
                   required
                   value={newUser.name}
-                  onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                  onChange={(e) =>
+                    setNewUser({ ...newUser, name: e.target.value })
+                  }
                 />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "var(--space-3)",
+                }}
+              >
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Role Assignment *</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Role Assignment *
+                  </label>
                   <select
                     className="input"
                     value={newUser.role}
-                    onChange={(e) => setNewUser({ ...newUser, role: e.target.value as any })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, role: e.target.value as any })
+                    }
                   >
-                    {!isOperationsAdmin && <option value="SUPER_ADMIN">👑 Super Admin</option>}
-                    {!isOperationsAdmin && <option value="ADMIN">🛡️ Operations Admin</option>}
+                    {!isOperationsAdmin && (
+                      <option value="SUPER_ADMIN">👑 Super Admin</option>
+                    )}
+                    {!isOperationsAdmin && (
+                      <option value="ADMIN">🛡️ Operations Admin</option>
+                    )}
                     <option value="WAREHOUSE">📦 Warehouse Staff</option>
                     <option value="DELIVERY">🛵 Delivery Boy</option>
                     <option value="SHOPKEEPER">🏪 Retail Shopkeeper</option>
                   </select>
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Mobile Phone Number *</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Mobile Phone Number *
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. 9832109876"
                     required
                     value={newUser.phone}
-                    onChange={(e) => setNewUser({ ...newUser, phone: e.target.value })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, phone: e.target.value })
+                    }
                   />
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "var(--space-3)",
+                }}
+              >
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Email Address (optional)</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Email Address (optional)
+                  </label>
                   <input
                     type="email"
                     className="input"
                     placeholder="e.g. staff@pharmacyfantasy.com"
                     value={newUser.email}
-                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, email: e.target.value })
+                    }
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Initial Password *</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Initial Password *
+                  </label>
                   <input
                     type="text"
                     className="input"
                     placeholder="Min 6 characters"
                     value={newUser.password}
-                    onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, password: e.target.value })
+                    }
                     required
                   />
                 </div>
@@ -637,23 +965,31 @@ export default function UsersPage() {
 
               {newUser.role === "SHOPKEEPER" && (
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Pharmacy Shop Name</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Pharmacy Shop Name
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. Ghosh Medical Stores"
                     value={newUser.shopName}
-                    onChange={(e) => setNewUser({ ...newUser, shopName: e.target.value })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, shopName: e.target.value })
+                    }
                   />
                 </div>
               )}
 
               {newUser.role === "DELIVERY" && (
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Vehicle Type</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Vehicle Type
+                  </label>
                   <select
                     className="input"
                     value={newUser.vehicleType}
-                    onChange={(e) => setNewUser({ ...newUser, vehicleType: e.target.value })}
+                    onChange={(e) =>
+                      setNewUser({ ...newUser, vehicleType: e.target.value })
+                    }
                   >
                     <option value="Two-Wheeler">Bike / Motorcycle</option>
                     <option value="Scooter">Scooter</option>
@@ -662,8 +998,19 @@ export default function UsersPage() {
                 </div>
               )}
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-3)" }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setShowAddModal(false)}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "var(--space-3)",
+                  marginTop: "var(--space-3)",
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowAddModal(false)}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-primary">

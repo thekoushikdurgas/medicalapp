@@ -6,9 +6,15 @@ export function ThemeToggle() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
-    const attr = document.documentElement.getAttribute("data-theme") as "light" | "dark" | null;
+    const attr = document.documentElement.getAttribute("data-theme") as
+      "light" | "dark" | null;
     const saved = localStorage.getItem("theme") as "light" | "dark" | null;
-    const initial = attr || saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const initial =
+      attr ||
+      saved ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light");
     setTheme(initial);
     document.documentElement.setAttribute("data-theme", initial);
   }, []);

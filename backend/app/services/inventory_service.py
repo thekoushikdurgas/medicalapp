@@ -3,7 +3,7 @@ Inventory Service — Handles FEFO batch management, reservations, and expiry al
 """
 
 import uuid
-from datetime import date, timedelta
+from datetime import date
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -51,9 +51,13 @@ async def allocate_batch_fefo(
     """
     batches = await get_fefo_batches_for_product(session, product_id)
     if not batches:
-        prod_res = await session.execute(select(Product.name).where(Product.id == product_id))
+        prod_res = await session.execute(
+            select(Product.name).where(Product.id == product_id)
+        )
         prod_name = prod_res.scalar_one_or_none() or str(product_id)
-        raise InsufficientStockError(f"No available stock batch found for product '{prod_name}'.")
+        raise InsufficientStockError(
+            f"No available stock batch found for product '{prod_name}'."
+        )
 
     # Pick first batch with sufficient quantity
     allocated_batch = None
@@ -94,13 +98,19 @@ async def allocate_batches_fefo_multi(
     """
     batches = await get_fefo_batches_for_product(session, product_id)
     if not batches:
-        prod_res = await session.execute(select(Product.name).where(Product.id == product_id))
+        prod_res = await session.execute(
+            select(Product.name).where(Product.id == product_id)
+        )
         prod_name = prod_res.scalar_one_or_none() or str(product_id)
-        raise InsufficientStockError(f"No available stock batch found for product '{prod_name}'.")
+        raise InsufficientStockError(
+            f"No available stock batch found for product '{prod_name}'."
+        )
 
     total_avail = sum(b.quantity_available for b in batches)
     if total_avail < requested_quantity:
-        prod_res = await session.execute(select(Product.name).where(Product.id == product_id))
+        prod_res = await session.execute(
+            select(Product.name).where(Product.id == product_id)
+        )
         prod_name = prod_res.scalar_one_or_none() or str(product_id)
         raise InsufficientStockError(
             f"Insufficient stock for '{prod_name}': requested {requested_quantity}, "
@@ -243,4 +253,3 @@ async def record_purchase_entry(
         f"with {len(items_data)} items (Total: ₹{purchase_entry.total_amount})."
     )
     return purchase_entry
-

@@ -43,7 +43,9 @@ async def reset_and_seed():
     ]
 
     async with engine.begin() as conn:
-        truncate_sql = f"TRUNCATE TABLE {', '.join(tables_to_truncate)} RESTART IDENTITY CASCADE;"
+        truncate_sql = (
+            f"TRUNCATE TABLE {', '.join(tables_to_truncate)} RESTART IDENTITY CASCADE;"
+        )
         await conn.execute(text(truncate_sql))
     print("    -> All data tables truncated cleanly.")
 

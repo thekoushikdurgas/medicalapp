@@ -15,7 +15,10 @@ from app.db.models import (
     UserRole,
 )
 from app.graphql.resolvers.auth import AuthMutation
-from app.graphql.resolvers.ops_automation import OpsAutomationMutation, OpsAutomationQuery
+from app.graphql.resolvers.ops_automation import (
+    OpsAutomationMutation,
+    OpsAutomationQuery,
+)
 
 
 def make_mock_info(user_id: str | None = None, role: str | None = None):
@@ -72,8 +75,12 @@ class TestOpsAdminAutomationAndHealth:
             assert profile.verification_status == "VERIFIED"
             # Session add called for notification
             assert mock_session.add.call_count >= 1
-            added_objects = [c.args[0] for c in mock_session.add.call_args_list if c.args]
-            notif = next((o for o in added_objects if isinstance(o, Notification)), None)
+            added_objects = [
+                c.args[0] for c in mock_session.add.call_args_list if c.args
+            ]
+            notif = next(
+                (o for o in added_objects if isinstance(o, Notification)), None
+            )
             assert notif is not None
             assert notif.user_id == sk_user_id
             assert notif.category == "ONBOARDING"
@@ -100,7 +107,9 @@ class TestOpsAdminAutomationAndHealth:
 
         info = make_mock_info(role=UserRole.ADMIN.value)
 
-        with patch("app.graphql.resolvers.ops_automation.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ops_automation.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             res = await OpsAutomationMutation().retry_failed_job(info, job_id=job_id)
 
@@ -128,7 +137,9 @@ class TestOpsAdminAutomationAndHealth:
 
         info = make_mock_info(role=UserRole.ADMIN.value)
 
-        with patch("app.graphql.resolvers.ops_automation.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ops_automation.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             with pytest.raises(Exception, match="Max retries"):
                 await OpsAutomationMutation().retry_failed_job(info, job_id=job_id)
@@ -147,7 +158,9 @@ class TestOpsAdminAutomationAndHealth:
 
         info = make_mock_info(role=UserRole.ADMIN.value)
 
-        with patch("app.graphql.resolvers.ops_automation.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ops_automation.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             health = await OpsAutomationQuery().integration_health(info)
 
@@ -176,7 +189,9 @@ class TestOpsAdminAutomationAndHealth:
 
         info = make_mock_info(role=UserRole.ADMIN.value)
 
-        with patch("app.graphql.resolvers.ops_automation.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ops_automation.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             user_type = await OpsAutomationMutation().assign_staff_work_queue(
                 info, user_id=staff_id, work_queue="PICKING_PACKING"
@@ -205,9 +220,13 @@ class TestOpsAdminAutomationAndHealth:
 
         info = make_mock_info(role=UserRole.ADMIN.value)
 
-        with patch("app.graphql.resolvers.ops_automation.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ops_automation.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
-            res = await OpsAutomationMutation().trigger_user_password_reset(info, user_id=target_id)
+            res = await OpsAutomationMutation().trigger_user_password_reset(
+                info, user_id=target_id
+            )
 
             assert res is True
             assert mock_session.add.call_count == 2  # Audit log + Notification
@@ -228,7 +247,9 @@ class TestOpsAdminAutomationAndHealth:
 
         info = make_mock_info(role=UserRole.ADMIN.value)
 
-        with patch("app.graphql.resolvers.ops_automation.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ops_automation.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             summary = await OpsAutomationQuery().operations_incident_summary(info)
 
@@ -256,10 +277,13 @@ class TestOpsAdminAutomationAndHealth:
 
         info = make_mock_info(role=UserRole.ADMIN.value)
 
-        with patch("app.graphql.resolvers.ops_automation.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.ops_automation.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
-            res = await OpsAutomationMutation().send_retailer_payment_reminder(info, shopkeeper_id=sk_id)
+            res = await OpsAutomationMutation().send_retailer_payment_reminder(
+                info, shopkeeper_id=sk_id
+            )
 
             assert res is True
             assert mock_session.add.call_count >= 1
-

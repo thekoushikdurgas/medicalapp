@@ -31,7 +31,10 @@ export function SignaturePad({
     ctx.lineJoin = "round";
   }, []);
 
-  const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const getCoordinates = (
+    e:
+      React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
@@ -48,7 +51,10 @@ export function SignaturePad({
     }
   };
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const startDrawing = (
+    e:
+      React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     e.preventDefault();
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -62,7 +68,10 @@ export function SignaturePad({
     setHasSignature(true);
   };
 
-  const draw = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const draw = (
+    e:
+      React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     if (!isDrawing) return;
     e.preventDefault();
     const canvas = canvasRef.current;
@@ -95,7 +104,13 @@ export function SignaturePad({
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "var(--space-2)",
+      }}
+    >
       <div
         style={{
           border: "2px dashed var(--border-color)",
@@ -110,7 +125,12 @@ export function SignaturePad({
           ref={canvasRef}
           width={width}
           height={height}
-          style={{ display: "block", width: "100%", height: `${height}px`, cursor: "crosshair" }}
+          style={{
+            display: "block",
+            width: "100%",
+            height: `${height}px`,
+            cursor: "crosshair",
+          }}
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
@@ -138,7 +158,13 @@ export function SignaturePad({
         )}
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
           {hasSignature ? "✅ Signature captured" : "Awaiting signature"}
         </span>

@@ -13,7 +13,10 @@ from app.graphql.resolvers.returns import ReturnQuery, ReturnMutation
 from app.graphql.resolvers.payments import PaymentQuery, PaymentMutation
 from app.graphql.resolvers.ledger import LedgerQuery, LedgerMutation
 from app.graphql.resolvers.notifications import NotificationQuery, NotificationMutation
-from app.graphql.resolvers.ops_automation import OpsAutomationQuery, OpsAutomationMutation
+from app.graphql.resolvers.ops_automation import (
+    OpsAutomationQuery,
+    OpsAutomationMutation,
+)
 from app.graphql.resolvers.superadmin_governance import (
     SuperAdminGovernanceQuery,
     SuperAdminGovernanceMutation,
@@ -40,6 +43,7 @@ class Query(
     WarehouseOpsQuery,
 ):
     """Root GraphQL Query combining all domain queries."""
+
     pass
 
 
@@ -59,6 +63,7 @@ class Mutation(
     WarehouseOpsMutation,
 ):
     """Root GraphQL Mutation combining all domain mutations."""
+
     pass
 
 

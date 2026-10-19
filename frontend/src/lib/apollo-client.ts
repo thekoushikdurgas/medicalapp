@@ -15,7 +15,10 @@ const authLink = setContext((_, { headers }) => {
   // Read token from localStorage (client-side only)
   let token = "";
   if (typeof window !== "undefined") {
-    token = localStorage.getItem(AUTH_KEYS.TOKEN) || localStorage.getItem("access_token") || "";
+    token =
+      localStorage.getItem(AUTH_KEYS.TOKEN) ||
+      localStorage.getItem("access_token") ||
+      "";
   }
 
   return {

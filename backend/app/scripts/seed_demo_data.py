@@ -9,7 +9,7 @@ Usage:
 
 import asyncio
 import uuid
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, datetime, timedelta
 
 from sqlalchemy import select
 from app.core.security import hash_password
@@ -45,7 +45,9 @@ async def seed_all():
             select(User).where(User.role == UserRole.SUPER_ADMIN)
         )
         if existing_admin.scalar_one_or_none():
-            print("[INFO] Database already has an active Super Admin. Skipping demo seeding.")
+            print(
+                "[INFO] Database already has an active Super Admin. Skipping demo seeding."
+            )
             return
 
         print("[*] Seeding system users...")
@@ -122,15 +124,17 @@ async def seed_all():
             is_active=True,
         )
 
-        session.add_all([
-            superadmin,
-            admin,
-            warehouse_user,
-            delivery_user_1,
-            delivery_user_2,
-            shop_user_1,
-            shop_user_2,
-        ])
+        session.add_all(
+            [
+                superadmin,
+                admin,
+                warehouse_user,
+                delivery_user_1,
+                delivery_user_2,
+                shop_user_1,
+                shop_user_2,
+            ]
+        )
         await session.flush()
 
         # Profiles
@@ -174,7 +178,9 @@ async def seed_all():
             is_available=True,
         )
 
-        session.add_all([shop_profile_1, shop_profile_2, deliv_profile_1, deliv_profile_2])
+        session.add_all(
+            [shop_profile_1, shop_profile_2, deliv_profile_1, deliv_profile_2]
+        )
 
         # 2. Products from real invoices
         print("[*] Seeding products & warehouse stock batches...")

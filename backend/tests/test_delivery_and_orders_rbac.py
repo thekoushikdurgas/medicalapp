@@ -4,21 +4,17 @@ Unit tests for Orders & Delivery RBAC, OTP Handshake, and Multi-Batch Allocation
 
 import uuid
 import pytest
-from datetime import date, datetime, timedelta, timezone
+from datetime import date, timedelta
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.db.models import (
     DeliveryAssignment,
     DeliveryStatus,
     NonDeliveryReason,
-    Notification,
     Order,
-    OrderItem,
     OrderStatus,
-    Product,
     ShopkeeperProfile,
     StockBatch,
-    User,
     UserRole,
 )
 from app.services.inventory_service import (
@@ -27,18 +23,18 @@ from app.services.inventory_service import (
 )
 from app.graphql.resolvers.orders import OrderMutation, OrderQuery
 from app.graphql.resolvers.delivery import DeliveryMutation, DeliveryQuery
-from app.graphql.resolvers.notifications import NotificationMutation, NotificationQuery
+from app.graphql.resolvers.notifications import NotificationMutation
 from app.graphql.types import (
     CompleteDeliveryInput,
     ReportDeliveryFailureInput,
-    PlaceOrderInput,
-    OrderItemInput,
     RateOrderInput,
     UpdateNotificationPreferencesInput,
 )
 
 
-def make_mock_info(user_id: str | None = None, role: str | None = None, has_auth_header: bool = True):
+def make_mock_info(
+    user_id: str | None = None, role: str | None = None, has_auth_header: bool = True
+):
     info = MagicMock()
     if not has_auth_header and user_id is None:
         info.context = {}
@@ -86,7 +82,9 @@ class TestMultiBatchFEFOAllocation:
         mock_result.scalars.return_value.all.return_value = [b1, b2]
         mock_session.execute.return_value = mock_result
 
-        allocations = await allocate_batches_fefo_multi(mock_session, prod_id, requested_quantity=50)
+        allocations = await allocate_batches_fefo_multi(
+            mock_session, prod_id, requested_quantity=50
+        )
 
         assert len(allocations) == 2
         # First batch gives all 30
@@ -122,7 +120,9 @@ class TestMultiBatchFEFOAllocation:
         mock_session.execute.return_value = mock_result
 
         with pytest.raises(InsufficientStockError, match="Insufficient stock"):
-            await allocate_batches_fefo_multi(mock_session, prod_id, requested_quantity=50)
+            await allocate_batches_fefo_multi(
+                mock_session, prod_id, requested_quantity=50
+            )
 
 
 class TestDeliveryOTPAndCOD:
@@ -150,9 +150,13 @@ class TestDeliveryOTPAndCOD:
 
         info = make_mock_info(user_id=admin_id, role=UserRole.ADMIN.value)
 
-        with patch("app.graphql.resolvers.delivery.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.delivery.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
-            res = await DeliveryMutation().assign_delivery(info, order_id=order_id, delivery_boy_id=boy_id)
+            res = await DeliveryMutation().assign_delivery(
+                info, order_id=order_id, delivery_boy_id=boy_id
+            )
 
             assert res.status == "ASSIGNED"
             assert res.delivery_otp is not None
@@ -206,7 +210,9 @@ class TestDeliveryOTPAndCOD:
             notes="Delivered to counter staff",
         )
 
-        with patch("app.graphql.resolvers.delivery.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.delivery.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             res = await DeliveryMutation().complete_delivery_with_otp(info, input_data)
 
@@ -241,7 +247,9 @@ class TestDeliveryOTPAndCOD:
             otp="1234",  # WRONG OTP
         )
 
-        with patch("app.graphql.resolvers.delivery.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.delivery.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             with pytest.raises(Exception, match="Invalid Delivery OTP"):
                 await DeliveryMutation().complete_delivery_with_otp(info, input_data)
@@ -279,14 +287,19 @@ class TestDeliveryOTPAndCOD:
             photo_url="https://s3.amazonaws.com/pod/closed_shutter.jpg",
         )
 
-        with patch("app.graphql.resolvers.delivery.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.delivery.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             res = await DeliveryMutation().report_delivery_failure(info, input_data)
 
             assert res.status == "FAILED"
             assert assignment.status == DeliveryStatus.FAILED
             assert assignment.failure_reason == NonDeliveryReason.SHOP_CLOSED
-            assert assignment.failure_photo_url == "https://s3.amazonaws.com/pod/closed_shutter.jpg"
+            assert (
+                assignment.failure_photo_url
+                == "https://s3.amazonaws.com/pod/closed_shutter.jpg"
+            )
             # Order reverted to CONFIRMED for warehouse/ops attention
             assert order.status == OrderStatus.CONFIRMED
 
@@ -316,7 +329,9 @@ class TestDeliveryOTPAndCOD:
 
         info = make_mock_info(user_id=str(boy_id), role=UserRole.DELIVERY.value)
 
-        with patch("app.graphql.resolvers.delivery.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.delivery.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             summary = await DeliveryQuery().delivery_shift_summary(info)
 
@@ -356,7 +371,9 @@ class TestOrderRBACAndDataIsolation:
         # Caller is sk1
         info = make_mock_info(user_id=str(sk1_id), role=UserRole.SHOPKEEPER.value)
 
-        with patch("app.graphql.resolvers.orders.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.orders.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             with pytest.raises(Exception, match="Order not found"):
                 await OrderQuery().order(info, id=order_id)
@@ -381,9 +398,13 @@ class TestOrderRBACAndDataIsolation:
 
         info = make_mock_info(user_id=str(sk_id), role=UserRole.SHOPKEEPER.value)
 
-        with patch("app.graphql.resolvers.orders.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.orders.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
-            with pytest.raises(Exception, match="Shopkeeper cannot cancel order in 'CONFIRMED' status"):
+            with pytest.raises(
+                Exception, match="Shopkeeper cannot cancel order in 'CONFIRMED' status"
+            ):
                 await OrderMutation().cancel_order(info, order_id=order_id)
 
     @pytest.mark.asyncio
@@ -415,14 +436,22 @@ class TestOrderRBACAndDataIsolation:
             feedback="Prompt delivery and pristine medicine packaging!",
         )
 
-        with patch("app.graphql.resolvers.orders.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.orders.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             result = await OrderMutation().rate_order(info, rate_input)
 
             assert result.rating == 5
-            assert result.feedback_text == "Prompt delivery and pristine medicine packaging!"
+            assert (
+                result.feedback_text
+                == "Prompt delivery and pristine medicine packaging!"
+            )
             assert order.rating == 5
-            assert order.feedback_text == "Prompt delivery and pristine medicine packaging!"
+            assert (
+                order.feedback_text
+                == "Prompt delivery and pristine medicine packaging!"
+            )
 
     @pytest.mark.asyncio
     async def test_shopkeeper_dispute_delivery(self):
@@ -448,13 +477,18 @@ class TestOrderRBACAndDataIsolation:
 
         info = make_mock_info(user_id=str(sk_id), role=UserRole.SHOPKEEPER.value)
 
-        with patch("app.graphql.resolvers.orders.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.orders.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             order_res = await OrderMutation().dispute_delivery(
                 info, order_id=order_id, reason="Broken syrup bottles inside carton"
             )
 
-            assert "[DISPUTED DELIVERY: Broken syrup bottles inside carton]" in order_res.remarks
+            assert (
+                "[DISPUTED DELIVERY: Broken syrup bottles inside carton]"
+                in order_res.remarks
+            )
 
     @pytest.mark.asyncio
     async def test_shopkeeper_update_notification_preferences(self):
@@ -478,9 +512,16 @@ class TestOrderRBACAndDataIsolation:
             whatsapp=True,
         )
 
-        with patch("app.graphql.resolvers.notifications.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.notifications.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
-            success = await NotificationMutation().update_notification_preferences(info, input_data)
+            success = await NotificationMutation().update_notification_preferences(
+                info, input_data
+            )
 
             assert success is True
-            assert '"whatsapp": true' in profile.notification_preferences or '"whatsapp":true' in profile.notification_preferences
+            assert (
+                '"whatsapp": true' in profile.notification_preferences
+                or '"whatsapp":true' in profile.notification_preferences
+            )

@@ -13,10 +13,8 @@ from app.db.models import (
     Order,
     OrderItem,
     OrderStatus,
-    Product,
     StockBatch,
     StockAdjustment,
-    ShopkeeperProfile,
     User,
     UserRole,
 )
@@ -46,7 +44,9 @@ class WarehouseOpsQuery:
             UserRole.ADMIN.value,
             UserRole.SUPER_ADMIN.value,
         ):
-            raise Exception("Permission denied: Only Warehouse or Admin staff can generate picking slips.")
+            raise Exception(
+                "Permission denied: Only Warehouse or Admin staff can generate picking slips."
+            )
 
         async with async_session_factory() as session:
             stmt = (
@@ -54,7 +54,9 @@ class WarehouseOpsQuery:
                 .options(
                     selectinload(Order.items).selectinload(OrderItem.product),
                     selectinload(Order.items).selectinload(OrderItem.stock_batch),
-                    selectinload(Order.shopkeeper).selectinload(User.shopkeeper_profile),
+                    selectinload(Order.shopkeeper).selectinload(
+                        User.shopkeeper_profile
+                    ),
                 )
                 .where(Order.id == order_id)
             )
@@ -73,13 +75,21 @@ class WarehouseOpsQuery:
 
             # Evaluate order priority
             is_urgent = bool(order.remarks and "urgent" in order.remarks.lower())
-            priority = "HIGH_PRIORITY_SLA (Urgent Refill)" if is_urgent or float(order.net_amount or 0) > 10000 else "STANDARD_DISPATCH"
+            priority = (
+                "HIGH_PRIORITY_SLA (Urgent Refill)"
+                if is_urgent or float(order.net_amount or 0) > 10000
+                else "STANDARD_DISPATCH"
+            )
 
             picking_lines: list[WarehousePickingLineType] = []
             for item in order.items:
                 p_name = item.product.name if item.product else "Pharmaceutical SKU"
                 p_pack = item.product.pack_size if item.product else "10S"
-                batch_no = item.stock_batch.batch_number if item.stock_batch else "FEFO-ALLOC-01"
+                batch_no = (
+                    item.stock_batch.batch_number
+                    if item.stock_batch
+                    else "FEFO-ALLOC-01"
+                )
                 exp_date = (
                     item.stock_batch.expiry_date.strftime("%m/%Y")
                     if item.stock_batch and item.stock_batch.expiry_date
@@ -114,7 +124,9 @@ class WarehouseOpsQuery:
             # Sort picking lines by Rack & Bay location for optimized floor transit path
             picking_lines.sort(key=lambda line: line.rack_location)
 
-            all_picked = len(picking_lines) > 0 and all(line.is_picked for line in picking_lines)
+            all_picked = len(picking_lines) > 0 and all(
+                line.is_picked for line in picking_lines
+            )
 
             return WarehousePickingSlipType(
                 order_id=order.id,
@@ -138,13 +150,17 @@ class WarehouseOpsQuery:
             UserRole.ADMIN.value,
             UserRole.SUPER_ADMIN.value,
         ):
-            raise Exception("Permission denied: Only Warehouse or Admin staff can view stock adjustments.")
+            raise Exception(
+                "Permission denied: Only Warehouse or Admin staff can view stock adjustments."
+            )
 
         async with async_session_factory() as session:
             stmt = (
                 select(StockAdjustment)
                 .options(
-                    selectinload(StockAdjustment.stock_batch).selectinload(StockBatch.product),
+                    selectinload(StockAdjustment.stock_batch).selectinload(
+                        StockBatch.product
+                    ),
                     selectinload(StockAdjustment.adjusted_by),
                 )
                 .order_by(StockAdjustment.created_at.desc())
@@ -170,7 +186,9 @@ class WarehouseOpsQuery:
                     reason=r.reason,
                     evidence_url=r.evidence_url,
                     is_repeated=r.is_repeated,
-                    adjusted_by_name=r.adjusted_by.full_name if r.adjusted_by else "Staff",
+                    adjusted_by_name=(
+                        r.adjusted_by.full_name if r.adjusted_by else "Staff"
+                    ),
                     created_at=r.created_at,
                 )
                 for r in records
@@ -198,13 +216,21 @@ class WarehouseOpsMutation:
             UserRole.ADMIN.value,
             UserRole.SUPER_ADMIN.value,
         ):
-            raise Exception("Permission denied: Only Warehouse or Admin staff can record stock adjustments.")
+            raise Exception(
+                "Permission denied: Only Warehouse or Admin staff can record stock adjustments."
+            )
 
         if not reason or len(reason.strip()) < 5:
-            raise Exception("Documented justification reason (minimum 5 characters) is required.")
+            raise Exception(
+                "Documented justification reason (minimum 5 characters) is required."
+            )
 
         async with async_session_factory() as session:
-            b_stmt = select(StockBatch).options(selectinload(StockBatch.product)).where(StockBatch.id == batch_id)
+            b_stmt = (
+                select(StockBatch)
+                .options(selectinload(StockBatch.product))
+                .where(StockBatch.id == batch_id)
+            )
             b_res = await session.execute(b_stmt)
             batch = b_res.scalar_one_or_none()
             if not batch:
@@ -238,7 +264,9 @@ class WarehouseOpsMutation:
             await session.commit()
             await session.refresh(adj)
 
-            caller_res = await session.execute(select(User).where(User.id == uuid.UUID(caller_id)))
+            caller_res = await session.execute(
+                select(User).where(User.id == uuid.UUID(caller_id))
+            )
             caller = caller_res.scalar_one_or_none()
 
             return StockAdjustmentType(
@@ -272,7 +300,9 @@ class WarehouseOpsMutation:
             UserRole.ADMIN.value,
             UserRole.SUPER_ADMIN.value,
         ):
-            raise Exception("Permission denied: Only Warehouse or Admin staff can scan barcodes.")
+            raise Exception(
+                "Permission denied: Only Warehouse or Admin staff can scan barcodes."
+            )
 
         clean_scan = scanned_barcode.strip()
         async with async_session_factory() as session:
@@ -294,13 +324,25 @@ class WarehouseOpsMutation:
 
             # Check match against product barcode, batch barcode, batch number, or product name token
             matched = False
-            if item.product and item.product.barcode and item.product.barcode == clean_scan:
+            if (
+                item.product
+                and item.product.barcode
+                and item.product.barcode == clean_scan
+            ):
                 matched = True
-            elif item.stock_batch and item.stock_batch.barcode and item.stock_batch.barcode == clean_scan:
+            elif (
+                item.stock_batch
+                and item.stock_batch.barcode
+                and item.stock_batch.barcode == clean_scan
+            ):
                 matched = True
             elif expected_batch and expected_batch.lower() == clean_scan.lower():
                 matched = True
-            elif clean_scan.isdigit() and len(clean_scan) >= 4 and clean_scan in expected_batch:
+            elif (
+                clean_scan.isdigit()
+                and len(clean_scan) >= 4
+                and clean_scan in expected_batch
+            ):
                 matched = True
             elif clean_scan.lower() in expected_p_name.lower():
                 matched = True
@@ -324,9 +366,7 @@ class WarehouseOpsMutation:
                 )
 
     @strawberry.mutation
-    async def complete_order_picking(
-        self, info: Info, order_id: uuid.UUID
-    ) -> bool:
+    async def complete_order_picking(self, info: Info, order_id: uuid.UUID) -> bool:
         """Mark order picking completed and advance status to PACKED."""
         _, role = _get_caller(info)
         if role not in (
@@ -334,10 +374,16 @@ class WarehouseOpsMutation:
             UserRole.ADMIN.value,
             UserRole.SUPER_ADMIN.value,
         ):
-            raise Exception("Permission denied: Only Warehouse or Admin staff can complete picking.")
+            raise Exception(
+                "Permission denied: Only Warehouse or Admin staff can complete picking."
+            )
 
         async with async_session_factory() as session:
-            stmt = select(Order).options(selectinload(Order.items)).where(Order.id == order_id)
+            stmt = (
+                select(Order)
+                .options(selectinload(Order.items))
+                .where(Order.id == order_id)
+            )
             res = await session.execute(stmt)
             order = res.scalar_one_or_none()
             if not order:

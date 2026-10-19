@@ -18,9 +18,7 @@ async def generate_invoice_number(session: AsyncSession) -> str:
     return f"INV-{today_str}-{(current_count + 1):04d}"
 
 
-async def create_invoice_for_order(
-    session: AsyncSession, order: Order
-) -> Invoice:
+async def create_invoice_for_order(session: AsyncSession, order: Order) -> Invoice:
     """
     Generate and save an Invoice record for a confirmed wholesale order.
     """
@@ -43,5 +41,7 @@ async def create_invoice_for_order(
         grand_total=order.net_amount,
     )
     session.add(invoice)
-    logger.info(f"Created invoice {inv_number} for order {order.order_number} (Grand Total: {order.net_amount})")
+    logger.info(
+        f"Created invoice {inv_number} for order {order.order_number} (Grand Total: {order.net_amount})"
+    )
     return invoice

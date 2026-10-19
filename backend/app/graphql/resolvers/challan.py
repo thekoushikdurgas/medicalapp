@@ -8,7 +8,7 @@ from strawberry.types import Info
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
-from app.db.models import DeliveryChallan, ChallanReturn, UserRole
+from app.db.models import DeliveryChallan, UserRole
 from app.db.session import async_session_factory
 from app.graphql.resolvers.auth import _get_caller
 from app.graphql.types import (
@@ -131,7 +131,9 @@ class ChallanMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: Only Warehouse staff or Admin can create challans.")
+            raise Exception(
+                "Permission denied: Only Warehouse staff or Admin can create challans."
+            )
 
         created_by = uuid.UUID(user_id_str)
         async with async_session_factory() as session:
@@ -171,7 +173,9 @@ class ChallanMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: Only Warehouse staff or Admin can process returns.")
+            raise Exception(
+                "Permission denied: Only Warehouse staff or Admin can process returns."
+            )
 
         processed_by = uuid.UUID(user_id_str)
         return_items = [

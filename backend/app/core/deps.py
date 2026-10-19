@@ -4,11 +4,9 @@ FastAPI dependencies — database session, current user extraction.
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from sqlalchemy.ext.asyncio import AsyncSession
 import jwt as pyjwt
 
 from app.core.security import decode_token
-from app.db.session import get_db_session
 
 security_scheme = HTTPBearer()
 

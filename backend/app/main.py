@@ -5,7 +5,6 @@ Pharmacy Fantasy — FastAPI Application Entrypoint
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import strawberry
 from strawberry.fastapi import GraphQLRouter
 
 from app.core.config import settings

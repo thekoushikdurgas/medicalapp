@@ -1,7 +1,7 @@
 # 🚀 Pharmacy Fantasy — Backend Production Deployment Guide
 
 > **FastAPI · Strawberry GraphQL · SQLAlchemy 2.0 (Async) · PostgreSQL · Redis**  
-> *Target:* Backend DevOps, Platform Engineers & Site Reliability Engineers (SRE)
+> _Target:_ Backend DevOps, Platform Engineers & Site Reliability Engineers (SRE)
 
 ---
 
@@ -20,10 +20,12 @@ UvicornWorker (ASGI)    UvicornWorker (ASGI)    UvicornWorker (ASGI)
 ```
 
 ### Process Sizing Formula:
+
 $$\text{Workers} = (2 \times \text{CPU Cores}) + 1$$
 For a 2 vCPU production instance: $2 \times 2 + 1 = 5$ workers.
 
 ### Production Start Command
+
 ```bash
 gunicorn app.main:app \
   --workers 4 \
@@ -109,6 +111,7 @@ engine = create_async_engine(
 ## 4. Pre-Start Migration & Healthcheck Pipeline
 
 ### Container Pre-Start Script (`scripts/prestart.sh`)
+
 ```bash
 #!/usr/bin/env bash
 set -e
@@ -134,7 +137,9 @@ exec "$@"
 ```
 
 ### Health & Readiness Endpoints
+
 Expose dedicated endpoints in `app/main.py`:
+
 - `GET /health`: Liveness probe (verifies FastAPI runtime).
 - `GET /ready`: Readiness probe (verifies database pool ping & Redis connectivity).
 
@@ -142,10 +147,10 @@ Expose dedicated endpoints in `app/main.py`:
 
 ## 5. Production Environment Variables Reference
 
-| Variable | Recommended Production Value | Description |
-| :--- | :--- | :--- |
-| `APP_ENV` | `production` | Disables debug logs and playground documentation if configured. |
-| `DATABASE_URL` | `postgresql+asyncpg://...` | Managed PostgreSQL connection string with SSL mode enabled. |
-| `REDIS_URL` | `rediss://...` | TLS-encrypted Redis connection string for caching and sessions. |
-| `SECRET_KEY` | *64-char Hex String* | High-entropy secret for signing JWT auth tokens. |
-| `CORS_ORIGINS` | `https://app.pharmacyfantasy.com` | Strict whitelist of allowed browser origins. |
+| Variable       | Recommended Production Value      | Description                                                     |
+| :------------- | :-------------------------------- | :-------------------------------------------------------------- |
+| `APP_ENV`      | `production`                      | Disables debug logs and playground documentation if configured. |
+| `DATABASE_URL` | `postgresql+asyncpg://...`        | Managed PostgreSQL connection string with SSL mode enabled.     |
+| `REDIS_URL`    | `rediss://...`                    | TLS-encrypted Redis connection string for caching and sessions. |
+| `SECRET_KEY`   | _64-char Hex String_              | High-entropy secret for signing JWT auth tokens.                |
+| `CORS_ORIGINS` | `https://app.pharmacyfantasy.com` | Strict whitelist of allowed browser origins.                    |

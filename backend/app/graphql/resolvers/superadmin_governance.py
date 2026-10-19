@@ -11,7 +11,6 @@ from sqlalchemy.orm import selectinload
 
 from app.db.models import (
     Product,
-    StockBatch,
     ShopkeeperProfile,
     User,
     UserRole,
@@ -60,10 +59,16 @@ class SuperAdminGovernanceQuery:
         """
         _, role = _get_caller(info)
         if role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Super Admin or Operations Admin can run price simulations.")
+            raise Exception(
+                "Permission denied: Only Super Admin or Operations Admin can run price simulations."
+            )
 
         async with async_session_factory() as session:
-            stmt = select(Product).options(selectinload(Product.stock_batches)).where(Product.is_active == True)
+            stmt = (
+                select(Product)
+                .options(selectinload(Product.stock_batches))
+                .where(Product.is_active.is_(True))
+            )
             if category and category.strip():
                 stmt = stmt.where(Product.category == category.strip())
 
@@ -103,18 +108,26 @@ class SuperAdminGovernanceQuery:
                     new_mrp = current_mrp
 
                 # Margin check
-                proj_margin = round(((new_ptr - cost) / new_ptr) * 100.0, 2) if new_ptr > 0 else 0.0
+                proj_margin = (
+                    round(((new_ptr - cost) / new_ptr) * 100.0, 2)
+                    if new_ptr > 0
+                    else 0.0
+                )
 
                 warning: str | None = None
                 if new_ptr > new_mrp:
                     warning = "PTR exceeds Maximum Retail Price (MRP breach)"
                     can_apply = False
                     if "MRP violation detected" not in validation_warnings:
-                        validation_warnings.append("MRP violation detected: PTR cannot exceed MRP.")
+                        validation_warnings.append(
+                            "MRP violation detected: PTR cannot exceed MRP."
+                        )
                 elif new_ptr < cost:
                     warning = "Loss-making price: PTR is below purchase cost"
                     if "Loss-making pricing detected" not in validation_warnings:
-                        validation_warnings.append("Loss-making pricing detected for one or more SKUs.")
+                        validation_warnings.append(
+                            "Loss-making pricing detected for one or more SKUs."
+                        )
                 elif proj_margin < 3.0:
                     warning = f"Thin margin warning: {proj_margin}% is below 3% distributor safety band"
 
@@ -148,7 +161,9 @@ class SuperAdminGovernanceQuery:
         """View all platform automation circuit breakers and emergency pause states."""
         _, role = _get_caller(info)
         if role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Administrators can inspect automation circuit breakers.")
+            raise Exception(
+                "Permission denied: Only Administrators can inspect automation circuit breakers."
+            )
 
         async with async_session_factory() as session:
             res = await session.execute(select(AutomationCircuitBreaker))
@@ -187,7 +202,9 @@ class SuperAdminGovernanceQuery:
         """List high-risk administrative approval requests (Two-Man Rule queue)."""
         _, role = _get_caller(info)
         if role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Administrators can review high-risk approvals.")
+            raise Exception(
+                "Permission denied: Only Administrators can review high-risk approvals."
+            )
 
         async with async_session_factory() as session:
             stmt = (
@@ -212,7 +229,9 @@ class SuperAdminGovernanceQuery:
                     description=r.description,
                     status=r.status,
                     requested_by_id=r.requested_by_id,
-                    requested_by_name=r.requested_by.full_name if r.requested_by else "System",
+                    requested_by_name=(
+                        r.requested_by.full_name if r.requested_by else "System"
+                    ),
                     approved_by_id=r.approved_by_id,
                     approved_by_name=r.approved_by.full_name if r.approved_by else None,
                     rejection_reason=r.rejection_reason,
@@ -233,25 +252,33 @@ class SuperAdminGovernanceQuery:
         """
         _, role = _get_caller(info)
         if role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Administrators can view governance overview.")
+            raise Exception(
+                "Permission denied: Only Administrators can view governance overview."
+            )
 
         async with async_session_factory() as session:
             # 1. Privileged accounts count & MFA policy
             priv_res = await session.execute(
-                select(User).where(User.role.in_([UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value]))
+                select(User).where(
+                    User.role.in_([UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value])
+                )
             )
             privileged_users = priv_res.scalars().all()
 
             # Check MFA policy in SystemGovernancePolicy
             mfa_res = await session.execute(
-                select(SystemGovernancePolicy).where(SystemGovernancePolicy.policy_key == "MFA_ENFORCED")
+                select(SystemGovernancePolicy).where(
+                    SystemGovernancePolicy.policy_key == "MFA_ENFORCED"
+                )
             )
             mfa_policy = mfa_res.scalar_one_or_none()
             mfa_enforced = mfa_policy.is_enabled if mfa_policy else True
 
             # 2. Supplier purchase reconciliation records
             recon_res = await session.execute(
-                select(SupplierReconciliationRecord).order_by(SupplierReconciliationRecord.created_at.desc()).limit(10)
+                select(SupplierReconciliationRecord)
+                .order_by(SupplierReconciliationRecord.created_at.desc())
+                .limit(10)
             )
             recon_records = recon_res.scalars().all()
 
@@ -317,8 +344,12 @@ class SuperAdminGovernanceQuery:
                     ),
                 ]
 
-            pending_supplier_invoices = sum(1 for r in reconciliations if r.status == "PENDING_REVIEW")
-            supplier_discrepancies = sum(1 for r in reconciliations if r.discrepancy_amount > 0)
+            pending_supplier_invoices = sum(
+                1 for r in reconciliations if r.status == "PENDING_REVIEW"
+            )
+            supplier_discrepancies = sum(
+                1 for r in reconciliations if r.discrepancy_amount > 0
+            )
 
             # 3. Product catalog change history
             catalog_changes = [
@@ -388,13 +419,21 @@ class SuperAdminGovernanceMutation:
         """
         caller_id, role = _get_caller(info)
         if role != UserRole.SUPER_ADMIN.value:
-            raise Exception("Permission denied: Only Super Admin can apply live bulk pricing updates.")
+            raise Exception(
+                "Permission denied: Only Super Admin can apply live bulk pricing updates."
+            )
 
         if not reason or len(reason.strip()) < 5:
-            raise Exception("Documented justification reason (min 5 chars) is required for bulk price revisions.")
+            raise Exception(
+                "Documented justification reason (min 5 chars) is required for bulk price revisions."
+            )
 
         async with async_session_factory() as session:
-            stmt = select(Product).options(selectinload(Product.stock_batches)).where(Product.is_active == True)
+            stmt = (
+                select(Product)
+                .options(selectinload(Product.stock_batches))
+                .where(Product.is_active.is_(True))
+            )
             if category and category.strip():
                 stmt = stmt.where(Product.category == category.strip())
 
@@ -402,7 +441,9 @@ class SuperAdminGovernanceMutation:
             products = res.scalars().all()
 
             if len(products) > 500:
-                raise Exception(f"Batch limit exceeded: {len(products)} products matched (Maximum allowed: 500).")
+                raise Exception(
+                    f"Batch limit exceeded: {len(products)} products matched (Maximum allowed: 500)."
+                )
 
             preview_items: list[BulkPricePreviewItem] = []
             action_upper = action.upper()
@@ -432,7 +473,11 @@ class SuperAdminGovernanceMutation:
                     new_mrp = current_mrp
 
                 p.default_mrp = new_mrp
-                proj_margin = round(((new_ptr - cost) / new_ptr) * 100.0, 2) if new_ptr > 0 else 0.0
+                proj_margin = (
+                    round(((new_ptr - cost) / new_ptr) * 100.0, 2)
+                    if new_ptr > 0
+                    else 0.0
+                )
 
                 preview_items.append(
                     BulkPricePreviewItem(
@@ -483,14 +528,20 @@ class SuperAdminGovernanceMutation:
         """Emergency pause/resume switch for automated platform subsystems (Super Admin only)."""
         caller_id, role = _get_caller(info)
         if role != UserRole.SUPER_ADMIN.value:
-            raise Exception("Permission denied: Only Super Admin can toggle emergency automation circuit breakers.")
+            raise Exception(
+                "Permission denied: Only Super Admin can toggle emergency automation circuit breakers."
+            )
 
         async with async_session_factory() as session:
-            caller_res = await session.execute(select(User).where(User.id == uuid.UUID(caller_id)))
+            caller_res = await session.execute(
+                select(User).where(User.id == uuid.UUID(caller_id))
+            )
             caller = caller_res.scalar_one_or_none()
             paused_by_name = caller.full_name if caller else "Super Admin"
 
-            stmt = select(AutomationCircuitBreaker).where(AutomationCircuitBreaker.subsystem == subsystem)
+            stmt = select(AutomationCircuitBreaker).where(
+                AutomationCircuitBreaker.subsystem == subsystem
+            )
             res = await session.execute(stmt)
             breaker = res.scalar_one_or_none()
 
@@ -530,7 +581,9 @@ class SuperAdminGovernanceMutation:
         """Propose a high-risk administrative action requiring secondary signoff (Admin or Super Admin)."""
         caller_id, role = _get_caller(info)
         if role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Administrators can create high-risk approval requests.")
+            raise Exception(
+                "Permission denied: Only Administrators can create high-risk approval requests."
+            )
 
         async with async_session_factory() as session:
             req = HighRiskApproval(
@@ -544,7 +597,9 @@ class SuperAdminGovernanceMutation:
             await session.commit()
             await session.refresh(req)
 
-            caller_res = await session.execute(select(User).where(User.id == uuid.UUID(caller_id)))
+            caller_res = await session.execute(
+                select(User).where(User.id == uuid.UUID(caller_id))
+            )
             caller = caller_res.scalar_one_or_none()
 
             return HighRiskApprovalType(
@@ -576,7 +631,9 @@ class SuperAdminGovernanceMutation:
         """
         caller_id, role = _get_caller(info)
         if role != UserRole.SUPER_ADMIN.value:
-            raise Exception("Permission denied: Only Super Admin can approve high-risk governance requests.")
+            raise Exception(
+                "Permission denied: Only Super Admin can approve high-risk governance requests."
+            )
 
         caller_uuid = uuid.UUID(caller_id)
 
@@ -592,7 +649,9 @@ class SuperAdminGovernanceMutation:
                 raise Exception(f"High risk approval request {request_id} not found.")
 
             if record.status != "PENDING":
-                raise Exception(f"Request is already resolved with status '{record.status}'.")
+                raise Exception(
+                    f"Request is already resolved with status '{record.status}'."
+                )
 
             # Two-Man Rule validation
             if record.requested_by_id == caller_uuid:
@@ -601,7 +660,9 @@ class SuperAdminGovernanceMutation:
                     "A second administrator must review and sign off."
                 )
 
-            caller_res = await session.execute(select(User).where(User.id == caller_uuid))
+            caller_res = await session.execute(
+                select(User).where(User.id == caller_uuid)
+            )
             caller = caller_res.scalar_one_or_none()
             caller_name = caller.full_name if caller else "Super Admin"
 
@@ -621,13 +682,17 @@ class SuperAdminGovernanceMutation:
                         p_res = await session.execute(p_stmt)
                         profile = p_res.scalar_one_or_none()
                         if profile:
-                            profile.credit_limit_reason = f"Super Admin Approved: {record.description}"
+                            profile.credit_limit_reason = (
+                                f"Super Admin Approved: {record.description}"
+                            )
                     except Exception:
                         pass
             else:
                 record.status = "REJECTED"
                 record.approved_by_id = caller_uuid
-                record.rejection_reason = reason or "Rejected during Super Admin governance review."
+                record.rejection_reason = (
+                    reason or "Rejected during Super Admin governance review."
+                )
 
             await session.commit()
             await session.refresh(record)
@@ -639,7 +704,9 @@ class SuperAdminGovernanceMutation:
                 description=record.description,
                 status=record.status,
                 requested_by_id=record.requested_by_id,
-                requested_by_name=record.requested_by.full_name if record.requested_by else "Admin",
+                requested_by_name=(
+                    record.requested_by.full_name if record.requested_by else "Admin"
+                ),
                 approved_by_id=record.approved_by_id,
                 approved_by_name=caller_name,
                 rejection_reason=record.rejection_reason,
@@ -648,16 +715,18 @@ class SuperAdminGovernanceMutation:
             )
 
     @strawberry.mutation
-    async def toggle_mfa_enforcement(
-        self, info: Info, enable: bool
-    ) -> bool:
+    async def toggle_mfa_enforcement(self, info: Info, enable: bool) -> bool:
         """Toggle mandatory Multi-Factor Authentication (MFA) for privileged administrator accounts (Super Admin only)."""
         caller_id, role = _get_caller(info)
         if role != UserRole.SUPER_ADMIN.value:
-            raise Exception("Permission denied: Only Super Admin can toggle privileged MFA enforcement policy.")
+            raise Exception(
+                "Permission denied: Only Super Admin can toggle privileged MFA enforcement policy."
+            )
 
         async with async_session_factory() as session:
-            stmt = select(SystemGovernancePolicy).where(SystemGovernancePolicy.policy_key == "MFA_ENFORCED")
+            stmt = select(SystemGovernancePolicy).where(
+                SystemGovernancePolicy.policy_key == "MFA_ENFORCED"
+            )
             res = await session.execute(stmt)
             policy = res.scalar_one_or_none()
             if not policy:
@@ -696,14 +765,18 @@ class SuperAdminGovernanceMutation:
         """Resolve a supplier purchase/invoice 3-way reconciliation discrepancy (Super Admin & Admin)."""
         caller_id, role = _get_caller(info)
         if role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Administrators can resolve supplier purchase reconciliations.")
+            raise Exception(
+                "Permission denied: Only Administrators can resolve supplier purchase reconciliations."
+            )
 
         async with async_session_factory() as session:
             rec = None
             try:
                 rec_uuid = uuid.UUID(record_id)
                 res = await session.execute(
-                    select(SupplierReconciliationRecord).where(SupplierReconciliationRecord.id == rec_uuid)
+                    select(SupplierReconciliationRecord).where(
+                        SupplierReconciliationRecord.id == rec_uuid
+                    )
                 )
                 rec = res.scalar_one_or_none()
             except ValueError:
@@ -743,4 +816,3 @@ class SuperAdminGovernanceMutation:
                     notes=notes or "Resolved by administrator",
                     created_at=datetime.now(),
                 )
-

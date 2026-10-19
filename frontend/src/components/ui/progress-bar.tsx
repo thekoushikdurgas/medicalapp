@@ -27,7 +27,10 @@ export function ProgressBar({
   animated = true,
   className = "",
 }: ProgressBarProps) {
-  const percentage = Math.min(100, Math.max(0, Math.round((value / max) * 100)));
+  const percentage = Math.min(
+    100,
+    Math.max(0, Math.round((value / max) * 100)),
+  );
 
   const heightMap = {
     sm: "4px",
@@ -61,7 +64,12 @@ export function ProgressBar({
       aria-valuemin={0}
       aria-valuemax={max}
       aria-label={label || "Progress"}
-      style={{ width: "100%", display: "flex", flexDirection: "column", gap: "0.35rem" }}
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        gap: "0.35rem",
+      }}
     >
       {(label || showPercentage) && (
         <div

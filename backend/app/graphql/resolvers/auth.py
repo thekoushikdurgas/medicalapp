@@ -15,7 +15,14 @@ from app.core.security import (
     decode_token,
     hash_password,
 )
-from app.db.models import User, UserRole, ShopkeeperProfile, DeliveryProfile, Order, Notification
+from app.db.models import (
+    User,
+    UserRole,
+    ShopkeeperProfile,
+    DeliveryProfile,
+    Order,
+    Notification,
+)
 from app.db.session import async_session_factory
 from app.graphql.types import (
     AuthPayload,
@@ -42,10 +49,22 @@ def _user_to_type(user: User) -> UserType:
 def _get_caller(info: Info) -> tuple[str, str]:
     """Return (user_id, role) from Authorization header or test context."""
     context = info.context
-    request = context.get("request") if isinstance(context, dict) else getattr(context, "request", None)
+    request = (
+        context.get("request")
+        if isinstance(context, dict)
+        else getattr(context, "request", None)
+    )
     if not request:
-        user_id = context.get("user_id") if isinstance(context, dict) else getattr(context, "user_id", None)
-        role = context.get("role") if isinstance(context, dict) else getattr(context, "role", None)
+        user_id = (
+            context.get("user_id")
+            if isinstance(context, dict)
+            else getattr(context, "user_id", None)
+        )
+        role = (
+            context.get("role")
+            if isinstance(context, dict)
+            else getattr(context, "role", None)
+        )
         if user_id and role:
             return str(user_id), str(role)
         raise Exception("Not authenticated")
@@ -127,9 +146,13 @@ class AuthQuery:
         """List retail pharmacies with KYC verification status, credit limits and balances."""
         caller_id, caller_role = _get_caller(info)
         async with async_session_factory() as session:
-            stmt = select(ShopkeeperProfile).options(selectinload(ShopkeeperProfile.user))
+            stmt = select(ShopkeeperProfile).options(
+                selectinload(ShopkeeperProfile.user)
+            )
             if caller_role == UserRole.SHOPKEEPER.value and caller_id:
-                stmt = stmt.where(ShopkeeperProfile.user_id == uuid.UUID(str(caller_id)))
+                stmt = stmt.where(
+                    ShopkeeperProfile.user_id == uuid.UUID(str(caller_id))
+                )
             elif status and status != "ALL":
                 stmt = stmt.where(ShopkeeperProfile.verification_status == status)
 
@@ -167,7 +190,10 @@ class AuthQuery:
                         city=p.city,
                         credit_limit=float(p.credit_limit or 0.0),
                         outstanding_balance=float(p.outstanding_balance or 0.0),
-                        verification_status=getattr(p, "verification_status", "VERIFIED") or "VERIFIED",
+                        verification_status=getattr(
+                            p, "verification_status", "VERIFIED"
+                        )
+                        or "VERIFIED",
                         verification_notes=getattr(p, "verification_notes", None),
                         credit_limit_reason=getattr(p, "credit_limit_reason", None),
                         owner_name=p.user.full_name if p.user else None,
@@ -236,7 +262,9 @@ class AuthMutation:
             raise Exception("Password must be at least 6 characters long.")
 
         clean_phone = input.phone.strip()
-        clean_email = input.email.strip() if input.email and input.email.strip() else None
+        clean_email = (
+            input.email.strip() if input.email and input.email.strip() else None
+        )
 
         async with async_session_factory() as session:
             # Check phone uniqueness
@@ -244,7 +272,9 @@ class AuthMutation:
                 select(User).where(User.phone == clean_phone)
             )
             if existing_phone.scalar_one_or_none():
-                raise Exception(f"An account with phone number '{clean_phone}' already exists.")
+                raise Exception(
+                    f"An account with phone number '{clean_phone}' already exists."
+                )
 
             # Check email uniqueness if email provided
             if clean_email:
@@ -252,7 +282,9 @@ class AuthMutation:
                     select(User).where(User.email == clean_email)
                 )
                 if existing_email.scalar_one_or_none():
-                    raise Exception(f"An account with email '{clean_email}' already exists.")
+                    raise Exception(
+                        f"An account with email '{clean_email}' already exists."
+                    )
 
             # Create User with is_active=True (free instant access, no waiting for approval)
             user = User(
@@ -303,7 +335,9 @@ class AuthMutation:
             )
 
     @strawberry.mutation
-    async def assign_user_role(self, info: Info, user_id: uuid.UUID, new_role: str) -> UserType:
+    async def assign_user_role(
+        self, info: Info, user_id: uuid.UUID, new_role: str
+    ) -> UserType:
         """
         Super Admin or Operations Admin assigns/changes a user's role.
         - Super Admin can assign any role.
@@ -312,15 +346,21 @@ class AuthMutation:
         """
         caller_id, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: You are not authorized to assign roles.")
+            raise Exception(
+                "Permission denied: You are not authorized to assign roles."
+            )
 
         valid_roles = [r.value for r in UserRole]
         if new_role not in valid_roles:
-            raise Exception(f"Invalid role '{new_role}'. Must be one of: {', '.join(valid_roles)}")
+            raise Exception(
+                f"Invalid role '{new_role}'. Must be one of: {', '.join(valid_roles)}"
+            )
 
         if caller_role == UserRole.ADMIN.value:
             if new_role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-                raise Exception("Permission denied: Operations Admin cannot assign Admin or Super Admin roles.")
+                raise Exception(
+                    "Permission denied: Operations Admin cannot assign Admin or Super Admin roles."
+                )
 
         async with async_session_factory() as session:
             result = await session.execute(select(User).where(User.id == user_id))
@@ -328,8 +368,13 @@ class AuthMutation:
             if not user:
                 raise Exception("User not found.")
 
-            if caller_role == UserRole.ADMIN.value and user.role in (UserRole.SUPER_ADMIN, UserRole.ADMIN):
-                raise Exception("Permission denied: Operations Admin cannot modify Super Admin or Admin accounts.")
+            if caller_role == UserRole.ADMIN.value and user.role in (
+                UserRole.SUPER_ADMIN,
+                UserRole.ADMIN,
+            ):
+                raise Exception(
+                    "Permission denied: Operations Admin cannot modify Super Admin or Admin accounts."
+                )
 
             target_role = UserRole(new_role)
             user.role = target_role
@@ -351,7 +396,9 @@ class AuthMutation:
             # If assigning to SHOPKEEPER and profile doesn't exist, create default
             if target_role == UserRole.SHOPKEEPER:
                 sp = await session.execute(
-                    select(ShopkeeperProfile).where(ShopkeeperProfile.user_id == user.id)
+                    select(ShopkeeperProfile).where(
+                        ShopkeeperProfile.user_id == user.id
+                    )
                 )
                 if not sp.scalar_one_or_none():
                     session.add(
@@ -371,25 +418,41 @@ class AuthMutation:
         """Create a new staff or user account directly (Super Admin / Admin)."""
         caller_id, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: You are not authorized to create users.")
+            raise Exception(
+                "Permission denied: You are not authorized to create users."
+            )
 
         if caller_role == UserRole.ADMIN.value:
             if input.role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-                raise Exception("Permission denied: Operations Admin cannot create Super Admin or Admin accounts.")
+                raise Exception(
+                    "Permission denied: Operations Admin cannot create Super Admin or Admin accounts."
+                )
 
-        clean_email = input.email.strip() if input.email and input.email.strip() else None
-        clean_phone = input.phone.strip() if input.phone and input.phone.strip() else None
+        clean_email = (
+            input.email.strip() if input.email and input.email.strip() else None
+        )
+        clean_phone = (
+            input.phone.strip() if input.phone and input.phone.strip() else None
+        )
 
         async with async_session_factory() as session:
             if clean_email:
-                exists_email = await session.execute(select(User).where(User.email == clean_email))
+                exists_email = await session.execute(
+                    select(User).where(User.email == clean_email)
+                )
                 if exists_email.scalar_one_or_none():
-                    raise Exception(f"A user with email '{clean_email}' already exists.")
+                    raise Exception(
+                        f"A user with email '{clean_email}' already exists."
+                    )
 
             if clean_phone:
-                exists_phone = await session.execute(select(User).where(User.phone == clean_phone))
+                exists_phone = await session.execute(
+                    select(User).where(User.phone == clean_phone)
+                )
                 if exists_phone.scalar_one_or_none():
-                    raise Exception(f"A user with phone '{clean_phone}' already exists.")
+                    raise Exception(
+                        f"A user with phone '{clean_phone}' already exists."
+                    )
 
             user = User(
                 email=clean_email,
@@ -459,14 +522,23 @@ class AuthMutation:
         """Approve, reject, or suspend a retail pharmacy's KYC verification (Admin only)."""
         caller_id, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Operations Admin or Super Admin can verify retailers.")
+            raise Exception(
+                "Permission denied: Only Operations Admin or Super Admin can verify retailers."
+            )
 
         if status not in ("VERIFIED", "PENDING_VERIFICATION", "REJECTED", "SUSPENDED"):
-            raise Exception(f"Invalid verification status '{status}'. Must be VERIFIED, PENDING_VERIFICATION, REJECTED, or SUSPENDED.")
+            raise Exception(
+                f"Invalid verification status '{status}'. Must be VERIFIED, PENDING_VERIFICATION, REJECTED, or SUSPENDED."
+            )
 
         async with async_session_factory() as session:
-            stmt = select(ShopkeeperProfile).options(selectinload(ShopkeeperProfile.user)).where(
-                (ShopkeeperProfile.id == shopkeeper_id) | (ShopkeeperProfile.user_id == shopkeeper_id)
+            stmt = (
+                select(ShopkeeperProfile)
+                .options(selectinload(ShopkeeperProfile.user))
+                .where(
+                    (ShopkeeperProfile.id == shopkeeper_id)
+                    | (ShopkeeperProfile.user_id == shopkeeper_id)
+                )
             )
             res = await session.execute(stmt)
             profile = res.scalar_one_or_none()
@@ -498,7 +570,9 @@ class AuthMutation:
             await session.refresh(profile)
 
             ord_q = await session.execute(
-                select(func.count(Order.id)).where(Order.shopkeeper_id == profile.user_id)
+                select(func.count(Order.id)).where(
+                    Order.shopkeeper_id == profile.user_id
+                )
             )
             tot_orders = ord_q.scalar() or 0
 
@@ -533,16 +607,25 @@ class AuthMutation:
         """Adjust or set retail pharmacy credit limit with documented reason (Admin only)."""
         caller_id, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-            raise Exception("Permission denied: Only Operations Admin or Super Admin can adjust credit limits.")
+            raise Exception(
+                "Permission denied: Only Operations Admin or Super Admin can adjust credit limits."
+            )
 
         if new_limit < 0:
             raise Exception("Credit limit cannot be negative.")
         if not reason or not reason.strip():
-            raise Exception("Documented justification reason is mandatory for credit limit adjustments.")
+            raise Exception(
+                "Documented justification reason is mandatory for credit limit adjustments."
+            )
 
         async with async_session_factory() as session:
-            stmt = select(ShopkeeperProfile).options(selectinload(ShopkeeperProfile.user)).where(
-                (ShopkeeperProfile.id == shopkeeper_id) | (ShopkeeperProfile.user_id == shopkeeper_id)
+            stmt = (
+                select(ShopkeeperProfile)
+                .options(selectinload(ShopkeeperProfile.user))
+                .where(
+                    (ShopkeeperProfile.id == shopkeeper_id)
+                    | (ShopkeeperProfile.user_id == shopkeeper_id)
+                )
             )
             res = await session.execute(stmt)
             profile = res.scalar_one_or_none()
@@ -555,7 +638,9 @@ class AuthMutation:
             await session.refresh(profile)
 
             ord_q = await session.execute(
-                select(func.count(Order.id)).where(Order.shopkeeper_id == profile.user_id)
+                select(func.count(Order.id)).where(
+                    Order.shopkeeper_id == profile.user_id
+                )
             )
             tot_orders = ord_q.scalar() or 0
 

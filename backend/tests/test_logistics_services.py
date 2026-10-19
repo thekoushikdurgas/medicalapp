@@ -107,7 +107,9 @@ class TestChallanService:
         mock_session = AsyncMock()
         # Query challan
         mock_res1 = MagicMock()
-        mock_res1.scalar_one_or_none.return_value = MagicMock(challan_number="DC-20261019-0001", id=challan_id)
+        mock_res1.scalar_one_or_none.return_value = MagicMock(
+            challan_number="DC-20261019-0001", id=challan_id
+        )
         # Query count
         mock_res2 = MagicMock()
         mock_res2.scalar.return_value = 0
@@ -118,7 +120,11 @@ class TestChallanService:
         mock_session.execute.side_effect = [mock_res1, mock_res2, mock_res3]
 
         return_items = [
-            {"product_id": str(prod_id), "stock_batch_id": str(batch_id), "quantity": 10}
+            {
+                "product_id": str(prod_id),
+                "stock_batch_id": str(batch_id),
+                "quantity": 10,
+            }
         ]
 
         result = await process_challan_return(
@@ -131,7 +137,7 @@ class TestChallanService:
 
         assert result.return_number.startswith("CR-")
         assert batch.quantity_available == 50  # 40 + 10 restored
-        assert batch.quantity_sold == 50       # 60 - 10
+        assert batch.quantity_sold == 50  # 60 - 10
 
 
 class TestReturnService:

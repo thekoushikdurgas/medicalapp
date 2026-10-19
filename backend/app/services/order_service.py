@@ -18,7 +18,6 @@ from app.db.models import (
 )
 from app.utils.gst import calculate_line_total
 from app.services.inventory_service import (
-    allocate_batch_fefo,
     restore_batch_stock,
     allocate_batches_fefo_multi,
 )
@@ -137,7 +136,9 @@ async def place_order(
         )
         session.add(order_item)
 
-    logger.info(f"Order {order.order_number} placed by shopkeeper {shopkeeper_id} (Net: ₹{order.net_amount})")
+    logger.info(
+        f"Order {order.order_number} placed by shopkeeper {shopkeeper_id} (Net: ₹{order.net_amount})"
+    )
     return order
 
 
@@ -152,9 +153,7 @@ async def confirm_order(
     4. Sets order status to CONFIRMED.
     """
     result = await session.execute(
-        select(Order)
-        .options(selectinload(Order.items))
-        .where(Order.id == order_id)
+        select(Order).options(selectinload(Order.items)).where(Order.id == order_id)
     )
     order = result.scalar_one_or_none()
     if not order:
@@ -174,7 +173,9 @@ async def confirm_order(
         item.stock_batch_id = first_batch.id
         item.quantity = first_qty
         item.mrp = float(first_batch.mrp)
-        item.rate = float(first_batch.purchase_rate) if first_batch.purchase_rate else item.rate
+        item.rate = (
+            float(first_batch.purchase_rate) if first_batch.purchase_rate else item.rate
+        )
         calc1 = calculate_line_total(
             quantity=first_qty,
             rate=item.rate,
@@ -190,7 +191,11 @@ async def confirm_order(
         for extra_batch, extra_qty in allocations[1:]:
             calc_extra = calculate_line_total(
                 quantity=extra_qty,
-                rate=float(extra_batch.purchase_rate) if extra_batch.purchase_rate else item.rate,
+                rate=(
+                    float(extra_batch.purchase_rate)
+                    if extra_batch.purchase_rate
+                    else item.rate
+                ),
                 discount1_pct=float(item.discount1_pct or 0.0),
                 discount2_pct=float(item.discount2_pct or 0.0),
                 sgst_pct=float(item.sgst_pct or 2.5),
@@ -201,7 +206,11 @@ async def confirm_order(
                 product_id=item.product_id,
                 stock_batch_id=extra_batch.id,
                 quantity=extra_qty,
-                rate=float(extra_batch.purchase_rate) if extra_batch.purchase_rate else item.rate,
+                rate=(
+                    float(extra_batch.purchase_rate)
+                    if extra_batch.purchase_rate
+                    else item.rate
+                ),
                 mrp=float(extra_batch.mrp),
                 discount1_pct=item.discount1_pct,
                 discount2_pct=item.discount2_pct,
@@ -226,7 +235,9 @@ async def confirm_order(
     if confirmed_by:
         order.confirmed_by = confirmed_by
 
-    logger.info(f"Order {order.order_number} confirmed with FEFO batch allocations and GST invoice generated.")
+    logger.info(
+        f"Order {order.order_number} confirmed with FEFO batch allocations and GST invoice generated."
+    )
     return order
 
 
@@ -236,9 +247,7 @@ async def update_order_status(
     """
     Transition order state machine and handle delivery reconciliation.
     """
-    result = await session.execute(
-        select(Order).where(Order.id == order_id)
-    )
+    result = await session.execute(select(Order).where(Order.id == order_id))
     order = result.scalar_one_or_none()
     if not order:
         raise OrderDomainError("Order not found.")
@@ -249,11 +258,15 @@ async def update_order_status(
 
         # Update shopkeeper outstanding balance
         sk_result = await session.execute(
-            select(ShopkeeperProfile).where(ShopkeeperProfile.user_id == order.shopkeeper_id)
+            select(ShopkeeperProfile).where(
+                ShopkeeperProfile.user_id == order.shopkeeper_id
+            )
         )
         sk = sk_result.scalar_one_or_none()
         if sk:
-            sk.outstanding_balance = float(sk.outstanding_balance) + float(order.net_amount)
+            sk.outstanding_balance = float(sk.outstanding_balance) + float(
+                order.net_amount
+            )
             await record_ledger_entry(
                 session=session,
                 shopkeeper_id=order.shopkeeper_id,
@@ -263,7 +276,9 @@ async def update_order_status(
                 reference_number=order.order_number,
                 description=f"Delivery & Invoice for order {order.order_number}",
             )
-            logger.info(f"Updated shopkeeper {sk.shop_name} outstanding balance to ₹{sk.outstanding_balance:,.2f}")
+            logger.info(
+                f"Updated shopkeeper {sk.shop_name} outstanding balance to ₹{sk.outstanding_balance:,.2f}"
+            )
 
     logger.info(f"Order {order.order_number} updated to status {new_status.value}")
     return order
@@ -277,9 +292,7 @@ async def cancel_order(
     If order was CONFIRMED, PICKING, or PACKED, restitution: restores reserved batch quantities atomically.
     """
     result = await session.execute(
-        select(Order)
-        .options(selectinload(Order.items))
-        .where(Order.id == order_id)
+        select(Order).options(selectinload(Order.items)).where(Order.id == order_id)
     )
     order = result.scalar_one_or_none()
     if not order:
@@ -299,5 +312,7 @@ async def cancel_order(
     if reason:
         order.remarks = f"{order.remarks or ''} [Cancelled: {reason}]".strip()
 
-    logger.info(f"Order {order.order_number} cancelled (stock allocations rolled back).")
+    logger.info(
+        f"Order {order.order_number} cancelled (stock allocations rolled back)."
+    )
     return order

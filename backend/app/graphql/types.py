@@ -726,8 +726,10 @@ class SupplierReconciliationItemType:
     invoice_amount: float
     received_amount: float
     discrepancy_amount: float
-    discrepancy_type: str  # PRICE_MISMATCH, QUANTITY_SHORTAGE, TAX_MISMATCH, DUPLICATE_INVOICE
-    status: str            # PENDING_REVIEW, RESOLVED, CREDIT_NOTE_ISSUED
+    discrepancy_type: (
+        str  # PRICE_MISMATCH, QUANTITY_SHORTAGE, TAX_MISMATCH, DUPLICATE_INVOICE
+    )
+    status: str  # PENDING_REVIEW, RESOLVED, CREDIT_NOTE_ISSUED
     notes: str | None = None
     created_at: datetime
 
@@ -737,7 +739,7 @@ class ProductChangeAuditItemType:
     id: str
     product_name: str
     category: str | None
-    change_type: str       # MRP_UPDATE, TRADE_DISCOUNT, PACKAGING_REVISION, TAX_SLAB
+    change_type: str  # MRP_UPDATE, TRADE_DISCOUNT, PACKAGING_REVISION, TAX_SLAB
     old_value: str
     new_value: str
     performed_by: str
@@ -759,10 +761,3 @@ class SuperAdminGovernanceOverviewType:
     bank_reconciled_percentage: float
     pending_external_settlements_count: int
     automation_rules_version: str
-
-
-
-
-
-
-

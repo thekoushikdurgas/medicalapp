@@ -1,0 +1,16 @@
+# Prettier ignore for Pharmacy Fantasy backend
+# Must match Strawberry `schema.as_str()` byte-for-byte (see tests/test_schema_snapshot.py)
+tests/schema_snapshot.graphql
+
+# Caches and virtual environments
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+reports/
+venv/
+.venv/
+
+# Python files (handled by black)
+*.py
+*.pyc
+*.db

@@ -2,14 +2,18 @@
 
 import React from "react";
 
-interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
+interface RadioProps extends Omit<
+  React.InputHTMLAttributes<HTMLInputElement>,
+  "type"
+> {
   label?: React.ReactNode;
   description?: string;
 }
 
 export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
   ({ label, description, className = "", id, ...props }, ref) => {
-    const inputId = id || React.useId();
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
 
     return (
       <label
@@ -45,7 +49,12 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
               </span>
             )}
             {description && (
-              <span style={{ fontSize: "var(--font-size-xs)", color: "var(--text-muted)" }}>
+              <span
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-muted)",
+                }}
+              >
                 {description}
               </span>
             )}
@@ -53,7 +62,7 @@ export const Radio = React.forwardRef<HTMLInputElement, RadioProps>(
         )}
       </label>
     );
-  }
+  },
 );
 
 Radio.displayName = "Radio";

@@ -56,6 +56,7 @@ To provide a single-command, reproducible quality gate and development orchestra
 ## 4. Components & Files to Create
 
 ### 4.1 Master Batch Script: `backend/codebase.bat`
+
 - Windows CMD with `EnableDelayedExpansion`.
 - ANSI color escape resolution via PowerShell `[char]27`.
 - Colon/equal-safe `:color_echo` subroutine.
@@ -67,6 +68,7 @@ To provide a single-command, reproducible quality gate and development orchestra
 - Complete section status tracker, error counter, warning counter, and `:print_next_steps` remediation guide.
 
 ### 4.2 GraphQL Schema Snapshot Tools
+
 - `backend/scripts/regen_schema_snapshot.py`:
   Extracts SDL via `app.graphql.schema.schema.as_str()` and writes `backend/tests/schema_snapshot.graphql`.
 - `backend/tests/test_schema_snapshot.py`:
@@ -75,6 +77,7 @@ To provide a single-command, reproducible quality gate and development orchestra
   Baseline SDL export.
 
 ### 4.3 Environment Validator: `backend/scripts/validate_env.py`
+
 - Parses `.env` (using `python-dotenv` with fallback plain reader).
 - Validates variables from `app/core/config.py`:
   - `SECRET_KEY`: warns if default `"change-me-in-production"` in production mode.
@@ -84,6 +87,7 @@ To provide a single-command, reproducible quality gate and development orchestra
   - Supports `--verbose` (with secret masking) and `--env-file`.
 
 ### 4.4 Best Practices AST Checker: `backend/scripts/api_checker.py` & `check_best_practices.py`
+
 - Adapted from contact360's AST scanner for FastAPI & Strawberry:
   - Validates project structure, models & database patterns, Strawberry query/mutation conventions, error handling, security practices, and import placement.
 - `backend/.api-checker-config.json`:

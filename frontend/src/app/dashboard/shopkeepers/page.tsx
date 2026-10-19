@@ -25,7 +25,8 @@ interface Shopkeeper {
   creditLimit: number;
   outstandingBalance: number;
   totalOrders: number;
-  verificationStatus: "VERIFIED" | "PENDING_VERIFICATION" | "REJECTED" | "SUSPENDED";
+  verificationStatus:
+    "VERIFIED" | "PENDING_VERIFICATION" | "REJECTED" | "SUSPENDED";
   verificationNotes?: string;
   creditLimitReason?: string;
 }
@@ -46,7 +47,8 @@ const DEMO_SHOPKEEPERS: Shopkeeper[] = [
     outstandingBalance: 23375.0,
     totalOrders: 14,
     verificationStatus: "VERIFIED",
-    verificationNotes: "Physical inspection completed. License valid through Dec 2028.",
+    verificationNotes:
+      "Physical inspection completed. License valid through Dec 2028.",
     creditLimitReason: "15-day wholesale terms. Regular settlement cycle.",
   },
   {
@@ -64,7 +66,8 @@ const DEMO_SHOPKEEPERS: Shopkeeper[] = [
     outstandingBalance: 8617.25,
     totalOrders: 9,
     verificationStatus: "VERIFIED",
-    verificationNotes: "Wholesale & Retail licenses verified with state drug portal.",
+    verificationNotes:
+      "Wholesale & Retail licenses verified with state drug portal.",
     creditLimitReason: "Approved high volume revolving credit ceiling.",
   },
   {
@@ -118,8 +121,10 @@ const DEMO_SHOPKEEPERS: Shopkeeper[] = [
     outstandingBalance: 48500.0,
     totalOrders: 18,
     verificationStatus: "SUSPENDED",
-    verificationNotes: "Credit ceiling breach (>95% utilized) and overdue invoice > 45 days.",
-    creditLimitReason: "Restricted pending reconciliation of outstanding balance.",
+    verificationNotes:
+      "Credit ceiling breach (>95% utilized) and overdue invoice > 45 days.",
+    creditLimitReason:
+      "Restricted pending reconciliation of outstanding balance.",
   },
 ];
 
@@ -135,7 +140,9 @@ export default function ShopkeepersPage() {
 
   // Verification & Credit drawer form state
   const [kycNotesInput, setKycNotesInput] = useState("");
-  const [newCreditLimitInput, setNewCreditLimitInput] = useState<number | string>("");
+  const [newCreditLimitInput, setNewCreditLimitInput] = useState<
+    number | string
+  >("");
   const [creditReasonInput, setCreditReasonInput] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
 
@@ -146,14 +153,19 @@ export default function ShopkeepersPage() {
   const { data, loading, refetch } = useQuery(SHOPKEEPERS_QUERY, {
     variables: {
       search: searchTerm || null,
-      status: activeFilter === "ALL" || activeFilter === "CREDIT_ALERT" ? null : activeFilter,
+      status:
+        activeFilter === "ALL" || activeFilter === "CREDIT_ALERT"
+          ? null
+          : activeFilter,
     },
     fetchPolicy: "network-only",
   });
 
-  const [updateKycMutation, { loading: updatingKyc }] = useMutation(UPDATE_SHOPKEEPER_KYC_MUTATION);
+  const [updateKycMutation, { loading: updatingKyc }] = useMutation(
+    UPDATE_SHOPKEEPER_KYC_MUTATION,
+  );
   const [updateCreditLimitMutation, { loading: updatingCredit }] = useMutation(
-    UPDATE_SHOPKEEPER_CREDIT_LIMIT_MUTATION
+    UPDATE_SHOPKEEPER_CREDIT_LIMIT_MUTATION,
   );
 
   // Compute effective shops
@@ -174,7 +186,8 @@ export default function ShopkeepersPage() {
           creditLimit: item.creditLimit || 0,
           outstandingBalance: item.outstandingBalance || 0,
           totalOrders: item.totalOrders || 0,
-          verificationStatus: (item.verificationStatus || "VERIFIED") as Shopkeeper["verificationStatus"],
+          verificationStatus: (item.verificationStatus ||
+            "VERIFIED") as Shopkeeper["verificationStatus"],
           verificationNotes: item.verificationNotes || undefined,
           creditLimitReason: item.creditLimitReason || undefined,
         }))
@@ -216,7 +229,9 @@ export default function ShopkeepersPage() {
     };
     setLocalShops((prev) => [item, ...prev]);
     setShowAddModal(false);
-    setFeedbackMessage(`Pharmacy "${item.shopName}" onboarded! Pending KYC verification.`);
+    setFeedbackMessage(
+      `Pharmacy "${item.shopName}" onboarded! Pending KYC verification.`,
+    );
     setTimeout(() => setFeedbackMessage(null), 4000);
   };
 
@@ -227,7 +242,9 @@ export default function ShopkeepersPage() {
     setCreditReasonInput(shop.creditLimitReason || "");
   };
 
-  const handleUpdateKyc = async (newStatus: Shopkeeper["verificationStatus"]) => {
+  const handleUpdateKyc = async (
+    newStatus: Shopkeeper["verificationStatus"],
+  ) => {
     if (!selectedShop) return;
     try {
       if (selectedShop.userId) {
@@ -245,16 +262,28 @@ export default function ShopkeepersPage() {
       setLocalShops((prev) =>
         prev.map((s) =>
           s.id === selectedShop.id
-            ? { ...s, verificationStatus: newStatus, verificationNotes: kycNotesInput.trim() }
-            : s
-        )
+            ? {
+                ...s,
+                verificationStatus: newStatus,
+                verificationNotes: kycNotesInput.trim(),
+              }
+            : s,
+        ),
       );
 
       setSelectedShop((prev) =>
-        prev ? { ...prev, verificationStatus: newStatus, verificationNotes: kycNotesInput.trim() } : null
+        prev
+          ? {
+              ...prev,
+              verificationStatus: newStatus,
+              verificationNotes: kycNotesInput.trim(),
+            }
+          : null,
       );
 
-      setFeedbackMessage(`KYC status for "${selectedShop.shopName}" updated to ${newStatus}.`);
+      setFeedbackMessage(
+        `KYC status for "${selectedShop.shopName}" updated to ${newStatus}.`,
+      );
       setTimeout(() => setFeedbackMessage(null), 4000);
     } catch (err: any) {
       alert(err.message || "Failed to update KYC status");
@@ -270,7 +299,9 @@ export default function ShopkeepersPage() {
       return;
     }
     if (!creditReasonInput.trim()) {
-      alert("Documented justification reason is mandatory for credit limit updates.");
+      alert(
+        "Documented justification reason is mandatory for credit limit updates.",
+      );
       return;
     }
 
@@ -290,17 +321,27 @@ export default function ShopkeepersPage() {
       setLocalShops((prev) =>
         prev.map((s) =>
           s.id === selectedShop.id
-            ? { ...s, creditLimit: numLimit, creditLimitReason: creditReasonInput.trim() }
-            : s
-        )
+            ? {
+                ...s,
+                creditLimit: numLimit,
+                creditLimitReason: creditReasonInput.trim(),
+              }
+            : s,
+        ),
       );
 
       setSelectedShop((prev) =>
-        prev ? { ...prev, creditLimit: numLimit, creditLimitReason: creditReasonInput.trim() } : null
+        prev
+          ? {
+              ...prev,
+              creditLimit: numLimit,
+              creditLimitReason: creditReasonInput.trim(),
+            }
+          : null,
       );
 
       setFeedbackMessage(
-        `Credit limit for "${selectedShop.shopName}" updated to ₹${numLimit.toLocaleString("en-IN")}.`
+        `Credit limit for "${selectedShop.shopName}" updated to ₹${numLimit.toLocaleString("en-IN")}.`,
       );
       setTimeout(() => setFeedbackMessage(null), 4000);
     } catch (err: any) {
@@ -326,10 +367,17 @@ export default function ShopkeepersPage() {
   });
 
   // Aggregate metrics
-  const totalVerified = effectiveShops.filter((s) => s.verificationStatus === "VERIFIED").length;
-  const totalPendingKyc = effectiveShops.filter((s) => s.verificationStatus === "PENDING_VERIFICATION").length;
+  const totalVerified = effectiveShops.filter(
+    (s) => s.verificationStatus === "VERIFIED",
+  ).length;
+  const totalPendingKyc = effectiveShops.filter(
+    (s) => s.verificationStatus === "PENDING_VERIFICATION",
+  ).length;
   const totalCredit = effectiveShops.reduce((acc, s) => acc + s.creditLimit, 0);
-  const totalOutstanding = effectiveShops.reduce((acc, s) => acc + s.outstandingBalance, 0);
+  const totalOutstanding = effectiveShops.reduce(
+    (acc, s) => acc + s.outstandingBalance,
+    0,
+  );
 
   const getStatusBadge = (status: Shopkeeper["verificationStatus"]) => {
     switch (status) {
@@ -364,7 +412,8 @@ export default function ShopkeepersPage() {
             Registered Retail Pharmacies
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
-            B2B shopkeeper profiles, Drug License KYC verification, credit exposure limits, and order authorization
+            B2B shopkeeper profiles, Drug License KYC verification, credit
+            exposure limits, and order authorization
           </p>
         </div>
         <button
@@ -402,8 +451,22 @@ export default function ShopkeepersPage() {
         }}
       >
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>RETAIL STORES</p>
-          <p style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-primary-700)" }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
+            RETAIL STORES
+          </p>
+          <p
+            style={{
+              fontSize: "1.75rem",
+              fontWeight: 800,
+              color: "var(--color-primary-700)",
+            }}
+          >
             {effectiveShops.length} Stores
           </p>
           <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
@@ -412,35 +475,83 @@ export default function ShopkeepersPage() {
         </div>
 
         <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>TOTAL CREDIT EXTENDED</p>
-          <p style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-primary-600)" }}>
-            ₹{totalCredit.toLocaleString("en-IN")}
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
+            TOTAL CREDIT EXTENDED
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Revolving wholesale credit ceiling</p>
-        </div>
-
-        <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>TOTAL OUTSTANDING DUE</p>
-          <p style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--color-error)" }}>
-            ₹{totalOutstanding.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-          </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-            {totalCredit > 0 ? `${((totalOutstanding / totalCredit) * 100).toFixed(1)}% of credit line used` : "0%"}
-          </p>
-        </div>
-
-        <div className="card" style={{ padding: "var(--space-4)" }}>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", fontWeight: 600 }}>PENDING KYC VERIFICATION</p>
           <p
             style={{
               fontSize: "1.75rem",
               fontWeight: 800,
-              color: totalPendingKyc > 0 ? "var(--color-warning)" : "var(--color-success)",
+              color: "var(--color-primary-600)",
+            }}
+          >
+            ₹{totalCredit.toLocaleString("en-IN")}
+          </p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Revolving wholesale credit ceiling
+          </p>
+        </div>
+
+        <div className="card" style={{ padding: "var(--space-4)" }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
+            TOTAL OUTSTANDING DUE
+          </p>
+          <p
+            style={{
+              fontSize: "1.75rem",
+              fontWeight: 800,
+              color: "var(--color-error)",
+            }}
+          >
+            ₹
+            {totalOutstanding.toLocaleString("en-IN", {
+              minimumFractionDigits: 2,
+            })}
+          </p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            {totalCredit > 0
+              ? `${((totalOutstanding / totalCredit) * 100).toFixed(1)}% of credit line used`
+              : "0%"}
+          </p>
+        </div>
+
+        <div className="card" style={{ padding: "var(--space-4)" }}>
+          <p
+            style={{
+              fontSize: "0.75rem",
+              color: "var(--text-secondary)",
+              fontWeight: 600,
+            }}
+          >
+            PENDING KYC VERIFICATION
+          </p>
+          <p
+            style={{
+              fontSize: "1.75rem",
+              fontWeight: 800,
+              color:
+                totalPendingKyc > 0
+                  ? "var(--color-warning)"
+                  : "var(--color-success)",
             }}
           >
             {totalPendingKyc} Pending
           </p>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Requires Drug License (20B/21B) check</p>
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+            Requires Drug License (20B/21B) check
+          </p>
         </div>
       </div>
 
@@ -455,7 +566,9 @@ export default function ShopkeepersPage() {
           gap: "var(--space-3)",
         }}
       >
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)" }}>
+        <div
+          style={{ display: "flex", flexWrap: "wrap", gap: "var(--space-2)" }}
+        >
           <button
             className={`btn ${activeFilter === "ALL" ? "btn-primary" : "btn-secondary"}`}
             style={{ padding: "0.35rem 0.8rem", fontSize: "0.8rem" }}
@@ -482,7 +595,12 @@ export default function ShopkeepersPage() {
             style={{ padding: "0.35rem 0.8rem", fontSize: "0.8rem" }}
             onClick={() => setActiveFilter("SUSPENDED")}
           >
-            ⛔ Suspended ({effectiveShops.filter((s) => s.verificationStatus === "SUSPENDED").length})
+            ⛔ Suspended (
+            {
+              effectiveShops.filter((s) => s.verificationStatus === "SUSPENDED")
+                .length
+            }
+            )
           </button>
           <button
             className={`btn ${activeFilter === "CREDIT_ALERT" ? "btn-primary" : "btn-secondary"}`}
@@ -490,7 +608,13 @@ export default function ShopkeepersPage() {
             onClick={() => setActiveFilter("CREDIT_ALERT")}
           >
             ⚠️ High Credit Exposure (
-            {effectiveShops.filter((s) => s.creditLimit > 0 && s.outstandingBalance / s.creditLimit >= 0.8).length}
+            {
+              effectiveShops.filter(
+                (s) =>
+                  s.creditLimit > 0 &&
+                  s.outstandingBalance / s.creditLimit >= 0.8,
+              ).length
+            }
             )
           </button>
         </div>
@@ -522,21 +646,50 @@ export default function ShopkeepersPage() {
             <tbody>
               {filteredShops.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: "center", padding: "var(--space-6)", color: "var(--text-muted)" }}>
+                  <td
+                    colSpan={8}
+                    style={{
+                      textAlign: "center",
+                      padding: "var(--space-6)",
+                      color: "var(--text-muted)",
+                    }}
+                  >
                     No retail pharmacies match your filter criteria.
                   </td>
                 </tr>
               ) : (
                 filteredShops.map((s) => {
-                  const creditUsedPct = s.creditLimit > 0 ? (s.outstandingBalance / s.creditLimit) * 100 : 0;
+                  const creditUsedPct =
+                    s.creditLimit > 0
+                      ? (s.outstandingBalance / s.creditLimit) * 100
+                      : 0;
                   return (
                     <tr key={s.id}>
                       <td>
-                        <div style={{ fontWeight: 700, color: "var(--color-primary-800)" }}>{s.shopName}</div>
-                        <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
+                        <div
+                          style={{
+                            fontWeight: 700,
+                            color: "var(--color-primary-800)",
+                          }}
+                        >
+                          {s.shopName}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
                           Prop. {s.ownerName} • {s.phone}
                         </div>
-                        <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{s.address}</div>
+                        <div
+                          style={{
+                            fontSize: "0.7rem",
+                            color: "var(--text-muted)",
+                          }}
+                        >
+                          {s.address}
+                        </div>
                       </td>
                       <td>
                         <span className="badge badge-neutral">{s.area}</span>
@@ -545,14 +698,25 @@ export default function ShopkeepersPage() {
                         <div style={{ fontSize: "0.75rem", fontWeight: 600 }}>
                           DL: <code>{s.drugLicense}</code>
                         </div>
-                        <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
+                        <div
+                          style={{
+                            fontSize: "0.7rem",
+                            color: "var(--text-muted)",
+                          }}
+                        >
                           GSTIN: <code>{s.gstin}</code>
                         </div>
                       </td>
                       <td style={{ fontWeight: 600 }}>
                         ₹{s.creditLimit.toLocaleString("en-IN")}
                         {s.creditLimitReason && (
-                          <div style={{ fontSize: "0.65rem", color: "var(--text-muted)", maxWidth: "120px" }}>
+                          <div
+                            style={{
+                              fontSize: "0.65rem",
+                              color: "var(--text-muted)",
+                              maxWidth: "120px",
+                            }}
+                          >
                             {s.creditLimitReason}
                           </div>
                         )}
@@ -561,10 +725,16 @@ export default function ShopkeepersPage() {
                         <div
                           style={{
                             fontWeight: 700,
-                            color: s.outstandingBalance > 0 ? "var(--color-error)" : "var(--color-success)",
+                            color:
+                              s.outstandingBalance > 0
+                                ? "var(--color-error)"
+                                : "var(--color-success)",
                           }}
                         >
-                          ₹{s.outstandingBalance.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                          ₹
+                          {s.outstandingBalance.toLocaleString("en-IN", {
+                            minimumFractionDigits: 2,
+                          })}
                         </div>
                         {s.creditLimit > 0 && (
                           <div
@@ -579,7 +749,10 @@ export default function ShopkeepersPage() {
                             <div
                               style={{
                                 width: `${Math.min(creditUsedPct, 100)}%`,
-                                background: creditUsedPct > 80 ? "var(--color-error)" : "var(--color-warning)",
+                                background:
+                                  creditUsedPct > 80
+                                    ? "var(--color-error)"
+                                    : "var(--color-warning)",
                                 height: "100%",
                                 borderRadius: "2px",
                               }}
@@ -590,10 +763,19 @@ export default function ShopkeepersPage() {
                       <td style={{ fontWeight: 700 }}>{s.totalOrders}</td>
                       <td>{getStatusBadge(s.verificationStatus)}</td>
                       <td>
-                        <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "var(--space-2)",
+                            flexWrap: "wrap",
+                          }}
+                        >
                           <button
                             className="btn btn-primary"
-                            style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
+                            style={{
+                              padding: "0.25rem 0.6rem",
+                              fontSize: "0.75rem",
+                            }}
                             onClick={() => openDrawer(s)}
                           >
                             🔍 Review KYC & Credit
@@ -601,7 +783,10 @@ export default function ShopkeepersPage() {
                           <Link
                             href="/dashboard/invoices"
                             className="btn btn-secondary"
-                            style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
+                            style={{
+                              padding: "0.25rem 0.6rem",
+                              fontSize: "0.75rem",
+                            }}
                           >
                             Ledger
                           </Link>
@@ -621,10 +806,20 @@ export default function ShopkeepersPage() {
         isOpen={!!selectedShop}
         onClose={() => setSelectedShop(null)}
         title="🏪 Pharmacy Profile & Verification"
-        subtitle={selectedShop ? `${selectedShop.shopName} • Prop. ${selectedShop.ownerName}` : ""}
+        subtitle={
+          selectedShop
+            ? `${selectedShop.shopName} • Prop. ${selectedShop.ownerName}`
+            : ""
+        }
       >
         {selectedShop && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--space-5)",
+            }}
+          >
             {/* Pharmacy Contact & Regulatory Details */}
             <div
               style={{
@@ -634,30 +829,77 @@ export default function ShopkeepersPage() {
                 fontSize: "0.85rem",
               }}
             >
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-2)" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "var(--space-2)",
+                }}
+              >
                 <div>
-                  <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>Proprietor:</span>
-                  <div style={{ fontWeight: 700 }}>{selectedShop.ownerName}</div>
+                  <span
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    Proprietor:
+                  </span>
+                  <div style={{ fontWeight: 700 }}>
+                    {selectedShop.ownerName}
+                  </div>
                 </div>
                 <div>
-                  <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>Phone / Contact:</span>
+                  <span
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    Phone / Contact:
+                  </span>
                   <div style={{ fontWeight: 700 }}>{selectedShop.phone}</div>
                 </div>
                 <div>
-                  <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>Hub / Area:</span>
+                  <span
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    Hub / Area:
+                  </span>
                   <div style={{ fontWeight: 600 }}>
                     {selectedShop.area}, {selectedShop.city || "Durgapur"}
                   </div>
                 </div>
                 <div>
-                  <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>Current KYC Status:</span>
+                  <span
+                    style={{
+                      color: "var(--text-secondary)",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    Current KYC Status:
+                  </span>
                   <div>{getStatusBadge(selectedShop.verificationStatus)}</div>
                 </div>
               </div>
 
               <div style={{ marginTop: "var(--space-2)" }}>
-                <span style={{ color: "var(--text-secondary)", fontSize: "0.75rem" }}>Registered Address:</span>
-                <div style={{ fontSize: "0.8rem", color: "var(--text-primary)" }}>{selectedShop.address}</div>
+                <span
+                  style={{
+                    color: "var(--text-secondary)",
+                    fontSize: "0.75rem",
+                  }}
+                >
+                  Registered Address:
+                </span>
+                <div
+                  style={{ fontSize: "0.8rem", color: "var(--text-primary)" }}
+                >
+                  {selectedShop.address}
+                </div>
               </div>
             </div>
 
@@ -669,26 +911,79 @@ export default function ShopkeepersPage() {
                 borderRadius: "var(--radius-md)",
               }}
             >
-              <h4 style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: "var(--space-3)" }}>
+              <h4
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: 700,
+                  marginBottom: "var(--space-3)",
+                }}
+              >
                 📜 Statutory Licenses & KYC Verification
               </h4>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)", marginBottom: "var(--space-3)" }}>
-                <div style={{ padding: "var(--space-2)", background: "rgba(37, 99, 235, 0.05)", borderRadius: "var(--radius-sm)" }}>
-                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>Drug License (Form 20B/21B)</div>
-                  <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--color-primary-800)" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "var(--space-3)",
+                  marginBottom: "var(--space-3)",
+                }}
+              >
+                <div
+                  style={{
+                    padding: "var(--space-2)",
+                    background: "rgba(37, 99, 235, 0.05)",
+                    borderRadius: "var(--radius-sm)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    Drug License (Form 20B/21B)
+                  </div>
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      fontSize: "0.9rem",
+                      color: "var(--color-primary-800)",
+                    }}
+                  >
                     {selectedShop.drugLicense}
                   </div>
                 </div>
-                <div style={{ padding: "var(--space-2)", background: "rgba(37, 99, 235, 0.05)", borderRadius: "var(--radius-sm)" }}>
-                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>GSTIN</div>
-                  <div style={{ fontWeight: 800, fontSize: "0.9rem", color: "var(--color-primary-800)" }}>
+                <div
+                  style={{
+                    padding: "var(--space-2)",
+                    background: "rgba(37, 99, 235, 0.05)",
+                    borderRadius: "var(--radius-sm)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    GSTIN
+                  </div>
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      fontSize: "0.9rem",
+                      color: "var(--color-primary-800)",
+                    }}
+                  >
                     {selectedShop.gstin}
                   </div>
                 </div>
               </div>
 
               <div style={{ marginBottom: "var(--space-3)" }}>
-                <label className="label">Verification Notes / Inspection Remarks</label>
+                <label className="label">
+                  Verification Notes / Inspection Remarks
+                </label>
                 <textarea
                   className="input"
                   rows={2}
@@ -699,12 +994,21 @@ export default function ShopkeepersPage() {
                 />
               </div>
 
-              <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "var(--space-2)",
+                  flexWrap: "wrap",
+                }}
+              >
                 <button
                   type="button"
                   className="btn btn-primary"
                   style={{ flex: 1, minWidth: "120px" }}
-                  disabled={updatingKyc || selectedShop.verificationStatus === "VERIFIED"}
+                  disabled={
+                    updatingKyc ||
+                    selectedShop.verificationStatus === "VERIFIED"
+                  }
                   onClick={() => handleUpdateKyc("VERIFIED")}
                 >
                   ✓ Approve KYC
@@ -713,7 +1017,10 @@ export default function ShopkeepersPage() {
                   type="button"
                   className="btn btn-secondary"
                   style={{ flex: 1, minWidth: "120px" }}
-                  disabled={updatingKyc || selectedShop.verificationStatus === "REJECTED"}
+                  disabled={
+                    updatingKyc ||
+                    selectedShop.verificationStatus === "REJECTED"
+                  }
                   onClick={() => handleUpdateKyc("REJECTED")}
                 >
                   ✕ Reject License
@@ -721,8 +1028,16 @@ export default function ShopkeepersPage() {
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  style={{ color: "var(--color-error)", borderColor: "var(--color-error)", flex: 1, minWidth: "120px" }}
-                  disabled={updatingKyc || selectedShop.verificationStatus === "SUSPENDED"}
+                  style={{
+                    color: "var(--color-error)",
+                    borderColor: "var(--color-error)",
+                    flex: 1,
+                    minWidth: "120px",
+                  }}
+                  disabled={
+                    updatingKyc ||
+                    selectedShop.verificationStatus === "SUSPENDED"
+                  }
                   onClick={() => handleUpdateKyc("SUSPENDED")}
                 >
                   ⛔ Suspend Store
@@ -738,7 +1053,13 @@ export default function ShopkeepersPage() {
                 borderRadius: "var(--radius-md)",
               }}
             >
-              <h4 style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: "var(--space-3)" }}>
+              <h4
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: 700,
+                  marginBottom: "var(--space-3)",
+                }}
+              >
                 💳 Credit Limit & Financial Safeguards
               </h4>
 
@@ -751,27 +1072,84 @@ export default function ShopkeepersPage() {
                   textAlign: "center",
                 }}
               >
-                <div style={{ padding: "var(--space-2)", background: "var(--bg-secondary)", borderRadius: "var(--radius-sm)" }}>
-                  <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)" }}>Current Limit</div>
-                  <div style={{ fontWeight: 800, color: "var(--color-primary-700)" }}>
-                    ₹{selectedShop.creditLimit.toLocaleString("en-IN")}
+                <div
+                  style={{
+                    padding: "var(--space-2)",
+                    background: "var(--bg-secondary)",
+                    borderRadius: "var(--radius-sm)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "0.7rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    Current Limit
                   </div>
-                </div>
-                <div style={{ padding: "var(--space-2)", background: "var(--bg-secondary)", borderRadius: "var(--radius-sm)" }}>
-                  <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)" }}>Outstanding Due</div>
                   <div
                     style={{
                       fontWeight: 800,
-                      color: selectedShop.outstandingBalance > 0 ? "var(--color-error)" : "var(--color-success)",
+                      color: "var(--color-primary-700)",
                     }}
                   >
-                    ₹{selectedShop.outstandingBalance.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                    ₹{selectedShop.creditLimit.toLocaleString("en-IN")}
                   </div>
                 </div>
-                <div style={{ padding: "var(--space-2)", background: "var(--bg-secondary)", borderRadius: "var(--radius-sm)" }}>
-                  <div style={{ fontSize: "0.7rem", color: "var(--text-secondary)" }}>Remaining Credit</div>
-                  <div style={{ fontWeight: 800, color: "var(--color-success)" }}>
-                    ₹{Math.max(0, selectedShop.creditLimit - selectedShop.outstandingBalance).toLocaleString("en-IN", {
+                <div
+                  style={{
+                    padding: "var(--space-2)",
+                    background: "var(--bg-secondary)",
+                    borderRadius: "var(--radius-sm)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "0.7rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    Outstanding Due
+                  </div>
+                  <div
+                    style={{
+                      fontWeight: 800,
+                      color:
+                        selectedShop.outstandingBalance > 0
+                          ? "var(--color-error)"
+                          : "var(--color-success)",
+                    }}
+                  >
+                    ₹
+                    {selectedShop.outstandingBalance.toLocaleString("en-IN", {
+                      minimumFractionDigits: 2,
+                    })}
+                  </div>
+                </div>
+                <div
+                  style={{
+                    padding: "var(--space-2)",
+                    background: "var(--bg-secondary)",
+                    borderRadius: "var(--radius-sm)",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "0.7rem",
+                      color: "var(--text-secondary)",
+                    }}
+                  >
+                    Remaining Credit
+                  </div>
+                  <div
+                    style={{ fontWeight: 800, color: "var(--color-success)" }}
+                  >
+                    ₹
+                    {Math.max(
+                      0,
+                      selectedShop.creditLimit -
+                        selectedShop.outstandingBalance,
+                    ).toLocaleString("en-IN", {
                       minimumFractionDigits: 2,
                     })}
                   </div>
@@ -779,12 +1157,26 @@ export default function ShopkeepersPage() {
               </div>
 
               {selectedShop.creditLimitReason && (
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "var(--space-3)" }}>
-                  <strong>Prior Reason:</strong> {selectedShop.creditLimitReason}
+                <div
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "var(--text-muted)",
+                    marginBottom: "var(--space-3)",
+                  }}
+                >
+                  <strong>Prior Reason:</strong>{" "}
+                  {selectedShop.creditLimitReason}
                 </div>
               )}
 
-              <form onSubmit={handleUpdateCreditLimit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+              <form
+                onSubmit={handleUpdateCreditLimit}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "var(--space-3)",
+                }}
+              >
                 <div>
                   <label className="label">Adjust Credit Ceiling (₹) *</label>
                   <input
@@ -799,7 +1191,9 @@ export default function ShopkeepersPage() {
                 </div>
 
                 <div>
-                  <label className="label">Documented Justification Reason *</label>
+                  <label className="label">
+                    Documented Justification Reason *
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. Verified good repayment history over 6 months; approved limit increase"
@@ -807,8 +1201,11 @@ export default function ShopkeepersPage() {
                     value={creditReasonInput}
                     onChange={(e) => setCreditReasonInput(e.target.value)}
                   />
-                  <span style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
-                    Mandatory audit trail reason required under financial controls.
+                  <span
+                    style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}
+                  >
+                    Mandatory audit trail reason required under financial
+                    controls.
                   </span>
                 </div>
 
@@ -824,7 +1221,13 @@ export default function ShopkeepersPage() {
             </div>
 
             {/* Quick Navigation Footer */}
-            <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+            <div
+              style={{
+                display: "flex",
+                gap: "var(--space-3)",
+                marginTop: "var(--space-2)",
+              }}
+            >
               <Link
                 href="/dashboard/invoices"
                 className="btn btn-secondary"
@@ -862,7 +1265,10 @@ export default function ShopkeepersPage() {
             padding: "var(--space-4)",
           }}
         >
-          <div className="card" style={{ maxWidth: "560px", width: "100%", background: "#fff" }}>
+          <div
+            className="card"
+            style={{ maxWidth: "560px", width: "100%", background: "#fff" }}
+          >
             <div
               style={{
                 display: "flex",
@@ -876,51 +1282,91 @@ export default function ShopkeepersPage() {
               </h2>
               <button
                 onClick={() => setShowAddModal(false)}
-                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer" }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                }}
               >
                 ✕
               </button>
             </div>
-            <form onSubmit={handleAddShop} style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: "var(--space-3)" }}>
+            <form
+              onSubmit={handleAddShop}
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "var(--space-3)",
+              }}
+            >
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1.2fr 1fr",
+                  gap: "var(--space-3)",
+                }}
+              >
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Pharmacy Shop Name *</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Pharmacy Shop Name *
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. Life Care Medicos"
                     required
                     value={newShop.shopName}
-                    onChange={(e) => setNewShop({ ...newShop, shopName: e.target.value })}
+                    onChange={(e) =>
+                      setNewShop({ ...newShop, shopName: e.target.value })
+                    }
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Owner / Pharmacist Name</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Owner / Pharmacist Name
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. Anup Ghosh"
                     value={newShop.ownerName}
-                    onChange={(e) => setNewShop({ ...newShop, ownerName: e.target.value })}
+                    onChange={(e) =>
+                      setNewShop({ ...newShop, ownerName: e.target.value })
+                    }
                   />
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "var(--space-3)",
+                }}
+              >
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Phone Number *</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Phone Number *
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. 9832198765"
                     required
                     value={newShop.phone}
-                    onChange={(e) => setNewShop({ ...newShop, phone: e.target.value })}
+                    onChange={(e) =>
+                      setNewShop({ ...newShop, phone: e.target.value })
+                    }
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Area / Hub</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Area / Hub
+                  </label>
                   <select
                     className="input"
                     value={newShop.area}
-                    onChange={(e) => setNewShop({ ...newShop, area: e.target.value })}
+                    onChange={(e) =>
+                      setNewShop({ ...newShop, area: e.target.value })
+                    }
                   >
                     <option value="Benachity">Benachity Market</option>
                     <option value="City Centre">City Centre</option>
@@ -931,48 +1377,84 @@ export default function ShopkeepersPage() {
               </div>
 
               <div>
-                <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Detailed Street Address</label>
+                <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                  Detailed Street Address
+                </label>
                 <input
                   className="input"
                   placeholder="e.g. Holding No 22, Link Road, Benachity, Durgapur-13"
                   value={newShop.address}
-                  onChange={(e) => setNewShop({ ...newShop, address: e.target.value })}
+                  onChange={(e) =>
+                    setNewShop({ ...newShop, address: e.target.value })
+                  }
                 />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "var(--space-3)",
+                }}
+              >
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Drug License Number (20B/21B)</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    Drug License Number (20B/21B)
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. WB-BUR-20B-18290"
                     value={newShop.drugLicense}
-                    onChange={(e) => setNewShop({ ...newShop, drugLicense: e.target.value })}
+                    onChange={(e) =>
+                      setNewShop({ ...newShop, drugLicense: e.target.value })
+                    }
                   />
                 </div>
                 <div>
-                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>GSTIN (15 Digits)</label>
+                  <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                    GSTIN (15 Digits)
+                  </label>
                   <input
                     className="input"
                     placeholder="e.g. 19AAAAA0000A1Z5"
                     value={newShop.gstin}
-                    onChange={(e) => setNewShop({ ...newShop, gstin: e.target.value })}
+                    onChange={(e) =>
+                      setNewShop({ ...newShop, gstin: e.target.value })
+                    }
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>Approved Credit Limit (₹)</label>
+                <label style={{ fontSize: "0.8rem", fontWeight: 600 }}>
+                  Approved Credit Limit (₹)
+                </label>
                 <input
                   type="number"
                   className="input"
                   value={newShop.creditLimit}
-                  onChange={(e) => setNewShop({ ...newShop, creditLimit: Number(e.target.value) })}
+                  onChange={(e) =>
+                    setNewShop({
+                      ...newShop,
+                      creditLimit: Number(e.target.value),
+                    })
+                  }
                 />
               </div>
 
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-3)" }}>
-                <button type="button" className="btn btn-secondary" onClick={() => setShowAddModal(false)}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "var(--space-3)",
+                  marginTop: "var(--space-3)",
+                }}
+              >
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowAddModal(false)}
+                >
                   Cancel
                 </button>
                 <button type="submit" className="btn btn-primary">

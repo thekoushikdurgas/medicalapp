@@ -91,7 +91,9 @@ class ReturnMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: Only Admin or Warehouse staff can issue credit notes.")
+            raise Exception(
+                "Permission denied: Only Admin or Warehouse staff can issue credit notes."
+            )
 
         created_by = uuid.UUID(user_id_str)
         return_items = [

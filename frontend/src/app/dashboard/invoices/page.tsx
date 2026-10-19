@@ -20,7 +20,8 @@ import {
 import { useAuth } from "@/hooks/use-auth";
 import { SideDrawer } from "@/components/ui/side-drawer";
 
-type ActiveTab = "INVOICES" | "CHALLANS" | "RETURNS" | "ADVANCES" | "LEDGER" | "CLAIMS";
+type ActiveTab =
+  "INVOICES" | "CHALLANS" | "RETURNS" | "ADVANCES" | "LEDGER" | "CLAIMS";
 
 interface TaxInvoice {
   id: string;
@@ -59,10 +60,14 @@ interface TaxInvoice {
 export default function InvoicesPage() {
   const { user } = useAuth();
   const isAdminOrWarehouse =
-    user?.role === "SUPER_ADMIN" || user?.role === "ADMIN" || user?.role === "WAREHOUSE";
+    user?.role === "SUPER_ADMIN" ||
+    user?.role === "ADMIN" ||
+    user?.role === "WAREHOUSE";
 
   const [activeTab, setActiveTab] = useState<ActiveTab>("INVOICES");
-  const [selectedInvoice, setSelectedInvoice] = useState<TaxInvoice | null>(null);
+  const [selectedInvoice, setSelectedInvoice] = useState<TaxInvoice | null>(
+    null,
+  );
 
   // SideDrawers state
   const [showChallanDrawer, setShowChallanDrawer] = useState(false);
@@ -70,27 +75,40 @@ export default function InvoicesPage() {
   const [showAdvanceDrawer, setShowAdvanceDrawer] = useState(false);
   const [showClaimDrawer, setShowClaimDrawer] = useState(false);
   const [showReviewDrawer, setShowReviewDrawer] = useState(false);
-  const [selectedClaimForReview, setSelectedClaimForReview] = useState<any>(null);
+  const [selectedClaimForReview, setSelectedClaimForReview] =
+    useState<any>(null);
 
   // Filter & Ledger selection
-  const [selectedShopkeeperForLedger, setSelectedShopkeeperForLedger] = useState<string>("");
+  const [selectedShopkeeperForLedger, setSelectedShopkeeperForLedger] =
+    useState<string>("");
   const [claimStatusFilter, setClaimStatusFilter] = useState<string>("ALL");
-  const [advanceAllocationFilter, setAdvanceAllocationFilter] = useState<"ALL" | "UNALLOCATED" | "SETTLED">("ALL");
+  const [advanceAllocationFilter, setAdvanceAllocationFilter] = useState<
+    "ALL" | "UNALLOCATED" | "SETTLED"
+  >("ALL");
 
   // Success / Error feedback
   const [bannerSuccess, setBannerSuccess] = useState("");
   const [bannerError, setBannerError] = useState("");
 
   // Apollo Queries
-  const { data: challansData, refetch: refetchChallans } = useQuery(GET_DELIVERY_CHALLANS_QUERY, {
-    fetchPolicy: "network-only",
-  });
-  const { data: returnsData, refetch: refetchReturns } = useQuery(GET_INVOICE_RETURNS_QUERY, {
-    fetchPolicy: "network-only",
-  });
-  const { data: advancesData, refetch: refetchAdvances } = useQuery(GET_ADVANCE_PAYMENTS_QUERY, {
-    fetchPolicy: "network-only",
-  });
+  const { data: challansData, refetch: refetchChallans } = useQuery(
+    GET_DELIVERY_CHALLANS_QUERY,
+    {
+      fetchPolicy: "network-only",
+    },
+  );
+  const { data: returnsData, refetch: refetchReturns } = useQuery(
+    GET_INVOICE_RETURNS_QUERY,
+    {
+      fetchPolicy: "network-only",
+    },
+  );
+  const { data: advancesData, refetch: refetchAdvances } = useQuery(
+    GET_ADVANCE_PAYMENTS_QUERY,
+    {
+      fetchPolicy: "network-only",
+    },
+  );
   const { data: ordersData } = useQuery(ORDERS_QUERY, {
     variables: { page: 1, perPage: 50 },
     fetchPolicy: "cache-first",
@@ -100,22 +118,30 @@ export default function InvoicesPage() {
     fetchPolicy: "cache-first",
   });
 
-  const { data: ledgerData, refetch: refetchLedger } = useQuery(MY_LEDGER_QUERY, {
-    variables: {
-      shopkeeperId: selectedShopkeeperForLedger ? selectedShopkeeperForLedger : undefined,
-      limit: 100,
+  const { data: ledgerData, refetch: refetchLedger } = useQuery(
+    MY_LEDGER_QUERY,
+    {
+      variables: {
+        shopkeeperId: selectedShopkeeperForLedger
+          ? selectedShopkeeperForLedger
+          : undefined,
+        limit: 100,
+      },
+      fetchPolicy: "network-only",
     },
-    fetchPolicy: "network-only",
-  });
+  );
 
-  const { data: claimsData, refetch: refetchClaims } = useQuery(RETURN_CLAIMS_QUERY, {
-    variables: {
-      status: claimStatusFilter === "ALL" ? undefined : claimStatusFilter,
-      page: 1,
-      perPage: 50,
+  const { data: claimsData, refetch: refetchClaims } = useQuery(
+    RETURN_CLAIMS_QUERY,
+    {
+      variables: {
+        status: claimStatusFilter === "ALL" ? undefined : claimStatusFilter,
+        page: 1,
+        perPage: 50,
+      },
+      fetchPolicy: "network-only",
     },
-    fetchPolicy: "network-only",
-  });
+  );
 
   const { data: productsData } = useQuery(PRODUCTS_QUERY, {
     variables: { page: 1, perPage: 100 },
@@ -124,19 +150,19 @@ export default function InvoicesPage() {
 
   // Apollo Mutations
   const [createChallanMutation, { loading: creatingChallan }] = useMutation(
-    CREATE_DELIVERY_CHALLAN_MUTATION
+    CREATE_DELIVERY_CHALLAN_MUTATION,
   );
   const [createReturnMutation, { loading: creatingReturn }] = useMutation(
-    CREATE_INVOICE_RETURN_MUTATION
+    CREATE_INVOICE_RETURN_MUTATION,
   );
   const [recordAdvanceMutation, { loading: recordingAdvance }] = useMutation(
-    RECORD_ADVANCE_PAYMENT_MUTATION
+    RECORD_ADVANCE_PAYMENT_MUTATION,
   );
   const [submitClaimMutation, { loading: submittingClaim }] = useMutation(
-    SUBMIT_RETURN_CLAIM_MUTATION
+    SUBMIT_RETURN_CLAIM_MUTATION,
   );
   const [reviewClaimMutation, { loading: reviewingClaim }] = useMutation(
-    REVIEW_RETURN_CLAIM_MUTATION
+    REVIEW_RETURN_CLAIM_MUTATION,
   );
 
   // Form States
@@ -325,13 +351,17 @@ export default function InvoicesPage() {
 
       if (res.data?.createDeliveryChallan) {
         setBannerSuccess(
-          `Delivery Challan ${res.data.createDeliveryChallan.challanNumber} issued successfully!`
+          `Delivery Challan ${res.data.createDeliveryChallan.challanNumber} issued successfully!`,
         );
         setShowChallanDrawer(false);
         refetchChallans();
       }
     } catch (err: unknown) {
-      setBannerError(err instanceof Error ? err.message : "Failed to issue delivery challan.");
+      setBannerError(
+        err instanceof Error
+          ? err.message
+          : "Failed to issue delivery challan.",
+      );
     }
   };
 
@@ -367,13 +397,15 @@ export default function InvoicesPage() {
 
       if (res.data?.createInvoiceReturn) {
         setBannerSuccess(
-          `Credit Note ${res.data.createInvoiceReturn.creditNoteNo} issued! Refund: ₹${res.data.createInvoiceReturn.grandRefund}`
+          `Credit Note ${res.data.createInvoiceReturn.creditNoteNo} issued! Refund: ₹${res.data.createInvoiceReturn.grandRefund}`,
         );
         setShowReturnDrawer(false);
         refetchReturns();
       }
     } catch (err: unknown) {
-      setBannerError(err instanceof Error ? err.message : "Failed to issue credit note.");
+      setBannerError(
+        err instanceof Error ? err.message : "Failed to issue credit note.",
+      );
     }
   };
 
@@ -402,13 +434,17 @@ export default function InvoicesPage() {
 
       if (res.data?.recordAdvancePayment) {
         setBannerSuccess(
-          `Advance Receipt ${res.data.recordAdvancePayment.receiptNumber} recorded! Ledger balance updated.`
+          `Advance Receipt ${res.data.recordAdvancePayment.receiptNumber} recorded! Ledger balance updated.`,
         );
         setShowAdvanceDrawer(false);
         refetchAdvances();
       }
     } catch (err: unknown) {
-      setBannerError(err instanceof Error ? err.message : "Failed to record advance payment.");
+      setBannerError(
+        err instanceof Error
+          ? err.message
+          : "Failed to record advance payment.",
+      );
     }
   };
 
@@ -441,7 +477,7 @@ export default function InvoicesPage() {
 
       if (res.data?.submitReturnClaim) {
         setBannerSuccess(
-          `Return claim ${res.data.submitReturnClaim.requestNumber} submitted! Warehouse team will inspect.`
+          `Return claim ${res.data.submitReturnClaim.requestNumber} submitted! Warehouse team will inspect.`,
         );
         setShowClaimDrawer(false);
         setClaimForm({
@@ -455,7 +491,9 @@ export default function InvoicesPage() {
         refetchClaims();
       }
     } catch (err: unknown) {
-      setBannerError(err instanceof Error ? err.message : "Failed to submit return claim.");
+      setBannerError(
+        err instanceof Error ? err.message : "Failed to submit return claim.",
+      );
     }
   };
 
@@ -476,14 +514,17 @@ export default function InvoicesPage() {
           input: {
             requestId: selectedClaimForReview.id,
             action: reviewForm.action,
-            rejectionReason: reviewForm.action === "REJECT" ? reviewForm.rejectionReason : null,
+            rejectionReason:
+              reviewForm.action === "REJECT"
+                ? reviewForm.rejectionReason
+                : null,
           },
         },
       });
 
       if (res.data?.reviewReturnClaim) {
         setBannerSuccess(
-          `Claim status updated to ${res.data.reviewReturnClaim.status}!`
+          `Claim status updated to ${res.data.reviewReturnClaim.status}!`,
         );
         setShowReviewDrawer(false);
         setSelectedClaimForReview(null);
@@ -491,7 +532,9 @@ export default function InvoicesPage() {
         refetchClaims();
       }
     } catch (err: unknown) {
-      setBannerError(err instanceof Error ? err.message : "Failed to review return claim.");
+      setBannerError(
+        err instanceof Error ? err.message : "Failed to review return claim.",
+      );
     }
   };
 
@@ -610,11 +653,22 @@ export default function InvoicesPage() {
     },
   ];
 
-  const rawAdvances = advancesData?.advancePayments?.length ? advancesData.advancePayments : fallbackAdvances;
+  const rawAdvances = advancesData?.advancePayments?.length
+    ? advancesData.advancePayments
+    : fallbackAdvances;
   const processedAdvances = rawAdvances.map((adv: any) => {
-    const allocated = typeof adv.allocatedAmount === "number" ? adv.allocatedAmount : 0.0;
-    const unallocated = typeof adv.unallocatedAmount === "number" ? adv.unallocatedAmount : Math.max(0, (adv.amount || 0) - allocated);
-    const allocationStatus = unallocated === 0 ? "FULLY_ALLOCATED" : (allocated > 0 ? "PARTIALLY_ALLOCATED" : "UNALLOCATED");
+    const allocated =
+      typeof adv.allocatedAmount === "number" ? adv.allocatedAmount : 0.0;
+    const unallocated =
+      typeof adv.unallocatedAmount === "number"
+        ? adv.unallocatedAmount
+        : Math.max(0, (adv.amount || 0) - allocated);
+    const allocationStatus =
+      unallocated === 0
+        ? "FULLY_ALLOCATED"
+        : allocated > 0
+          ? "PARTIALLY_ALLOCATED"
+          : "UNALLOCATED";
     return {
       ...adv,
       allocatedAmount: allocated,
@@ -623,13 +677,24 @@ export default function InvoicesPage() {
     };
   });
 
-  const totalAdvancesDeposited = processedAdvances.reduce((sum: number, a: any) => sum + (a.amount || 0), 0);
-  const totalAdvancesAllocated = processedAdvances.reduce((sum: number, a: any) => sum + (a.allocatedAmount || 0), 0);
-  const totalAdvancesUnallocated = processedAdvances.reduce((sum: number, a: any) => sum + (a.unallocatedAmount || 0), 0);
+  const totalAdvancesDeposited = processedAdvances.reduce(
+    (sum: number, a: any) => sum + (a.amount || 0),
+    0,
+  );
+  const totalAdvancesAllocated = processedAdvances.reduce(
+    (sum: number, a: any) => sum + (a.allocatedAmount || 0),
+    0,
+  );
+  const totalAdvancesUnallocated = processedAdvances.reduce(
+    (sum: number, a: any) => sum + (a.unallocatedAmount || 0),
+    0,
+  );
 
   const filteredAdvances = processedAdvances.filter((adv: any) => {
-    if (advanceAllocationFilter === "UNALLOCATED") return adv.unallocatedAmount > 0;
-    if (advanceAllocationFilter === "SETTLED") return adv.unallocatedAmount === 0;
+    if (advanceAllocationFilter === "UNALLOCATED")
+      return adv.unallocatedAmount > 0;
+    if (advanceAllocationFilter === "SETTLED")
+      return adv.unallocatedAmount === 0;
     return true;
   });
 
@@ -637,8 +702,12 @@ export default function InvoicesPage() {
   const availableOrders = ordersData?.orders?.items || [];
   const shopkeepersList = usersData?.users || [];
   const productsList = productsData?.products?.items || [];
-  const ledgerEntries = ledgerData?.myLedger?.length ? ledgerData.myLedger : fallbackLedger;
-  const returnClaims = claimsData?.returnClaims?.length ? claimsData.returnClaims : fallbackClaims;
+  const ledgerEntries = ledgerData?.myLedger?.length
+    ? ledgerData.myLedger
+    : fallbackLedger;
+  const returnClaims = claimsData?.returnClaims?.length
+    ? claimsData.returnClaims
+    : fallbackClaims;
 
   const totalLedgerDebits = ledgerEntries
     .filter((e: any) => e.entryType === "DEBIT")
@@ -667,11 +736,14 @@ export default function InvoicesPage() {
             Invoices, Challans &amp; Returns Hub
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
-            B2B GST Tax Invoices, Transporter Delivery Challans, Credit Notes, Ledger and Returns
+            B2B GST Tax Invoices, Transporter Delivery Challans, Credit Notes,
+            Ledger and Returns
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}>
+        <div
+          style={{ display: "flex", gap: "var(--space-2)", flexWrap: "wrap" }}
+        >
           {activeTab === "CHALLANS" && (
             <button
               className="btn btn-primary"
@@ -761,42 +833,60 @@ export default function InvoicesPage() {
       >
         <button
           className={`btn ${activeTab === "INVOICES" ? "btn-primary" : "btn-secondary"}`}
-          style={{ borderRadius: "var(--radius-md) var(--radius-md) 0 0", borderBottom: "none" }}
+          style={{
+            borderRadius: "var(--radius-md) var(--radius-md) 0 0",
+            borderBottom: "none",
+          }}
           onClick={() => setActiveTab("INVOICES")}
         >
           📄 GST Tax Invoices ({staticInvoices.length})
         </button>
         <button
           className={`btn ${activeTab === "CHALLANS" ? "btn-primary" : "btn-secondary"}`}
-          style={{ borderRadius: "var(--radius-md) var(--radius-md) 0 0", borderBottom: "none" }}
+          style={{
+            borderRadius: "var(--radius-md) var(--radius-md) 0 0",
+            borderBottom: "none",
+          }}
           onClick={() => setActiveTab("CHALLANS")}
         >
           📦 Delivery Challans ({deliveryChallans.length})
         </button>
         <button
           className={`btn ${activeTab === "RETURNS" ? "btn-primary" : "btn-secondary"}`}
-          style={{ borderRadius: "var(--radius-md) var(--radius-md) 0 0", borderBottom: "none" }}
+          style={{
+            borderRadius: "var(--radius-md) var(--radius-md) 0 0",
+            borderBottom: "none",
+          }}
           onClick={() => setActiveTab("RETURNS")}
         >
           🔄 Credit Notes &amp; Returns ({invoiceReturns.length})
         </button>
         <button
           className={`btn ${activeTab === "ADVANCES" ? "btn-primary" : "btn-secondary"}`}
-          style={{ borderRadius: "var(--radius-md) var(--radius-md) 0 0", borderBottom: "none" }}
+          style={{
+            borderRadius: "var(--radius-md) var(--radius-md) 0 0",
+            borderBottom: "none",
+          }}
           onClick={() => setActiveTab("ADVANCES")}
         >
           💰 Advance Payments ({advancePayments.length})
         </button>
         <button
           className={`btn ${activeTab === "LEDGER" ? "btn-primary" : "btn-secondary"}`}
-          style={{ borderRadius: "var(--radius-md) var(--radius-md) 0 0", borderBottom: "none" }}
+          style={{
+            borderRadius: "var(--radius-md) var(--radius-md) 0 0",
+            borderBottom: "none",
+          }}
           onClick={() => setActiveTab("LEDGER")}
         >
           📒 Party Statement &amp; Ledger ({ledgerEntries.length})
         </button>
         <button
           className={`btn ${activeTab === "CLAIMS" ? "btn-primary" : "btn-secondary"}`}
-          style={{ borderRadius: "var(--radius-md) var(--radius-md) 0 0", borderBottom: "none" }}
+          style={{
+            borderRadius: "var(--radius-md) var(--radius-md) 0 0",
+            borderBottom: "none",
+          }}
           onClick={() => setActiveTab("CLAIMS")}
         >
           🛡️ Return / Damage Claims ({returnClaims.length})
@@ -816,40 +906,96 @@ export default function InvoicesPage() {
             }}
           >
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 TOTAL INVOICED
               </p>
-              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-primary-700)" }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: 800,
+                  color: "var(--color-primary-700)",
+                }}
+              >
                 ₹27,004.71
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Current billing cycle</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                Current billing cycle
+              </p>
             </div>
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 SGST OUTPUT (2.5%)
               </p>
-              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-primary-600)" }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: 800,
+                  color: "var(--color-primary-600)",
+                }}
+              >
                 ₹642.96
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>West Bengal State GST</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                West Bengal State GST
+              </p>
             </div>
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 CGST OUTPUT (2.5%)
               </p>
-              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-primary-600)" }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: 800,
+                  color: "var(--color-primary-600)",
+                }}
+              >
                 ₹642.96
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Central GST</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                Central GST
+              </p>
             </div>
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 CASH RECEIVED
               </p>
-              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-success)" }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: 800,
+                  color: "var(--color-success)",
+                }}
+              >
                 ₹6,408.94
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Settled via UPI / NEFT</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                Settled via UPI / NEFT
+              </p>
             </div>
           </div>
 
@@ -874,26 +1020,47 @@ export default function InvoicesPage() {
                   {staticInvoices.map((inv) => (
                     <tr key={inv.id}>
                       <td>
-                        <span style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+                        <span
+                          style={{
+                            fontWeight: 700,
+                            color: "var(--color-primary-700)",
+                          }}
+                        >
                           {inv.invoiceNumber}
                         </span>
                       </td>
                       <td>
-                        <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                        <span
+                          style={{
+                            fontSize: "0.8rem",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
                           {inv.orderNumber}
                         </span>
                       </td>
                       <td>{inv.date}</td>
                       <td>
-                        <div style={{ fontWeight: 600 }}>{inv.customerName}</div>
-                        <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
+                        <div style={{ fontWeight: 600 }}>
+                          {inv.customerName}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: "0.7rem",
+                            color: "var(--text-muted)",
+                          }}
+                        >
                           {inv.customerAddress}
                         </div>
                       </td>
                       <td>
-                        <code style={{ fontSize: "0.75rem" }}>{inv.customerGstin}</code>
+                        <code style={{ fontSize: "0.75rem" }}>
+                          {inv.customerGstin}
+                        </code>
                       </td>
-                      <td style={{ fontWeight: 600 }}>₹{inv.taxableValue.toFixed(2)}</td>
+                      <td style={{ fontWeight: 600 }}>
+                        ₹{inv.taxableValue.toFixed(2)}
+                      </td>
                       <td style={{ color: "var(--color-primary-600)" }}>
                         ₹{(inv.sgst + inv.cgst).toFixed(2)}
                       </td>
@@ -905,16 +1072,23 @@ export default function InvoicesPage() {
                           <span className="badge badge-success">✓ Settled</span>
                         )}
                         {inv.status === "DELIVERING" && (
-                          <span className="badge badge-info">🚚 In Transit</span>
+                          <span className="badge badge-info">
+                            🚚 In Transit
+                          </span>
                         )}
                         {inv.status === "PENDING" && (
-                          <span className="badge badge-warning">⏳ Generated</span>
+                          <span className="badge badge-warning">
+                            ⏳ Generated
+                          </span>
                         )}
                       </td>
                       <td>
                         <button
                           className="btn btn-secondary"
-                          style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
+                          style={{
+                            padding: "0.25rem 0.6rem",
+                            fontSize: "0.75rem",
+                          }}
                           onClick={() => setSelectedInvoice(inv)}
                         >
                           📄 View Bill
@@ -949,31 +1123,55 @@ export default function InvoicesPage() {
               <tbody>
                 {deliveryChallans.length === 0 ? (
                   <tr>
-                    <td colSpan={8} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
-                      No delivery challans recorded yet. Click <strong>+ Issue Delivery Challan</strong> to create one for packed orders.
+                    <td
+                      colSpan={8}
+                      style={{
+                        textAlign: "center",
+                        padding: "var(--space-8)",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      No delivery challans recorded yet. Click{" "}
+                      <strong>+ Issue Delivery Challan</strong> to create one
+                      for packed orders.
                     </td>
                   </tr>
                 ) : (
                   deliveryChallans.map((dc: any) => (
                     <tr key={dc.id}>
                       <td>
-                        <span style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+                        <span
+                          style={{
+                            fontWeight: 700,
+                            color: "var(--color-primary-700)",
+                          }}
+                        >
                           {dc.challanNumber}
                         </span>
                       </td>
                       <td>
-                        <code style={{ fontSize: "0.8rem" }}>{dc.orderId.slice(0, 8)}...</code>
+                        <code style={{ fontSize: "0.8rem" }}>
+                          {dc.orderId.slice(0, 8)}...
+                        </code>
                       </td>
                       <td>{dc.challanDate}</td>
-                      <td style={{ fontWeight: 600 }}>{dc.transporterName || "Internal Fleet"}</td>
-                      <td>
-                        <span className="badge badge-neutral">{dc.vehicleNumber || "Two-Wheeler"}</span>
+                      <td style={{ fontWeight: 600 }}>
+                        {dc.transporterName || "Internal Fleet"}
                       </td>
-                      <td style={{ fontWeight: 800 }}>📦 {dc.totalCartons} Cartons</td>
+                      <td>
+                        <span className="badge badge-neutral">
+                          {dc.vehicleNumber || "Two-Wheeler"}
+                        </span>
+                      </td>
+                      <td style={{ fontWeight: 800 }}>
+                        📦 {dc.totalCartons} Cartons
+                      </td>
                       <td>{dc.items?.length || 0} batches</td>
                       <td>
                         {dc.returns?.length > 0 ? (
-                          <span className="badge badge-warning">⚠️ {dc.returns.length} Return</span>
+                          <span className="badge badge-warning">
+                            ⚠️ {dc.returns.length} Return
+                          </span>
                         ) : (
                           <span className="badge badge-success">✓ Clear</span>
                         )}
@@ -1008,34 +1206,63 @@ export default function InvoicesPage() {
               <tbody>
                 {invoiceReturns.length === 0 ? (
                   <tr>
-                    <td colSpan={9} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
-                      No credit notes issued yet. Use <strong>+ Issue Credit Note</strong> to reverse GST and adjust retailer balances.
+                    <td
+                      colSpan={9}
+                      style={{
+                        textAlign: "center",
+                        padding: "var(--space-8)",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      No credit notes issued yet. Use{" "}
+                      <strong>+ Issue Credit Note</strong> to reverse GST and
+                      adjust retailer balances.
                     </td>
                   </tr>
                 ) : (
                   invoiceReturns.map((crn: any) => (
                     <tr key={crn.id}>
                       <td>
-                        <span style={{ fontWeight: 700, color: "var(--color-error)" }}>
+                        <span
+                          style={{
+                            fontWeight: 700,
+                            color: "var(--color-error)",
+                          }}
+                        >
                           {crn.creditNoteNo}
                         </span>
                       </td>
                       <td>{crn.returnDate}</td>
                       <td>
-                        <code style={{ fontSize: "0.8rem" }}>{crn.invoiceId.slice(0, 8)}...</code>
+                        <code style={{ fontSize: "0.8rem" }}>
+                          {crn.invoiceId.slice(0, 8)}...
+                        </code>
                       </td>
                       <td>₹{crn.refundSubtotal.toFixed(2)}</td>
                       <td>₹{crn.refundSgst.toFixed(2)}</td>
                       <td>₹{crn.refundCgst.toFixed(2)}</td>
-                      <td style={{ fontWeight: 800, color: "var(--color-error)", fontSize: "1rem" }}>
+                      <td
+                        style={{
+                          fontWeight: 800,
+                          color: "var(--color-error)",
+                          fontSize: "1rem",
+                        }}
+                      >
                         -₹{crn.grandRefund.toFixed(2)}
                       </td>
                       <td>
-                        <span className={`badge ${crn.restockStatus === "RESTOCKED" ? "badge-success" : "badge-warning"}`}>
+                        <span
+                          className={`badge ${crn.restockStatus === "RESTOCKED" ? "badge-success" : "badge-warning"}`}
+                        >
                           {crn.restockStatus}
                         </span>
                       </td>
-                      <td style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                      <td
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "var(--text-secondary)",
+                        }}
+                      >
                         {crn.reason || "—"}
                       </td>
                     </tr>
@@ -1049,52 +1276,132 @@ export default function InvoicesPage() {
 
       {/* TAB 4: ADVANCE PAYMENTS & UNALLOCATED RECEIPTS */}
       {activeTab === "ADVANCES" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-          {/* Unallocated Advance Overview Cards */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
             gap: "var(--space-4)",
-          }}>
+          }}
+        >
+          {/* Unallocated Advance Overview Cards */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gap: "var(--space-4)",
+            }}
+          >
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 TOTAL ADVANCES DEPOSITED
               </p>
-              <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--color-primary-700)", margin: "4px 0" }}>
+              <p
+                style={{
+                  fontSize: "1.4rem",
+                  fontWeight: 800,
+                  color: "var(--color-primary-700)",
+                  margin: "4px 0",
+                }}
+              >
                 ₹{totalAdvancesDeposited.toFixed(2)}
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", margin: 0 }}>
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "var(--text-muted)",
+                  margin: 0,
+                }}
+              >
                 Cumulative funds collected in advance
               </p>
             </div>
 
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 SETTLED AGAINST INVOICES
               </p>
-              <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--text-primary)", margin: "4px 0" }}>
+              <p
+                style={{
+                  fontSize: "1.4rem",
+                  fontWeight: 800,
+                  color: "var(--text-primary)",
+                  margin: "4px 0",
+                }}
+              >
                 ₹{totalAdvancesAllocated.toFixed(2)}
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", margin: 0 }}>
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "var(--text-muted)",
+                  margin: 0,
+                }}
+              >
                 Offset against finalized delivery tax invoices
               </p>
             </div>
 
-            <div className="card" style={{
-              padding: "var(--space-4)",
-              background: "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.04) 100%)",
-              border: "1px solid rgba(16, 185, 129, 0.3)",
-            }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-success)", fontWeight: 700 }}>
+            <div
+              className="card"
+              style={{
+                padding: "var(--space-4)",
+                background:
+                  "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.04) 100%)",
+                border: "1px solid rgba(16, 185, 129, 0.3)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "var(--font-size-xs)",
+                    color: "var(--color-success)",
+                    fontWeight: 700,
+                  }}
+                >
                   🟢 UNALLOCATED ADVANCE SURPLUS
                 </p>
-                <span className="badge badge-success" style={{ fontSize: "0.7rem" }}>Available Credit</span>
+                <span
+                  className="badge badge-success"
+                  style={{ fontSize: "0.7rem" }}
+                >
+                  Available Credit
+                </span>
               </div>
-              <p style={{ fontSize: "1.4rem", fontWeight: 900, color: "var(--color-success)", margin: "4px 0" }}>
+              <p
+                style={{
+                  fontSize: "1.4rem",
+                  fontWeight: 900,
+                  color: "var(--color-success)",
+                  margin: "4px 0",
+                }}
+              >
                 ₹{totalAdvancesUnallocated.toFixed(2)}
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", margin: 0 }}>
+              <p
+                style={{
+                  fontSize: "0.75rem",
+                  color: "var(--text-secondary)",
+                  margin: 0,
+                }}
+              >
                 Surplus deposit ready for instant deduction on next order
               </p>
             </div>
@@ -1102,18 +1409,36 @@ export default function InvoicesPage() {
 
           {/* Table Card with Filter Controls */}
           <div className="card">
-            <div style={{
-              padding: "var(--space-3) var(--space-4)",
-              borderBottom: "1px solid var(--border-color)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              flexWrap: "wrap",
-              gap: "var(--space-2)",
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-                <span style={{ fontSize: "0.85rem", fontWeight: 700 }}>Filter Allocation Status:</span>
-                <div style={{ display: "inline-flex", gap: "4px", background: "rgba(0,0,0,0.04)", padding: "2px", borderRadius: "var(--radius-md)" }}>
+            <div
+              style={{
+                padding: "var(--space-3) var(--space-4)",
+                borderBottom: "1px solid var(--border-color)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: "var(--space-2)",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-2)",
+                }}
+              >
+                <span style={{ fontSize: "0.85rem", fontWeight: 700 }}>
+                  Filter Allocation Status:
+                </span>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    gap: "4px",
+                    background: "rgba(0,0,0,0.04)",
+                    padding: "2px",
+                    borderRadius: "var(--radius-md)",
+                  }}
+                >
                   <button
                     type="button"
                     onClick={() => setAdvanceAllocationFilter("ALL")}
@@ -1124,8 +1449,14 @@ export default function InvoicesPage() {
                       fontSize: "0.78rem",
                       fontWeight: 600,
                       cursor: "pointer",
-                      background: advanceAllocationFilter === "ALL" ? "var(--color-primary-600)" : "transparent",
-                      color: advanceAllocationFilter === "ALL" ? "#ffffff" : "var(--text-secondary)",
+                      background:
+                        advanceAllocationFilter === "ALL"
+                          ? "var(--color-primary-600)"
+                          : "transparent",
+                      color:
+                        advanceAllocationFilter === "ALL"
+                          ? "#ffffff"
+                          : "var(--text-secondary)",
                     }}
                   >
                     All ({processedAdvances.length})
@@ -1140,11 +1471,23 @@ export default function InvoicesPage() {
                       fontSize: "0.78rem",
                       fontWeight: 600,
                       cursor: "pointer",
-                      background: advanceAllocationFilter === "UNALLOCATED" ? "var(--color-success)" : "transparent",
-                      color: advanceAllocationFilter === "UNALLOCATED" ? "#ffffff" : "var(--text-secondary)",
+                      background:
+                        advanceAllocationFilter === "UNALLOCATED"
+                          ? "var(--color-success)"
+                          : "transparent",
+                      color:
+                        advanceAllocationFilter === "UNALLOCATED"
+                          ? "#ffffff"
+                          : "var(--text-secondary)",
                     }}
                   >
-                    🟢 Unallocated Surplus ({processedAdvances.filter((a: any) => a.unallocatedAmount > 0).length})
+                    🟢 Unallocated Surplus (
+                    {
+                      processedAdvances.filter(
+                        (a: any) => a.unallocatedAmount > 0,
+                      ).length
+                    }
+                    )
                   </button>
                   <button
                     type="button"
@@ -1156,18 +1499,37 @@ export default function InvoicesPage() {
                       fontSize: "0.78rem",
                       fontWeight: 600,
                       cursor: "pointer",
-                      background: advanceAllocationFilter === "SETTLED" ? "var(--color-primary-800)" : "transparent",
-                      color: advanceAllocationFilter === "SETTLED" ? "#ffffff" : "var(--text-secondary)",
+                      background:
+                        advanceAllocationFilter === "SETTLED"
+                          ? "var(--color-primary-800)"
+                          : "transparent",
+                      color:
+                        advanceAllocationFilter === "SETTLED"
+                          ? "#ffffff"
+                          : "var(--text-secondary)",
                     }}
                   >
-                    ✓ Fully Settled ({processedAdvances.filter((a: any) => a.unallocatedAmount === 0).length})
+                    ✓ Fully Settled (
+                    {
+                      processedAdvances.filter(
+                        (a: any) => a.unallocatedAmount === 0,
+                      ).length
+                    }
+                    )
                   </button>
                 </div>
               </div>
 
               {totalAdvancesUnallocated > 0 && (
-                <div style={{ fontSize: "0.8rem", color: "var(--color-success)", fontWeight: 600 }}>
-                  💡 ₹{totalAdvancesUnallocated.toFixed(2)} surplus credit available on account
+                <div
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "var(--color-success)",
+                    fontWeight: 600,
+                  }}
+                >
+                  💡 ₹{totalAdvancesUnallocated.toFixed(2)} surplus credit
+                  available on account
                 </div>
               )}
             </div>
@@ -1190,59 +1552,111 @@ export default function InvoicesPage() {
                 <tbody>
                   {filteredAdvances.length === 0 ? (
                     <tr>
-                      <td colSpan={9} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
-                        No advance receipts matching current filter. Click <strong>+ Record Advance Payment</strong> to credit a retailer ledger.
+                      <td
+                        colSpan={9}
+                        style={{
+                          textAlign: "center",
+                          padding: "var(--space-8)",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        No advance receipts matching current filter. Click{" "}
+                        <strong>+ Record Advance Payment</strong> to credit a
+                        retailer ledger.
                       </td>
                     </tr>
                   ) : (
                     filteredAdvances.map((adv: any) => (
                       <tr key={adv.id}>
                         <td>
-                          <span style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+                          <span
+                            style={{
+                              fontWeight: 700,
+                              color: "var(--color-primary-700)",
+                            }}
+                          >
                             {adv.receiptNumber}
                           </span>
                         </td>
                         <td>{new Date(adv.paidAt).toLocaleDateString()}</td>
-                        <td style={{ fontWeight: 600 }}>{adv.shopkeeperName || "Retail Shopkeeper"}</td>
+                        <td style={{ fontWeight: 600 }}>
+                          {adv.shopkeeperName || "Retail Shopkeeper"}
+                        </td>
                         <td style={{ fontWeight: 700, fontSize: "0.95rem" }}>
                           ₹{adv.amount.toFixed(2)}
                         </td>
-                        <td style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>
+                        <td
+                          style={{
+                            color: "var(--text-secondary)",
+                            fontSize: "0.9rem",
+                          }}
+                        >
                           ₹{adv.allocatedAmount.toFixed(2)}
                         </td>
-                        <td style={{
-                          fontWeight: 800,
-                          fontSize: "0.95rem",
-                          color: adv.unallocatedAmount > 0 ? "var(--color-success)" : "var(--text-muted)",
-                        }}>
-                          {adv.unallocatedAmount > 0 ? `₹${adv.unallocatedAmount.toFixed(2)}` : "₹0.00"}
+                        <td
+                          style={{
+                            fontWeight: 800,
+                            fontSize: "0.95rem",
+                            color:
+                              adv.unallocatedAmount > 0
+                                ? "var(--color-success)"
+                                : "var(--text-muted)",
+                          }}
+                        >
+                          {adv.unallocatedAmount > 0
+                            ? `₹${adv.unallocatedAmount.toFixed(2)}`
+                            : "₹0.00"}
                         </td>
                         <td>
                           {adv.allocationStatus === "UNALLOCATED" && (
-                            <span className="badge badge-success" style={{ fontWeight: 700, fontSize: "0.75rem" }}>
+                            <span
+                              className="badge badge-success"
+                              style={{ fontWeight: 700, fontSize: "0.75rem" }}
+                            >
                               🟢 Unallocated Surplus
                             </span>
                           )}
                           {adv.allocationStatus === "PARTIALLY_ALLOCATED" && (
-                            <span className="badge badge-warning" style={{ fontWeight: 700, fontSize: "0.75rem" }}>
+                            <span
+                              className="badge badge-warning"
+                              style={{ fontWeight: 700, fontSize: "0.75rem" }}
+                            >
                               🟡 Partially Allocated
                             </span>
                           )}
                           {adv.allocationStatus === "FULLY_ALLOCATED" && (
-                            <span className="badge badge-info" style={{ fontWeight: 600, fontSize: "0.75rem" }}>
+                            <span
+                              className="badge badge-info"
+                              style={{ fontWeight: 600, fontSize: "0.75rem" }}
+                            >
                               ✓ Fully Settled
                             </span>
                           )}
                         </td>
                         <td>
-                          <div style={{ display: "flex", flexDirection: "column" }}>
-                            <span className="badge badge-info" style={{ width: "fit-content", marginBottom: "2px" }}>
+                          <div
+                            style={{ display: "flex", flexDirection: "column" }}
+                          >
+                            <span
+                              className="badge badge-info"
+                              style={{
+                                width: "fit-content",
+                                marginBottom: "2px",
+                              }}
+                            >
                               {adv.paymentMethod}
                             </span>
-                            <code style={{ fontSize: "0.75rem" }}>{adv.referenceNo || "—"}</code>
+                            <code style={{ fontSize: "0.75rem" }}>
+                              {adv.referenceNo || "—"}
+                            </code>
                           </div>
                         </td>
-                        <td style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                        <td
+                          style={{
+                            fontSize: "0.8rem",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
                           {adv.notes || "—"}
                         </td>
                       </tr>
@@ -1257,7 +1671,13 @@ export default function InvoicesPage() {
 
       {/* TAB 5: PARTY STATEMENT & RUNNING LEDGER */}
       {activeTab === "LEDGER" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-5)",
+          }}
+        >
           {/* Party Selection & Header Info */}
           <div
             className="card"
@@ -1276,19 +1696,40 @@ export default function InvoicesPage() {
                   ? `Party Ledger: ${shopkeepersList.find((s: any) => s.id === selectedShopkeeperForLedger)?.fullName || "Retailer"}`
                   : "Party Statement & Running Ledger"}
               </h3>
-              <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", margin: 0 }}>
-                Real-time debit/credit statement with running ledger balance after every transaction
+              <p
+                style={{
+                  fontSize: "0.8rem",
+                  color: "var(--text-secondary)",
+                  margin: 0,
+                }}
+              >
+                Real-time debit/credit statement with running ledger balance
+                after every transaction
               </p>
             </div>
 
             {isAdminOrWarehouse && (
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-                <label style={{ fontSize: "0.85rem", fontWeight: 600 }}>Filter by Retailer:</label>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "var(--space-2)",
+                }}
+              >
+                <label style={{ fontSize: "0.85rem", fontWeight: 600 }}>
+                  Filter by Retailer:
+                </label>
                 <select
                   className="input"
-                  style={{ width: "240px", padding: "0.35rem 0.6rem", fontSize: "0.85rem" }}
+                  style={{
+                    width: "240px",
+                    padding: "0.35rem 0.6rem",
+                    fontSize: "0.85rem",
+                  }}
                   value={selectedShopkeeperForLedger}
-                  onChange={(e) => setSelectedShopkeeperForLedger(e.target.value)}
+                  onChange={(e) =>
+                    setSelectedShopkeeperForLedger(e.target.value)
+                  }
                 >
                   <option value="">All Retail Accounts</option>
                   {shopkeepersList.map((sk: any) => (
@@ -1310,51 +1751,104 @@ export default function InvoicesPage() {
             }}
           >
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 OUTSTANDING BALANCE
               </p>
               <p
                 style={{
                   fontSize: "var(--font-size-2xl)",
                   fontWeight: 800,
-                  color: currentLedgerBalance > 0 ? "var(--color-warning)" : "var(--color-success)",
+                  color:
+                    currentLedgerBalance > 0
+                      ? "var(--color-warning)"
+                      : "var(--color-success)",
                 }}
               >
                 ₹{currentLedgerBalance.toFixed(2)}
               </p>
               <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                {currentLedgerBalance > 0 ? "Net payable by retailer" : "Account fully settled"}
+                {currentLedgerBalance > 0
+                  ? "Net payable by retailer"
+                  : "Account fully settled"}
               </p>
             </div>
 
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 TOTAL GOODS INVOICED (DEBIT)
               </p>
-              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-primary-700)" }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: 800,
+                  color: "var(--color-primary-700)",
+                }}
+              >
                 ₹{totalLedgerDebits.toFixed(2)}
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Cumulative invoice dispatches</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                Cumulative invoice dispatches
+              </p>
             </div>
 
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 SETTLEMENTS &amp; CREDITS (CREDIT)
               </p>
-              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-success)" }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: 800,
+                  color: "var(--color-success)",
+                }}
+              >
                 ₹{totalLedgerCredits.toFixed(2)}
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Payments, Handshake Cash &amp; Credit Notes</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                Payments, Handshake Cash &amp; Credit Notes
+              </p>
             </div>
 
             <div className="card" style={{ padding: "var(--space-4)" }}>
-              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-xs)",
+                  color: "var(--text-secondary)",
+                  fontWeight: 600,
+                }}
+              >
                 STATEMENT ENTRIES
               </p>
-              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "#0284c7" }}>
+              <p
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: 800,
+                  color: "#0284c7",
+                }}
+              >
                 {ledgerEntries.length} Transactions
               </p>
-              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Audited chronological ledger</p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                Audited chronological ledger
+              </p>
             </div>
           </div>
 
@@ -1377,14 +1871,23 @@ export default function InvoicesPage() {
                 <tbody>
                   {ledgerEntries.length === 0 ? (
                     <tr>
-                      <td colSpan={8} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                      <td
+                        colSpan={8}
+                        style={{
+                          textAlign: "center",
+                          padding: "var(--space-8)",
+                          color: "var(--text-muted)",
+                        }}
+                      >
                         No ledger transactions recorded yet.
                       </td>
                     </tr>
                   ) : (
                     ledgerEntries.map((entry: any) => (
                       <tr key={entry.id}>
-                        <td style={{ fontSize: "0.8rem", whiteSpace: "nowrap" }}>
+                        <td
+                          style={{ fontSize: "0.8rem", whiteSpace: "nowrap" }}
+                        >
                           {new Date(entry.createdAt).toLocaleString()}
                         </td>
                         <td style={{ fontWeight: 600 }}>
@@ -1394,8 +1897,14 @@ export default function InvoicesPage() {
                           <span
                             className={`badge ${entry.entryType === "DEBIT" ? "badge-danger" : "badge-success"}`}
                             style={{
-                              background: entry.entryType === "DEBIT" ? "rgba(239, 68, 68, 0.15)" : "rgba(16, 185, 129, 0.15)",
-                              color: entry.entryType === "DEBIT" ? "var(--color-error)" : "var(--color-success)",
+                              background:
+                                entry.entryType === "DEBIT"
+                                  ? "rgba(239, 68, 68, 0.15)"
+                                  : "rgba(16, 185, 129, 0.15)",
+                              color:
+                                entry.entryType === "DEBIT"
+                                  ? "var(--color-error)"
+                                  : "var(--color-success)",
                               fontWeight: 700,
                             }}
                           >
@@ -1407,14 +1916,33 @@ export default function InvoicesPage() {
                             {entry.referenceNumber || "—"}
                           </code>
                         </td>
-                        <td style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                        <td
+                          style={{
+                            fontSize: "0.85rem",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
                           {entry.description}
                         </td>
-                        <td style={{ fontWeight: 700, color: "var(--color-error)" }}>
-                          {entry.entryType === "DEBIT" ? `₹${entry.amount.toFixed(2)}` : "—"}
+                        <td
+                          style={{
+                            fontWeight: 700,
+                            color: "var(--color-error)",
+                          }}
+                        >
+                          {entry.entryType === "DEBIT"
+                            ? `₹${entry.amount.toFixed(2)}`
+                            : "—"}
                         </td>
-                        <td style={{ fontWeight: 700, color: "var(--color-success)" }}>
-                          {entry.entryType === "CREDIT" ? `₹${entry.amount.toFixed(2)}` : "—"}
+                        <td
+                          style={{
+                            fontWeight: 700,
+                            color: "var(--color-success)",
+                          }}
+                        >
+                          {entry.entryType === "CREDIT"
+                            ? `₹${entry.amount.toFixed(2)}`
+                            : "—"}
                         </td>
                         <td style={{ fontWeight: 800, fontSize: "0.95rem" }}>
                           ₹{entry.balanceAfter.toFixed(2)}
@@ -1431,7 +1959,13 @@ export default function InvoicesPage() {
 
       {/* TAB 6: RETURN / DAMAGE CLAIMS */}
       {activeTab === "CLAIMS" && (
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           {/* Status Filter Bar */}
           <div
             style={{
@@ -1455,7 +1989,13 @@ export default function InvoicesPage() {
               ))}
             </div>
 
-            <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", margin: 0 }}>
+            <p
+              style={{
+                fontSize: "0.8rem",
+                color: "var(--text-muted)",
+                margin: 0,
+              }}
+            >
               Showing {returnClaims.length} claim(s)
             </p>
           </div>
@@ -1480,15 +2020,29 @@ export default function InvoicesPage() {
                 <tbody>
                   {returnClaims.length === 0 ? (
                     <tr>
-                      <td colSpan={9} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
-                        No return claims found for this filter. Use <strong>+ Raise Return Claim</strong> to report transit damages or near-expiry batches.
+                      <td
+                        colSpan={9}
+                        style={{
+                          textAlign: "center",
+                          padding: "var(--space-8)",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        No return claims found for this filter. Use{" "}
+                        <strong>+ Raise Return Claim</strong> to report transit
+                        damages or near-expiry batches.
                       </td>
                     </tr>
                   ) : (
                     returnClaims.map((claim: any) => (
                       <tr key={claim.id}>
                         <td>
-                          <span style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+                          <span
+                            style={{
+                              fontWeight: 700,
+                              color: "var(--color-primary-700)",
+                            }}
+                          >
                             {claim.requestNumber}
                           </span>
                         </td>
@@ -1499,19 +2053,41 @@ export default function InvoicesPage() {
                           {claim.shopkeeperName || "Retail Shopkeeper"}
                         </td>
                         <td>
-                          <div style={{ fontWeight: 700 }}>{claim.productName || "Pharmaceutical Product"}</div>
+                          <div style={{ fontWeight: 700 }}>
+                            {claim.productName || "Pharmaceutical Product"}
+                          </div>
                           {claim.batchNumber && (
-                            <code style={{ fontSize: "0.75rem" }}>Batch: {claim.batchNumber}</code>
+                            <code style={{ fontSize: "0.75rem" }}>
+                              Batch: {claim.batchNumber}
+                            </code>
                           )}
                         </td>
-                        <td style={{ fontWeight: 700 }}>{claim.quantity} packs</td>
-                        <td style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                        <td style={{ fontWeight: 700 }}>
+                          {claim.quantity} packs
+                        </td>
+                        <td
+                          style={{
+                            fontSize: "0.85rem",
+                            color: "var(--text-secondary)",
+                          }}
+                        >
                           {claim.reason}
                         </td>
-                        <td style={{ fontSize: "0.8rem", color: "var(--text-muted)", maxWidth: "180px" }}>
+                        <td
+                          style={{
+                            fontSize: "0.8rem",
+                            color: "var(--text-muted)",
+                            maxWidth: "180px",
+                          }}
+                        >
                           {claim.remarks || "—"}
                           {claim.rejectionReason && (
-                            <div style={{ color: "var(--color-error)", marginTop: "2px" }}>
+                            <div
+                              style={{
+                                color: "var(--color-error)",
+                                marginTop: "2px",
+                              }}
+                            >
                               Reason: {claim.rejectionReason}
                             </div>
                           )}
@@ -1522,33 +2098,46 @@ export default function InvoicesPage() {
                               claim.status === "APPROVED"
                                 ? "badge-success"
                                 : claim.status === "REJECTED"
-                                ? "badge-danger"
-                                : "badge-warning"
+                                  ? "badge-danger"
+                                  : "badge-warning"
                             }`}
                           >
                             {claim.status === "PENDING"
                               ? "⏳ PENDING REVIEW"
                               : claim.status === "APPROVED"
-                              ? "✅ APPROVED"
-                              : "❌ REJECTED"}
+                                ? "✅ APPROVED"
+                                : "❌ REJECTED"}
                           </span>
                         </td>
                         <td>
                           {claim.status === "PENDING" && isAdminOrWarehouse ? (
                             <button
                               className="btn btn-primary"
-                              style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
+                              style={{
+                                padding: "0.25rem 0.6rem",
+                                fontSize: "0.75rem",
+                              }}
                               onClick={() => {
                                 setSelectedClaimForReview(claim);
-                                setReviewForm({ action: "APPROVE", rejectionReason: "" });
+                                setReviewForm({
+                                  action: "APPROVE",
+                                  rejectionReason: "",
+                                });
                                 setShowReviewDrawer(true);
                               }}
                             >
                               Inspect &amp; Review
                             </button>
                           ) : (
-                            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                              {claim.status === "APPROVED" ? "Credit Note Issued" : "Review Completed"}
+                            <span
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "var(--text-muted)",
+                              }}
+                            >
+                              {claim.status === "APPROVED"
+                                ? "Credit Note Issued"
+                                : "Review Completed"}
                             </span>
                           )}
                         </td>
@@ -1569,19 +2158,29 @@ export default function InvoicesPage() {
         title="📦 Issue Delivery Challan"
         subtitle="Dispatch packed order units with transporter credentials"
       >
-        <form onSubmit={handleCreateChallan} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <form
+          onSubmit={handleCreateChallan}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           <div>
             <label className="label">Select Order *</label>
             <select
               className="input"
               required
               value={challanForm.orderId}
-              onChange={(e) => setChallanForm({ ...challanForm, orderId: e.target.value })}
+              onChange={(e) =>
+                setChallanForm({ ...challanForm, orderId: e.target.value })
+              }
             >
               <option value="">-- Choose Order to Dispatch --</option>
               {availableOrders.map((ord: any) => (
                 <option key={ord.id} value={ord.id}>
-                  {ord.orderNumber} (Status: {ord.status}, Net: ₹{ord.netAmount})
+                  {ord.orderNumber} (Status: {ord.status}, Net: ₹{ord.netAmount}
+                  )
                 </option>
               ))}
             </select>
@@ -1593,7 +2192,12 @@ export default function InvoicesPage() {
               className="input"
               placeholder="e.g. BlueDart Express / Local Van"
               value={challanForm.transporterName}
-              onChange={(e) => setChallanForm({ ...challanForm, transporterName: e.target.value })}
+              onChange={(e) =>
+                setChallanForm({
+                  ...challanForm,
+                  transporterName: e.target.value,
+                })
+              }
             />
           </div>
 
@@ -1603,7 +2207,12 @@ export default function InvoicesPage() {
               className="input"
               placeholder="e.g. WB-02-AK-4589"
               value={challanForm.vehicleNumber}
-              onChange={(e) => setChallanForm({ ...challanForm, vehicleNumber: e.target.value })}
+              onChange={(e) =>
+                setChallanForm({
+                  ...challanForm,
+                  vehicleNumber: e.target.value,
+                })
+              }
             />
           </div>
 
@@ -1614,16 +2223,38 @@ export default function InvoicesPage() {
               min={1}
               className="input"
               value={challanForm.totalCartons}
-              onChange={(e) => setChallanForm({ ...challanForm, totalCartons: Number(e.target.value) })}
+              onChange={(e) =>
+                setChallanForm({
+                  ...challanForm,
+                  totalCartons: Number(e.target.value),
+                })
+              }
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
-            <button type="button" className="btn btn-secondary" onClick={() => setShowChallanDrawer(false)}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-3)",
+              marginTop: "var(--space-4)",
+            }}
+          >
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowChallanDrawer(false)}
+            >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" disabled={creatingChallan}>
-              {creatingChallan ? "Issuing Challan..." : "Generate & Dispatch Challan"}
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={creatingChallan}
+            >
+              {creatingChallan
+                ? "Issuing Challan..."
+                : "Generate & Dispatch Challan"}
             </button>
           </div>
         </form>
@@ -1636,7 +2267,14 @@ export default function InvoicesPage() {
         title="🔄 Issue GST Credit Note"
         subtitle="Reverse tax on damaged/expired items and adjust retailer ledger"
       >
-        <form onSubmit={handleCreateReturn} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <form
+          onSubmit={handleCreateReturn}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           <div>
             <label className="label">Invoice Reference / ID *</label>
             <input
@@ -1644,11 +2282,19 @@ export default function InvoicesPage() {
               placeholder="Invoice ID or UUID"
               required
               value={returnForm.invoiceId}
-              onChange={(e) => setReturnForm({ ...returnForm, invoiceId: e.target.value })}
+              onChange={(e) =>
+                setReturnForm({ ...returnForm, invoiceId: e.target.value })
+              }
             />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "var(--space-3)",
+            }}
+          >
             <div>
               <label className="label">Returned Units *</label>
               <input
@@ -1656,7 +2302,12 @@ export default function InvoicesPage() {
                 min={1}
                 className="input"
                 value={returnForm.quantity}
-                onChange={(e) => setReturnForm({ ...returnForm, quantity: Number(e.target.value) })}
+                onChange={(e) =>
+                  setReturnForm({
+                    ...returnForm,
+                    quantity: Number(e.target.value),
+                  })
+                }
               />
             </div>
             <div>
@@ -1666,7 +2317,9 @@ export default function InvoicesPage() {
                 step="0.01"
                 className="input"
                 value={returnForm.rate}
-                onChange={(e) => setReturnForm({ ...returnForm, rate: Number(e.target.value) })}
+                onChange={(e) =>
+                  setReturnForm({ ...returnForm, rate: Number(e.target.value) })
+                }
               />
             </div>
           </div>
@@ -1676,10 +2329,16 @@ export default function InvoicesPage() {
             <select
               className="input"
               value={returnForm.restockStatus}
-              onChange={(e) => setReturnForm({ ...returnForm, restockStatus: e.target.value })}
+              onChange={(e) =>
+                setReturnForm({ ...returnForm, restockStatus: e.target.value })
+              }
             >
-              <option value="RESTOCKED">Restock (Return to Available Warehouse Inventory)</option>
-              <option value="QUARANTINED">Quarantine (Damaged / Expired / Non-saleable)</option>
+              <option value="RESTOCKED">
+                Restock (Return to Available Warehouse Inventory)
+              </option>
+              <option value="QUARANTINED">
+                Quarantine (Damaged / Expired / Non-saleable)
+              </option>
             </select>
           </div>
 
@@ -1689,15 +2348,32 @@ export default function InvoicesPage() {
               className="input"
               rows={3}
               value={returnForm.reason}
-              onChange={(e) => setReturnForm({ ...returnForm, reason: e.target.value })}
+              onChange={(e) =>
+                setReturnForm({ ...returnForm, reason: e.target.value })
+              }
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
-            <button type="button" className="btn btn-secondary" onClick={() => setShowReturnDrawer(false)}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-3)",
+              marginTop: "var(--space-4)",
+            }}
+          >
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowReturnDrawer(false)}
+            >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" disabled={creatingReturn}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={creatingReturn}
+            >
               {creatingReturn ? "Issuing Credit Note..." : "Issue Credit Note"}
             </button>
           </div>
@@ -1711,14 +2387,23 @@ export default function InvoicesPage() {
         title="💰 Record Advance Payment"
         subtitle="Credit a retail shopkeeper's account balance with deposit receipt"
       >
-        <form onSubmit={handleRecordAdvance} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <form
+          onSubmit={handleRecordAdvance}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           <div>
             <label className="label">Select Retail Shopkeeper *</label>
             <select
               className="input"
               required
               value={advanceForm.shopkeeperId}
-              onChange={(e) => setAdvanceForm({ ...advanceForm, shopkeeperId: e.target.value })}
+              onChange={(e) =>
+                setAdvanceForm({ ...advanceForm, shopkeeperId: e.target.value })
+              }
             >
               <option value="">-- Choose Retail Partner --</option>
               {shopkeepersList.map((sk: any) => (
@@ -1738,17 +2423,33 @@ export default function InvoicesPage() {
               className="input"
               required
               value={advanceForm.amount}
-              onChange={(e) => setAdvanceForm({ ...advanceForm, amount: Number(e.target.value) })}
+              onChange={(e) =>
+                setAdvanceForm({
+                  ...advanceForm,
+                  amount: Number(e.target.value),
+                })
+              }
             />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "var(--space-3)",
+            }}
+          >
             <div>
               <label className="label">Payment Mode</label>
               <select
                 className="input"
                 value={advanceForm.paymentMethod}
-                onChange={(e) => setAdvanceForm({ ...advanceForm, paymentMethod: e.target.value })}
+                onChange={(e) =>
+                  setAdvanceForm({
+                    ...advanceForm,
+                    paymentMethod: e.target.value,
+                  })
+                }
               >
                 <option value="UPI">UPI</option>
                 <option value="BANK_TRANSFER">NEFT / RTGS</option>
@@ -1762,7 +2463,12 @@ export default function InvoicesPage() {
                 className="input"
                 placeholder="e.g. UTR-309482910"
                 value={advanceForm.referenceNo}
-                onChange={(e) => setAdvanceForm({ ...advanceForm, referenceNo: e.target.value })}
+                onChange={(e) =>
+                  setAdvanceForm({
+                    ...advanceForm,
+                    referenceNo: e.target.value,
+                  })
+                }
               />
             </div>
           </div>
@@ -1773,16 +2479,35 @@ export default function InvoicesPage() {
               className="input"
               rows={3}
               value={advanceForm.notes}
-              onChange={(e) => setAdvanceForm({ ...advanceForm, notes: e.target.value })}
+              onChange={(e) =>
+                setAdvanceForm({ ...advanceForm, notes: e.target.value })
+              }
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
-            <button type="button" className="btn btn-secondary" onClick={() => setShowAdvanceDrawer(false)}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-3)",
+              marginTop: "var(--space-4)",
+            }}
+          >
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowAdvanceDrawer(false)}
+            >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" disabled={recordingAdvance}>
-              {recordingAdvance ? "Recording Payment..." : "Record & Credit Balance"}
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={recordingAdvance}
+            >
+              {recordingAdvance
+                ? "Recording Payment..."
+                : "Record & Credit Balance"}
             </button>
           </div>
         </form>
@@ -1795,14 +2520,23 @@ export default function InvoicesPage() {
         title="🛡️ Raise Return / Damage Claim"
         subtitle="Report transit breakage, leakage, wrong batch, or near-expiry medicines"
       >
-        <form onSubmit={handleSubmitClaim} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+        <form
+          onSubmit={handleSubmitClaim}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "var(--space-4)",
+          }}
+        >
           <div>
             <label className="label">Select Medicine / Product *</label>
             <select
               className="input"
               required
               value={claimForm.productId}
-              onChange={(e) => setClaimForm({ ...claimForm, productId: e.target.value })}
+              onChange={(e) =>
+                setClaimForm({ ...claimForm, productId: e.target.value })
+              }
             >
               <option value="">-- Choose Product --</option>
               {productsList.length > 0 ? (
@@ -1813,16 +2547,30 @@ export default function InvoicesPage() {
                 ))
               ) : (
                 <>
-                  <option value="00000000-0000-0000-0000-000000000001">AZITHRAL 500MG TAB (10S)</option>
-                  <option value="00000000-0000-0000-0000-000000000002">HIFENAC MR TAB (10S)</option>
-                  <option value="00000000-0000-0000-0000-000000000003">PAN D CAP (15S)</option>
-                  <option value="00000000-0000-0000-0000-000000000004">TELMA 40MG TAB (15S)</option>
+                  <option value="00000000-0000-0000-0000-000000000001">
+                    AZITHRAL 500MG TAB (10S)
+                  </option>
+                  <option value="00000000-0000-0000-0000-000000000002">
+                    HIFENAC MR TAB (10S)
+                  </option>
+                  <option value="00000000-0000-0000-0000-000000000003">
+                    PAN D CAP (15S)
+                  </option>
+                  <option value="00000000-0000-0000-0000-000000000004">
+                    TELMA 40MG TAB (15S)
+                  </option>
                 </>
               )}
             </select>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "var(--space-3)",
+            }}
+          >
             <div>
               <label className="label">Quantity (Packs) *</label>
               <input
@@ -1831,7 +2579,12 @@ export default function InvoicesPage() {
                 className="input"
                 required
                 value={claimForm.quantity}
-                onChange={(e) => setClaimForm({ ...claimForm, quantity: Number(e.target.value) })}
+                onChange={(e) =>
+                  setClaimForm({
+                    ...claimForm,
+                    quantity: Number(e.target.value),
+                  })
+                }
               />
             </div>
             <div>
@@ -1840,7 +2593,9 @@ export default function InvoicesPage() {
                 className="input"
                 placeholder="e.g. 2613000703"
                 value={claimForm.batchNumber}
-                onChange={(e) => setClaimForm({ ...claimForm, batchNumber: e.target.value })}
+                onChange={(e) =>
+                  setClaimForm({ ...claimForm, batchNumber: e.target.value })
+                }
               />
             </div>
           </div>
@@ -1850,14 +2605,26 @@ export default function InvoicesPage() {
             <select
               className="input"
               value={claimForm.reason}
-              onChange={(e) => setClaimForm({ ...claimForm, reason: e.target.value })}
+              onChange={(e) =>
+                setClaimForm({ ...claimForm, reason: e.target.value })
+              }
             >
-              <option value="Damaged packaging / Seal Broken">Damaged packaging / Seal Broken</option>
-              <option value="Breakage / Leakage in transit">Breakage / Leakage in transit</option>
-              <option value="Near Expiry (< 60 Days)">Near Expiry (&lt; 60 Days)</option>
+              <option value="Damaged packaging / Seal Broken">
+                Damaged packaging / Seal Broken
+              </option>
+              <option value="Breakage / Leakage in transit">
+                Breakage / Leakage in transit
+              </option>
+              <option value="Near Expiry (< 60 Days)">
+                Near Expiry (&lt; 60 Days)
+              </option>
               <option value="Expired Stock">Expired Stock</option>
-              <option value="Wrong Medicine / Batch Received">Wrong Medicine / Batch Received</option>
-              <option value="Quality Concern / Manufacturer Recall">Quality Concern / Manufacturer Recall</option>
+              <option value="Wrong Medicine / Batch Received">
+                Wrong Medicine / Batch Received
+              </option>
+              <option value="Quality Concern / Manufacturer Recall">
+                Quality Concern / Manufacturer Recall
+              </option>
             </select>
           </div>
 
@@ -1868,7 +2635,9 @@ export default function InvoicesPage() {
               rows={3}
               placeholder="Describe condition of boxes, seal status, or batch expiry details..."
               value={claimForm.remarks}
-              onChange={(e) => setClaimForm({ ...claimForm, remarks: e.target.value })}
+              onChange={(e) =>
+                setClaimForm({ ...claimForm, remarks: e.target.value })
+              }
             />
           </div>
 
@@ -1878,15 +2647,32 @@ export default function InvoicesPage() {
               className="input"
               placeholder="https://... photo proof of damage"
               value={claimForm.imageUrl}
-              onChange={(e) => setClaimForm({ ...claimForm, imageUrl: e.target.value })}
+              onChange={(e) =>
+                setClaimForm({ ...claimForm, imageUrl: e.target.value })
+              }
             />
           </div>
 
-          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
-            <button type="button" className="btn btn-secondary" onClick={() => setShowClaimDrawer(false)}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "var(--space-3)",
+              marginTop: "var(--space-4)",
+            }}
+          >
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setShowClaimDrawer(false)}
+            >
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary" disabled={submittingClaim}>
+            <button
+              type="submit"
+              className="btn btn-primary"
+              disabled={submittingClaim}
+            >
               {submittingClaim ? "Submitting..." : "Submit Return Claim"}
             </button>
           </div>
@@ -1901,30 +2687,83 @@ export default function InvoicesPage() {
           setSelectedClaimForReview(null);
         }}
         title="🔍 Inspect &amp; Review Claim"
-        subtitle={selectedClaimForReview ? `Claim #${selectedClaimForReview.requestNumber}` : ""}
+        subtitle={
+          selectedClaimForReview
+            ? `Claim #${selectedClaimForReview.requestNumber}`
+            : ""
+        }
       >
         {selectedClaimForReview && (
-          <form onSubmit={handleReviewClaim} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-            <div style={{ background: "var(--bg-secondary)", padding: "var(--space-4)", borderRadius: "var(--radius-md)", fontSize: "0.85rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+          <form
+            onSubmit={handleReviewClaim}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "var(--space-4)",
+            }}
+          >
+            <div
+              style={{
+                background: "var(--bg-secondary)",
+                padding: "var(--space-4)",
+                borderRadius: "var(--radius-md)",
+                fontSize: "0.85rem",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "0.25rem",
+                }}
+              >
                 <span>Retailer:</span>
-                <strong>{selectedClaimForReview.shopkeeperName || "Retail Shopkeeper"}</strong>
+                <strong>
+                  {selectedClaimForReview.shopkeeperName || "Retail Shopkeeper"}
+                </strong>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "0.25rem",
+                }}
+              >
                 <span>Product:</span>
                 <strong>{selectedClaimForReview.productName}</strong>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "0.25rem",
+                }}
+              >
                 <span>Claimed Qty:</span>
                 <strong>{selectedClaimForReview.quantity} packs</strong>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  marginBottom: "0.25rem",
+                }}
+              >
                 <span>Reason:</span>
-                <span style={{ color: "var(--color-error)" }}>{selectedClaimForReview.reason}</span>
+                <span style={{ color: "var(--color-error)" }}>
+                  {selectedClaimForReview.reason}
+                </span>
               </div>
               {selectedClaimForReview.remarks && (
-                <div style={{ marginTop: "0.5rem", borderTop: "1px solid var(--border-color)", paddingTop: "0.5rem" }}>
-                  <span style={{ color: "var(--text-muted)" }}>Remarks:</span> {selectedClaimForReview.remarks}
+                <div
+                  style={{
+                    marginTop: "0.5rem",
+                    borderTop: "1px solid var(--border-color)",
+                    paddingTop: "0.5rem",
+                  }}
+                >
+                  <span style={{ color: "var(--text-muted)" }}>Remarks:</span>{" "}
+                  {selectedClaimForReview.remarks}
                 </div>
               )}
             </div>
@@ -1934,10 +2773,16 @@ export default function InvoicesPage() {
               <select
                 className="input"
                 value={reviewForm.action}
-                onChange={(e) => setReviewForm({ ...reviewForm, action: e.target.value })}
+                onChange={(e) =>
+                  setReviewForm({ ...reviewForm, action: e.target.value })
+                }
               >
-                <option value="APPROVE">Approve Claim &amp; Authorize GST Credit Note</option>
-                <option value="REJECT">Reject Claim (Invalid / Physical inspection failed)</option>
+                <option value="APPROVE">
+                  Approve Claim &amp; Authorize GST Credit Note
+                </option>
+                <option value="REJECT">
+                  Reject Claim (Invalid / Physical inspection failed)
+                </option>
               </select>
             </div>
 
@@ -1950,12 +2795,24 @@ export default function InvoicesPage() {
                   required
                   placeholder="Explain why this return claim was rejected..."
                   value={reviewForm.rejectionReason}
-                  onChange={(e) => setReviewForm({ ...reviewForm, rejectionReason: e.target.value })}
+                  onChange={(e) =>
+                    setReviewForm({
+                      ...reviewForm,
+                      rejectionReason: e.target.value,
+                    })
+                  }
                 />
               </div>
             )}
 
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: "var(--space-3)",
+                marginTop: "var(--space-4)",
+              }}
+            >
               <button
                 type="button"
                 className="btn btn-secondary"
@@ -1970,12 +2827,22 @@ export default function InvoicesPage() {
                 type="submit"
                 className="btn btn-primary"
                 style={{
-                  background: reviewForm.action === "APPROVE" ? "var(--color-success)" : "var(--color-error)",
-                  borderColor: reviewForm.action === "APPROVE" ? "var(--color-success)" : "var(--color-error)",
+                  background:
+                    reviewForm.action === "APPROVE"
+                      ? "var(--color-success)"
+                      : "var(--color-error)",
+                  borderColor:
+                    reviewForm.action === "APPROVE"
+                      ? "var(--color-success)"
+                      : "var(--color-error)",
                 }}
                 disabled={reviewingClaim}
               >
-                {reviewingClaim ? "Saving Decision..." : reviewForm.action === "APPROVE" ? "Approve & Issue Credit" : "Confirm Rejection"}
+                {reviewingClaim
+                  ? "Saving Decision..."
+                  : reviewForm.action === "APPROVE"
+                    ? "Approve & Issue Credit"
+                    : "Confirm Rejection"}
               </button>
             </div>
           </form>
@@ -2011,28 +2878,77 @@ export default function InvoicesPage() {
               boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
-              <div style={{ borderBottom: "2px solid var(--color-primary-600)", paddingBottom: "var(--space-2)", width: "100%" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                marginBottom: "var(--space-4)",
+              }}
+            >
+              <div
+                style={{
+                  borderBottom: "2px solid var(--color-primary-600)",
+                  paddingBottom: "var(--space-2)",
+                  width: "100%",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
                   <div>
-                    <h2 style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--color-primary-700)" }}>
+                    <h2
+                      style={{
+                        fontSize: "1.4rem",
+                        fontWeight: 800,
+                        color: "var(--color-primary-700)",
+                      }}
+                    >
                       MAA ESWARI PHARMACEUTICALS
                     </h2>
-                    <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                      WHOLESALE MEDICINE DISTRIBUTORS • BENACHITY, DURGAPUR - 713213
+                    <p
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "var(--text-secondary)",
+                      }}
+                    >
+                      WHOLESALE MEDICINE DISTRIBUTORS • BENACHITY, DURGAPUR -
+                      713213
                     </p>
-                    <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                      GSTIN: <strong>19BKMPG6092H1ZO</strong> | D.L. No: <strong>BUR-20B-11422 / 21B-11422</strong> | Phone: 9614081313
+                    <p
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      GSTIN: <strong>19BKMPG6092H1ZO</strong> | D.L. No:{" "}
+                      <strong>BUR-20B-11422 / 21B-11422</strong> | Phone:
+                      9614081313
                     </p>
                   </div>
                   <div style={{ textAlign: "right" }}>
-                    <span className="badge badge-primary" style={{ fontSize: "0.85rem", padding: "0.3rem 0.6rem" }}>
+                    <span
+                      className="badge badge-primary"
+                      style={{ fontSize: "0.85rem", padding: "0.3rem 0.6rem" }}
+                    >
                       TAX INVOICE
                     </span>
-                    <p style={{ fontWeight: 800, fontSize: "1.1rem", marginTop: "0.3rem" }}>
+                    <p
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "1.1rem",
+                        marginTop: "0.3rem",
+                      }}
+                    >
                       {selectedInvoice.invoiceNumber}
                     </p>
-                    <p style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
+                    <p
+                      style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}
+                    >
                       Date: {selectedInvoice.date}
                     </p>
                   </div>
@@ -2040,7 +2956,14 @@ export default function InvoicesPage() {
               </div>
               <button
                 onClick={() => setSelectedInvoice(null)}
-                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", marginLeft: "1rem", color: "var(--text-secondary)" }}
+                style={{
+                  background: "none",
+                  border: "none",
+                  fontSize: "1.5rem",
+                  cursor: "pointer",
+                  marginLeft: "1rem",
+                  color: "var(--text-secondary)",
+                }}
                 aria-label="Close modal"
               >
                 ✕
@@ -2061,23 +2984,57 @@ export default function InvoicesPage() {
               }}
             >
               <div>
-                <p style={{ fontWeight: 700, color: "var(--color-primary-700)", textTransform: "uppercase" }}>Billed To:</p>
-                <p style={{ fontWeight: 700, fontSize: "0.95rem" }}>{selectedInvoice.customerName}</p>
+                <p
+                  style={{
+                    fontWeight: 700,
+                    color: "var(--color-primary-700)",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Billed To:
+                </p>
+                <p style={{ fontWeight: 700, fontSize: "0.95rem" }}>
+                  {selectedInvoice.customerName}
+                </p>
                 <p>{selectedInvoice.customerAddress}</p>
-                <p>GSTIN: <strong>{selectedInvoice.customerGstin}</strong></p>
-                <p>Drug Lic: <strong>{selectedInvoice.customerDl}</strong></p>
+                <p>
+                  GSTIN: <strong>{selectedInvoice.customerGstin}</strong>
+                </p>
+                <p>
+                  Drug Lic: <strong>{selectedInvoice.customerDl}</strong>
+                </p>
               </div>
               <div>
-                <p style={{ fontWeight: 700, color: "var(--color-primary-700)", textTransform: "uppercase" }}>Dispatch Details:</p>
-                <p>Order Reference: <strong>{selectedInvoice.orderNumber}</strong></p>
-                <p>Payment Term: <strong>Credit (15 Days)</strong></p>
-                <p>Mode: <strong>Local Delivery Van</strong></p>
-                <p>Place of Supply: <strong>West Bengal (19)</strong></p>
+                <p
+                  style={{
+                    fontWeight: 700,
+                    color: "var(--color-primary-700)",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Dispatch Details:
+                </p>
+                <p>
+                  Order Reference:{" "}
+                  <strong>{selectedInvoice.orderNumber}</strong>
+                </p>
+                <p>
+                  Payment Term: <strong>Credit (15 Days)</strong>
+                </p>
+                <p>
+                  Mode: <strong>Local Delivery Van</strong>
+                </p>
+                <p>
+                  Place of Supply: <strong>West Bengal (19)</strong>
+                </p>
               </div>
             </div>
 
             {/* Line Items Table */}
-            <div className="table-wrapper" style={{ marginBottom: "var(--space-4)" }}>
+            <div
+              className="table-wrapper"
+              style={{ marginBottom: "var(--space-4)" }}
+            >
               <table className="table" style={{ fontSize: "0.75rem" }}>
                 <thead>
                   <tr>
@@ -2105,7 +3062,9 @@ export default function InvoicesPage() {
                       <td style={{ fontWeight: 700 }}>{ln.name}</td>
                       <td>{ln.pack}</td>
                       <td>{ln.hsn}</td>
-                      <td><code>{ln.batch}</code></td>
+                      <td>
+                        <code>{ln.batch}</code>
+                      </td>
                       <td>{ln.exp}</td>
                       <td style={{ fontWeight: 700 }}>{ln.qty}</td>
                       <td>{ln.free > 0 ? `+${ln.free}` : "0"}</td>
@@ -2115,7 +3074,12 @@ export default function InvoicesPage() {
                       <td>₹{ln.taxable.toFixed(2)}</td>
                       <td>₹{ln.sgst.toFixed(2)}</td>
                       <td>₹{ln.cgst.toFixed(2)}</td>
-                      <td style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+                      <td
+                        style={{
+                          fontWeight: 700,
+                          color: "var(--color-primary-700)",
+                        }}
+                      >
                         ₹{ln.total.toFixed(2)}
                       </td>
                     </tr>
@@ -2126,37 +3090,95 @@ export default function InvoicesPage() {
 
             {/* Summary Box */}
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <div style={{ width: "320px", fontSize: "0.85rem", background: "var(--bg-secondary)", padding: "var(--space-4)", borderRadius: "var(--radius-md)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+              <div
+                style={{
+                  width: "320px",
+                  fontSize: "0.85rem",
+                  background: "var(--bg-secondary)",
+                  padding: "var(--space-4)",
+                  borderRadius: "var(--radius-md)",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "0.25rem",
+                  }}
+                >
                   <span>Gross Value:</span>
                   <span>₹{selectedInvoice.subtotal.toFixed(2)}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem", color: "var(--color-error)" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "0.25rem",
+                    color: "var(--color-error)",
+                  }}
+                >
                   <span>Wholesale Discount:</span>
                   <span>-₹{selectedInvoice.totalDiscount.toFixed(2)}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem", fontWeight: 600 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "0.25rem",
+                    fontWeight: 600,
+                  }}
+                >
                   <span>Taxable Amount:</span>
                   <span>₹{selectedInvoice.taxableValue.toFixed(2)}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "0.25rem",
+                  }}
+                >
                   <span>SGST (2.5%):</span>
                   <span>₹{selectedInvoice.sgst.toFixed(2)}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginBottom: "0.5rem",
+                  }}
+                >
                   <span>CGST (2.5%):</span>
                   <span>₹{selectedInvoice.cgst.toFixed(2)}</span>
                 </div>
-                <div style={{ borderTop: "2px solid var(--border-color)", paddingTop: "0.5rem", display: "flex", justifyContent: "space-between", fontWeight: 800, fontSize: "1.1rem", color: "var(--color-primary-700)" }}>
+                <div
+                  style={{
+                    borderTop: "2px solid var(--border-color)",
+                    paddingTop: "0.5rem",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontWeight: 800,
+                    fontSize: "1.1rem",
+                    color: "var(--color-primary-700)",
+                  }}
+                >
                   <span>Grand Total:</span>
                   <span>₹{selectedInvoice.grandTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "var(--space-6)" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: "var(--space-6)",
+              }}
+            >
               <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                Certified that the particulars given above are true and correct. E. &amp; O.E.
+                Certified that the particulars given above are true and correct.
+                E. &amp; O.E.
               </p>
               <div style={{ display: "flex", gap: "var(--space-2)" }}>
                 <button
@@ -2169,7 +3191,11 @@ export default function InvoicesPage() {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={() => alert(`Invoice ${selectedInvoice.invoiceNumber} PDF downloaded!`)}
+                  onClick={() =>
+                    alert(
+                      `Invoice ${selectedInvoice.invoiceNumber} PDF downloaded!`,
+                    )
+                  }
                 >
                   ⬇️ Download GST PDF
                 </button>

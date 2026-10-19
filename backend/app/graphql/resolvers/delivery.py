@@ -21,7 +21,6 @@ from app.db.models import (
     Payment,
     PaymentMethod,
     ShopkeeperProfile,
-    User,
     UserRole,
     LedgerEntryType,
 )
@@ -45,8 +44,16 @@ def _delivery_to_type(d: DeliveryAssignment) -> DeliveryAssignmentType:
         sk_name = d.order.shopkeeper_profile.shop_name
         sk_addr = d.order.shopkeeper_profile.shop_address
 
-    status_str = d.status.value if hasattr(d.status, "value") else (str(d.status) if d.status else DeliveryStatus.ASSIGNED.value)
-    f_reason = d.failure_reason.value if hasattr(d.failure_reason, "value") else (str(d.failure_reason) if d.failure_reason else None)
+    status_str = (
+        d.status.value
+        if hasattr(d.status, "value")
+        else (str(d.status) if d.status else DeliveryStatus.ASSIGNED.value)
+    )
+    f_reason = (
+        d.failure_reason.value
+        if hasattr(d.failure_reason, "value")
+        else (str(d.failure_reason) if d.failure_reason else None)
+    )
 
     return DeliveryAssignmentType(
         id=d.id,
@@ -81,20 +88,23 @@ class DeliveryQuery:
         """Get deliveries assigned to delivery boy (self-filtered for delivery staff; Admin can specify)."""
         user_id_str, role = _get_caller(info)
         async with async_session_factory() as session:
-            query = (
-                select(DeliveryAssignment)
-                .options(
-                    selectinload(DeliveryAssignment.order),
-                )
+            query = select(DeliveryAssignment).options(
+                selectinload(DeliveryAssignment.order),
             )
 
             if role == UserRole.DELIVERY.value:
-                query = query.where(DeliveryAssignment.delivery_boy_id == uuid.UUID(user_id_str))
+                query = query.where(
+                    DeliveryAssignment.delivery_boy_id == uuid.UUID(user_id_str)
+                )
             elif role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
                 if delivery_boy_id:
-                    query = query.where(DeliveryAssignment.delivery_boy_id == delivery_boy_id)
+                    query = query.where(
+                        DeliveryAssignment.delivery_boy_id == delivery_boy_id
+                    )
             else:
-                raise Exception("Permission denied: You cannot view delivery assignments.")
+                raise Exception(
+                    "Permission denied: You cannot view delivery assignments."
+                )
 
             if status:
                 query = query.where(DeliveryAssignment.status == status)
@@ -114,19 +124,29 @@ class DeliveryQuery:
         user_id_str, role = _get_caller(info)
         if role == UserRole.DELIVERY.value:
             target_id = uuid.UUID(user_id_str)
-        elif role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value, UserRole.WAREHOUSE.value):
+        elif role in (
+            UserRole.SUPER_ADMIN.value,
+            UserRole.ADMIN.value,
+            UserRole.WAREHOUSE.value,
+        ):
             target_id = delivery_boy_id or uuid.UUID(user_id_str)
         else:
             raise Exception("Permission denied: Cannot view delivery shift summaries.")
 
         async with async_session_factory() as session:
             result = await session.execute(
-                select(DeliveryAssignment).where(DeliveryAssignment.delivery_boy_id == target_id)
+                select(DeliveryAssignment).where(
+                    DeliveryAssignment.delivery_boy_id == target_id
+                )
             )
             assignments = result.scalars().all()
             total_assigned = len(assignments)
-            total_delivered = sum(1 for a in assignments if a.status == DeliveryStatus.DELIVERED)
-            total_failed = sum(1 for a in assignments if a.status == DeliveryStatus.FAILED)
+            total_delivered = sum(
+                1 for a in assignments if a.status == DeliveryStatus.DELIVERED
+            )
+            total_failed = sum(
+                1 for a in assignments if a.status == DeliveryStatus.FAILED
+            )
             cash_col = sum(float(a.cash_collected or 0.0) for a in assignments)
             upi_col = sum(float(a.upi_collected or 0.0) for a in assignments)
             total_col = cash_col + upi_col
@@ -149,7 +169,11 @@ class DeliveryQuery:
     ) -> list[DeliveryRosterType]:
         """View delivery driver shift and route rosters."""
         user_id_str, role = _get_caller(info)
-        target_id = uuid.UUID(user_id_str) if role == UserRole.DELIVERY.value else delivery_boy_id
+        target_id = (
+            uuid.UUID(user_id_str)
+            if role == UserRole.DELIVERY.value
+            else delivery_boy_id
+        )
 
         async with async_session_factory() as session:
             q = select(DeliveryRoster)
@@ -200,7 +224,9 @@ class DeliveryMutation:
 
             # Check if assignment already exists
             existing = await session.execute(
-                select(DeliveryAssignment).where(DeliveryAssignment.order_id == order_id)
+                select(DeliveryAssignment).where(
+                    DeliveryAssignment.order_id == order_id
+                )
             )
             assignment = existing.scalar_one_or_none()
             # Generate 4-digit OTP for secure handover
@@ -239,16 +265,19 @@ class DeliveryMutation:
         user_id_str, role = _get_caller(info)
         async with async_session_factory() as session:
             result = await session.execute(
-                select(DeliveryAssignment).where(
-                    DeliveryAssignment.id == assignment_id
-                )
+                select(DeliveryAssignment).where(DeliveryAssignment.id == assignment_id)
             )
             assignment = result.scalar_one_or_none()
             if not assignment:
                 raise Exception("Delivery assignment not found")
 
-            if role == UserRole.DELIVERY.value and assignment.delivery_boy_id != uuid.UUID(user_id_str):
-                raise Exception("Permission denied: You can only update your own assigned deliveries.")
+            if (
+                role == UserRole.DELIVERY.value
+                and assignment.delivery_boy_id != uuid.UUID(user_id_str)
+            ):
+                raise Exception(
+                    "Permission denied: You can only update your own assigned deliveries."
+                )
 
             new_status = DeliveryStatus(status)
             assignment.status = new_status
@@ -287,12 +316,22 @@ class DeliveryMutation:
             if not assignment:
                 raise Exception("Delivery assignment not found")
 
-            if role == UserRole.DELIVERY.value and assignment.delivery_boy_id != uuid.UUID(user_id_str):
-                raise Exception("Permission denied: You can only complete your own assigned deliveries.")
+            if (
+                role == UserRole.DELIVERY.value
+                and assignment.delivery_boy_id != uuid.UUID(user_id_str)
+            ):
+                raise Exception(
+                    "Permission denied: You can only complete your own assigned deliveries."
+                )
 
             # Verify OTP
-            if not assignment.delivery_otp or assignment.delivery_otp != input.otp.strip():
-                raise Exception("Invalid Delivery OTP. Please request the 4-digit OTP from the shopkeeper.")
+            if (
+                not assignment.delivery_otp
+                or assignment.delivery_otp != input.otp.strip()
+            ):
+                raise Exception(
+                    "Invalid Delivery OTP. Please request the 4-digit OTP from the shopkeeper."
+                )
 
             now = datetime.now(timezone.utc)
             assignment.status = DeliveryStatus.DELIVERED
@@ -313,7 +352,9 @@ class DeliveryMutation:
 
                 # Ledger balance update
                 sk_result = await session.execute(
-                    select(ShopkeeperProfile).where(ShopkeeperProfile.user_id == order.shopkeeper_id)
+                    select(ShopkeeperProfile).where(
+                        ShopkeeperProfile.user_id == order.shopkeeper_id
+                    )
                 )
                 sk = sk_result.scalar_one_or_none()
                 if sk:
@@ -331,10 +372,16 @@ class DeliveryMutation:
                     )
 
                     # Deduct any COD collected at doorstep
-                    total_collected = float(input.cash_collected) + float(input.upi_collected)
+                    total_collected = float(input.cash_collected) + float(
+                        input.upi_collected
+                    )
                     if total_collected > 0:
                         new_out = max(0.0, new_out - total_collected)
-                        method = PaymentMethod.UPI if input.upi_collected > 0 else PaymentMethod.CASH
+                        method = (
+                            PaymentMethod.UPI
+                            if input.upi_collected > 0
+                            else PaymentMethod.CASH
+                        )
                         payment = Payment(
                             order_id=order.id,
                             shopkeeper_id=order.shopkeeper_id,
@@ -351,7 +398,8 @@ class DeliveryMutation:
                             entry_type=LedgerEntryType.CREDIT,
                             amount=total_collected,
                             balance_after=new_out,
-                            reference_number=input.payment_reference or f"COD-{order.order_number}",
+                            reference_number=input.payment_reference
+                            or f"COD-{order.order_number}",
                             description=f"Doorstep COD Collection ({method.value}) for {order.order_number}",
                         )
 
@@ -379,8 +427,13 @@ class DeliveryMutation:
             if not assignment:
                 raise Exception("Delivery assignment not found")
 
-            if role == UserRole.DELIVERY.value and assignment.delivery_boy_id != uuid.UUID(user_id_str):
-                raise Exception("Permission denied: You can only report exceptions for your own deliveries.")
+            if (
+                role == UserRole.DELIVERY.value
+                and assignment.delivery_boy_id != uuid.UUID(user_id_str)
+            ):
+                raise Exception(
+                    "Permission denied: You can only report exceptions for your own deliveries."
+                )
 
             assignment.status = DeliveryStatus.FAILED
             assignment.failure_reason = NonDeliveryReason(input.reason)
@@ -406,7 +459,12 @@ class DeliveryMutation:
     ) -> bool:
         """Warehouse cashier acknowledges and receipts cash collection from delivery partner."""
         _, role = _get_caller(info)
-        if role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value, UserRole.WAREHOUSE.value):
-            raise Exception("Permission denied: Only Admin or Warehouse Cashier can reconcile handovers.")
+        if role not in (
+            UserRole.SUPER_ADMIN.value,
+            UserRole.ADMIN.value,
+            UserRole.WAREHOUSE.value,
+        ):
+            raise Exception(
+                "Permission denied: Only Admin or Warehouse Cashier can reconcile handovers."
+            )
         return True
-

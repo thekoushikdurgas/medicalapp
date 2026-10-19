@@ -12,9 +12,7 @@ from sqlalchemy.orm import selectinload
 
 from app.db.models import (
     Order,
-    OrderItem,
     OrderStatus,
-    Product,
     StockBatch,
     ShopkeeperProfile,
     UserRole,
@@ -114,7 +112,9 @@ class OrderQuery:
             order = result.scalar_one_or_none()
             if not order:
                 raise Exception("Order not found")
-            if role == UserRole.SHOPKEEPER.value and order.shopkeeper_id != uuid.UUID(user_id_str):
+            if role == UserRole.SHOPKEEPER.value and order.shopkeeper_id != uuid.UUID(
+                user_id_str
+            ):
                 raise Exception("Order not found")
             return _order_to_type(order)
 
@@ -124,18 +124,23 @@ class OrderQuery:
         _get_caller(info)
         async with async_session_factory() as session:
             from datetime import date, timedelta
+
             total_q = select(func.count(Order.id))
             total_orders = (await session.execute(total_q)).scalar() or 0
 
             pending_q = select(func.count(Order.id)).where(
-                Order.status.in_([OrderStatus.PLACED, OrderStatus.CONFIRMED, OrderStatus.PICKING])
+                Order.status.in_(
+                    [OrderStatus.PLACED, OrderStatus.CONFIRMED, OrderStatus.PICKING]
+                )
             )
             pending_orders = (await session.execute(pending_q)).scalar() or 0
 
-            today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
-            today_sales_q = select(func.coalesce(func.sum(Order.net_amount), 0.0)).where(
-                Order.placed_at >= today_start
+            today_start = datetime.now(timezone.utc).replace(
+                hour=0, minute=0, second=0, microsecond=0
             )
+            today_sales_q = select(
+                func.coalesce(func.sum(Order.net_amount), 0.0)
+            ).where(Order.placed_at >= today_start)
             today_sales = float((await session.execute(today_sales_q)).scalar() or 0.0)
 
             low_stock_q = select(func.count(StockBatch.id)).where(
@@ -149,7 +154,9 @@ class OrderQuery:
             )
             expiring = (await session.execute(exp_q)).scalar() or 0
 
-            out_q = select(func.coalesce(func.sum(ShopkeeperProfile.outstanding_balance), 0.0))
+            out_q = select(
+                func.coalesce(func.sum(ShopkeeperProfile.outstanding_balance), 0.0)
+            )
             outstanding = float((await session.execute(out_q)).scalar() or 0.0)
 
             return DashboardStats(
@@ -174,7 +181,9 @@ class OrderMutation:
             actual_sk_id = uuid.UUID(user_id_str)
         elif role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
             if not shopkeeper_id:
-                raise Exception("Shopkeeper ID is required when placing order as Admin.")
+                raise Exception(
+                    "Shopkeeper ID is required when placing order as Admin."
+                )
             actual_sk_id = shopkeeper_id
         else:
             raise Exception("Permission denied: You cannot place wholesale orders.")
@@ -199,7 +208,9 @@ class OrderMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: Only Admin or Warehouse Staff can confirm orders.")
+            raise Exception(
+                "Permission denied: Only Admin or Warehouse Staff can confirm orders."
+            )
 
         confirmed_by = uuid.UUID(user_id_str)
         async with async_session_factory() as session:
@@ -223,7 +234,9 @@ class OrderMutation:
             UserRole.ADMIN.value,
             UserRole.WAREHOUSE.value,
         ):
-            raise Exception("Permission denied: Only Admin or Warehouse Staff can update order status.")
+            raise Exception(
+                "Permission denied: Only Admin or Warehouse Staff can update order status."
+            )
 
         async with async_session_factory() as session:
             new_status = OrderStatus(status)
@@ -256,7 +269,9 @@ class OrderMutation:
                         f"Shopkeeper cannot cancel order in '{target_order.status.value}' status. Please contact support."
                     )
             elif role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
-                raise Exception("Permission denied: You are not authorized to cancel orders.")
+                raise Exception(
+                    "Permission denied: You are not authorized to cancel orders."
+                )
 
             order = await order_service.cancel_order(
                 session=session,
@@ -272,7 +287,9 @@ class OrderMutation:
         """Rate a delivered order (1-5 stars) and submit qualitative feedback."""
         user_id_str, role = _get_caller(info)
         if role != UserRole.SHOPKEEPER.value:
-            raise Exception("Permission denied: Only the ordering shopkeeper can rate this delivery.")
+            raise Exception(
+                "Permission denied: Only the ordering shopkeeper can rate this delivery."
+            )
 
         if input.rating < 1 or input.rating > 5:
             raise Exception("Rating must be between 1 and 5 stars.")
@@ -300,26 +317,28 @@ class OrderMutation:
             return _order_to_type(order)
 
     @strawberry.mutation
-    async def dispute_delivery(self, info: Info, order_id: uuid.UUID, reason: str) -> OrderType:
+    async def dispute_delivery(
+        self, info: Info, order_id: uuid.UUID, reason: str
+    ) -> OrderType:
         """Report delivery dispute / mis-delivered order for administrative investigation."""
         user_id_str, role = _get_caller(info)
         if role != UserRole.SHOPKEEPER.value:
-            raise Exception("Permission denied: Only the ordering chemist can dispute delivery.")
+            raise Exception(
+                "Permission denied: Only the ordering chemist can dispute delivery."
+            )
 
         async with async_session_factory() as session:
-            result = await session.execute(
-                select(Order).where(Order.id == order_id)
-            )
+            result = await session.execute(select(Order).where(Order.id == order_id))
             order = result.scalar_one_or_none()
             if not order:
                 raise Exception("Order not found")
 
             if order.shopkeeper_id != uuid.UUID(user_id_str):
-                raise Exception("Permission denied: You can only dispute your own orders.")
+                raise Exception(
+                    "Permission denied: You can only dispute your own orders."
+                )
 
             order.remarks = f"[DISPUTED DELIVERY: {reason}] - {order.remarks or ''}"
             await session.commit()
             await session.refresh(order)
             return _order_to_type(order)
-
-

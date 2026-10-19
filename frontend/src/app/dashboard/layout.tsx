@@ -29,7 +29,9 @@ export default function DashboardLayout({
         Skip to main content
       </a>
 
-      <div style={{ display: "flex", minHeight: "100vh", position: "relative" }}>
+      <div
+        style={{ display: "flex", minHeight: "100vh", position: "relative" }}
+      >
         {/* Backdrop for mobile drawer */}
         <div
           className={`sidebar-overlay ${mobileDrawerOpen ? "visible" : ""}`}
@@ -46,7 +48,15 @@ export default function DashboardLayout({
         />
 
         {/* Main Content & Top Navbar Column */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, minHeight: "100vh" }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            minWidth: 0,
+            minHeight: "100vh",
+          }}
+        >
           {/* Top Enterprise Dashboard Navbar */}
           <DashboardNavbar
             onToggleSidebar={handleToggleSidebar}

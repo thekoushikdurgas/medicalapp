@@ -1,7 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { CheckCircle2, Clock, Package, Truck, FileCheck, ArrowRight } from "lucide-react";
+import {
+  CheckCircle2,
+  Clock,
+  Package,
+  Truck,
+  FileCheck,
+  ArrowRight,
+} from "lucide-react";
 
 // ── 1. Interactive Trend Area Chart ──────────────────────────────
 
@@ -46,7 +53,8 @@ export function TrendAreaChart({
   const points = data.map((d, i) => {
     const x = paddingX + (i / (data.length - 1)) * (width - paddingX * 2);
     const y =
-      paddingTop + (1 - (d.value - minVal) / range) * (height - paddingTop - paddingBottom);
+      paddingTop +
+      (1 - (d.value - minVal) / range) * (height - paddingTop - paddingBottom);
     return { x, y, ...d };
   });
 
@@ -65,7 +73,8 @@ export function TrendAreaChart({
     height - paddingBottom
   } L ${points[0].x},${height - paddingBottom} Z`;
 
-  const activePoint = hoveredIndex !== null ? points[hoveredIndex] : points[points.length - 1];
+  const activePoint =
+    hoveredIndex !== null ? points[hoveredIndex] : points[points.length - 1];
 
   return (
     <div
@@ -110,7 +119,13 @@ export function TrendAreaChart({
             {title}
           </h3>
           {subtitle && (
-            <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-muted)", marginTop: "2px" }}>
+            <p
+              style={{
+                fontSize: "var(--font-size-xs)",
+                color: "var(--text-muted)",
+                marginTop: "2px",
+              }}
+            >
               {subtitle}
             </p>
           )}
@@ -126,7 +141,9 @@ export function TrendAreaChart({
               border: "1px solid var(--border-color)",
             }}
           >
-            <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{activePoint.label}</div>
+            <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>
+              {activePoint.label}
+            </div>
             <div style={{ fontSize: "1.1rem", fontWeight: 800, color: color }}>
               {valuePrefix}
               {activePoint.value.toLocaleString("en-IN")}
@@ -232,7 +249,8 @@ export function TrendAreaChart({
 
 // ── 2. Order Fulfillment Flow Graph ──────────────────────────────
 
-export type FlowStep = "PLACED" | "CONFIRMED" | "PICKING" | "DISPATCHED" | "DELIVERED";
+export type FlowStep =
+  "PLACED" | "CONFIRMED" | "PICKING" | "DISPATCHED" | "DELIVERED";
 
 interface OrderFlowTimelineProps {
   currentStep: FlowStep;
@@ -240,12 +258,42 @@ interface OrderFlowTimelineProps {
   orderDate?: string;
 }
 
-const FLOW_STEPS: { key: FlowStep; label: string; icon: React.ReactNode; desc: string }[] = [
-  { key: "PLACED", label: "Order Placed", icon: <Clock size={16} />, desc: "Shopkeeper placed via portal" },
-  { key: "CONFIRMED", label: "Confirmed", icon: <FileCheck size={16} />, desc: "Credit & GST check passed" },
-  { key: "PICKING", label: "Warehouse Picking", icon: <Package size={16} />, desc: "FEFO batch allocation" },
-  { key: "DISPATCHED", label: "Dispatched", icon: <Truck size={16} />, desc: "Assigned to delivery agent" },
-  { key: "DELIVERED", label: "Delivered", icon: <CheckCircle2 size={16} />, desc: "OTP verification complete" },
+const FLOW_STEPS: {
+  key: FlowStep;
+  label: string;
+  icon: React.ReactNode;
+  desc: string;
+}[] = [
+  {
+    key: "PLACED",
+    label: "Order Placed",
+    icon: <Clock size={16} />,
+    desc: "Shopkeeper placed via portal",
+  },
+  {
+    key: "CONFIRMED",
+    label: "Confirmed",
+    icon: <FileCheck size={16} />,
+    desc: "Credit & GST check passed",
+  },
+  {
+    key: "PICKING",
+    label: "Warehouse Picking",
+    icon: <Package size={16} />,
+    desc: "FEFO batch allocation",
+  },
+  {
+    key: "DISPATCHED",
+    label: "Dispatched",
+    icon: <Truck size={16} />,
+    desc: "Assigned to delivery agent",
+  },
+  {
+    key: "DELIVERED",
+    label: "Delivered",
+    icon: <CheckCircle2 size={16} />,
+    desc: "OTP verification complete",
+  },
 ];
 
 export function OrderFlowTimeline({
@@ -289,7 +337,13 @@ export function OrderFlowTimeline({
             <span>Fulfillment Pipeline Flow</span>
             <span className="badge badge-primary">{orderNumber}</span>
           </h3>
-          <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-muted)", marginTop: "2px" }}>
+          <p
+            style={{
+              fontSize: "var(--font-size-xs)",
+              color: "var(--text-muted)",
+              marginTop: "2px",
+            }}
+          >
             Real-time live status tracking • {orderDate}
           </p>
         </div>
@@ -335,19 +389,21 @@ export function OrderFlowTimeline({
                     background: isDone
                       ? "var(--color-primary-600)"
                       : isCurrent
-                      ? "var(--color-primary-50)"
-                      : "var(--color-gray-100)",
+                        ? "var(--color-primary-50)"
+                        : "var(--color-gray-100)",
                     color: isDone
                       ? "#ffffff"
                       : isCurrent
-                      ? "var(--color-primary-700)"
-                      : "var(--text-muted)",
+                        ? "var(--color-primary-700)"
+                        : "var(--text-muted)",
                     border: isCurrent
                       ? "2px solid var(--color-primary-600)"
                       : isDone
-                      ? "none"
-                      : "1px solid var(--border-color)",
-                    boxShadow: isCurrent ? "0 0 0 4px var(--color-primary-100)" : "none",
+                        ? "none"
+                        : "1px solid var(--border-color)",
+                    boxShadow: isCurrent
+                      ? "0 0 0 4px var(--color-primary-100)"
+                      : "none",
                     transition: "all var(--transition-base)",
                   }}
                 >
@@ -361,8 +417,8 @@ export function OrderFlowTimeline({
                     color: isCurrent
                       ? "var(--color-primary-700)"
                       : isDone
-                      ? "var(--text-primary)"
-                      : "var(--text-muted)",
+                        ? "var(--text-primary)"
+                        : "var(--text-muted)",
                     marginBottom: "2px",
                   }}
                 >
@@ -387,7 +443,10 @@ export function OrderFlowTimeline({
                     flex: 1,
                     height: "2px",
                     marginTop: "1.375rem",
-                    background: idx < currentIndex ? "var(--color-primary-600)" : "var(--border-color)",
+                    background:
+                      idx < currentIndex
+                        ? "var(--color-primary-600)"
+                        : "var(--border-color)",
                     transition: "background var(--transition-slow)",
                     position: "relative",
                   }}
