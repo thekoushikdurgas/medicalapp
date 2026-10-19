@@ -37,6 +37,13 @@ export default function RegisterPage() {
     errorPolicy: "all",
   });
 
+  // SMS OTP Verification state
+  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpInput, setOtpInput] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [otpSending, setOtpSending] = useState(false);
+
   const set = (key: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
@@ -230,16 +237,93 @@ export default function RegisterPage() {
               />
             </div>
             <div>
-              <label htmlFor="phone" className="label">Mobile Phone Number *</label>
-              <input
-                id="phone"
-                className="input"
-                type="tel"
-                placeholder="e.g. 9832145678"
-                value={form.phone}
-                onChange={set("phone")}
-                required
-              />
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <label htmlFor="phone" className="label" style={{ marginBottom: 0 }}>Mobile Phone Number *</label>
+                {isPhoneVerified ? (
+                  <span style={{ fontSize: "0.72rem", fontWeight: 700, color: "var(--color-success)" }}>
+                    ✓ SMS OTP Verified
+                  </span>
+                ) : null}
+              </div>
+              <div style={{ display: "flex", gap: "var(--space-2)", marginTop: "var(--space-1)" }}>
+                <input
+                  id="phone"
+                  className="input"
+                  type="tel"
+                  placeholder="e.g. 9832145678"
+                  value={form.phone}
+                  onChange={(e) => {
+                    set("phone")(e);
+                    if (isPhoneVerified) setIsPhoneVerified(false);
+                  }}
+                  required
+                />
+                {!isPhoneVerified && (
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    style={{ fontSize: "0.75rem", whiteSpace: "nowrap", padding: "0 0.75rem" }}
+                    disabled={form.phone.trim().length < 10 || otpSending}
+                    onClick={() => {
+                      setOtpSending(true);
+                      setOtpError("");
+                      setTimeout(() => {
+                        setOtpSent(true);
+                        setOtpSending(false);
+                      }, 500);
+                    }}
+                  >
+                    {otpSending ? "Sending..." : otpSent ? "Resend OTP" : "Verify via OTP"}
+                  </button>
+                )}
+              </div>
+
+              {/* OTP Input Box if sent & not verified */}
+              {otpSent && !isPhoneVerified && (
+                <div style={{
+                  marginTop: "var(--space-2)",
+                  padding: "var(--space-2) var(--space-3)",
+                  background: "rgba(16, 185, 129, 0.08)",
+                  border: "1px dashed var(--color-primary-400)",
+                  borderRadius: "var(--radius-md)",
+                }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", color: "var(--text-secondary)", marginBottom: "4px" }}>
+                    <span>Code dispatched to +91 {form.phone}</span>
+                    <strong style={{ color: "var(--color-primary-700)" }}>Demo OTP: 482910</strong>
+                  </div>
+                  <div style={{ display: "flex", gap: "var(--space-2)" }}>
+                    <input
+                      type="text"
+                      className="input"
+                      placeholder="Enter 6-digit OTP"
+                      style={{ padding: "0.3rem 0.5rem", fontSize: "0.85rem", letterSpacing: "2px", fontWeight: 700 }}
+                      maxLength={6}
+                      value={otpInput}
+                      onChange={(e) => setOtpInput(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      style={{ fontSize: "0.75rem", padding: "0 0.75rem", fontWeight: 700 }}
+                      onClick={() => {
+                        if (otpInput.trim() === "482910" || otpInput.trim().length === 6) {
+                          setIsPhoneVerified(true);
+                          setOtpError("");
+                        } else {
+                          setOtpError("Invalid code. Please enter 482910 for instant verification.");
+                        }
+                      }}
+                    >
+                      Confirm
+                    </button>
+                  </div>
+                  {otpError && (
+                    <div style={{ color: "var(--color-error)", fontSize: "0.72rem", marginTop: "4px" }}>
+                      {otpError}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 

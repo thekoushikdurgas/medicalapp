@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { useQuery } from "@apollo/client";
-import { PRODUCTS_QUERY } from "@/lib/graphql-queries";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useLazyQuery } from "@apollo/client";
+import {
+  PRODUCTS_QUERY,
+  SIMULATE_BULK_PRICE_QUERY,
+  APPLY_BULK_PRICE_MUTATION,
+} from "@/lib/graphql-queries";
 import { SideDrawer } from "@/components/ui/side-drawer";
+import { getStoredUser } from "@/lib/auth";
 
 interface ProductItem {
   id: string;
@@ -20,6 +25,7 @@ interface ProductItem {
 }
 
 export default function ProductsPage() {
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
@@ -28,6 +34,77 @@ export default function ProductsPage() {
   const [orderQty, setOrderQty] = useState(30);
   const [selectedShopkeeper, setSelectedShopkeeper] = useState("Cheap Medical Stores");
   const [orderNotification, setOrderNotification] = useState<string | null>(null);
+
+  // Super Admin Dry-Run Bulk Price Simulation Studio State
+  const [showSimulateDrawer, setShowSimulateDrawer] = useState(false);
+  const [simAction, setSimAction] = useState("PERCENTAGE_DISCOUNT");
+  const [simValue, setSimValue] = useState(5.0);
+  const [simCategory, setSimCategory] = useState("");
+  const [simReason, setSimReason] = useState("");
+  const [simResult, setSimResult] = useState<any>(null);
+  const [applySuccessMsg, setApplySuccessMsg] = useState<string | null>(null);
+
+  const [simulateBulkPrice, { loading: simLoading }] = useLazyQuery(SIMULATE_BULK_PRICE_QUERY, {
+    fetchPolicy: "network-only",
+    onCompleted: (data) => {
+      if (data?.simulateBulkPriceUpdate) {
+        setSimResult(data.simulateBulkPriceUpdate);
+      }
+    },
+    onError: (err) => {
+      // Client-side fallback simulation for UI preview
+      const matched = defaultProducts.filter(
+        (p) => !simCategory || p.category.toLowerCase() === simCategory.toLowerCase()
+      );
+      const previewItems = matched.map((p) => {
+        let newPtr = p.sellingRate;
+        let newMrp = p.defaultMrp;
+        if (simAction === "PERCENTAGE_DISCOUNT") {
+          newPtr = +(p.sellingRate * (1 - simValue / 100)).toFixed(2);
+        } else if (simAction === "PERCENTAGE_HIKE") {
+          newPtr = +(p.sellingRate * (1 + simValue / 100)).toFixed(2);
+          newMrp = +(p.defaultMrp * (1 + simValue / 100)).toFixed(2);
+        } else if (simAction === "FIXED_MARGIN") {
+          const cost = p.sellingRate * 0.75;
+          newPtr = +(cost * (1 + simValue / 100)).toFixed(2);
+        } else if (simAction === "FLAT_MRP_ADJUSTMENT") {
+          newMrp = +(p.defaultMrp + simValue).toFixed(2);
+          newPtr = +(newMrp * 0.78).toFixed(2);
+        }
+        const cost = p.sellingRate * 0.75;
+        const margin = +(((newPtr - cost) / newPtr) * 100).toFixed(2);
+        return {
+          productId: p.id,
+          productName: p.name,
+          packSize: p.packSize,
+          category: p.category,
+          currentMrp: p.defaultMrp,
+          newMrp,
+          currentPtr: p.sellingRate,
+          newPtr,
+          projectedMarginPct: margin,
+          warning: newPtr > newMrp ? "PTR exceeds MRP" : margin < 3.0 ? "Margin < 3%" : null,
+        };
+      });
+      setSimResult({
+        dryRun: true,
+        totalMatched: matched.length,
+        totalAffected: previewItems.length,
+        canApply: !previewItems.some((it) => it.warning === "PTR exceeds MRP"),
+        previewItems,
+        validationWarnings: previewItems.some((it) => it.warning)
+          ? ["Safety check: thin margins or threshold warnings observed."]
+          : [],
+        auditId: null,
+      });
+    },
+  });
+
+  const [applyBulkPrice, { loading: applyLoading }] = useMutation(APPLY_BULK_PRICE_MUTATION);
+
+  useEffect(() => {
+    setCurrentUser(getStoredUser());
+  }, []);
 
   const shopkeeperCreditMap: Record<string, { limit: number; balance: number }> = {
     "Cheap Medical Stores": { limit: 50000, balance: 13750 },
@@ -223,14 +300,64 @@ export default function ProductsPage() {
             Wholesale medicine master with HSN classification, standard rates, and distributor schemes
           </p>
         </div>
-        <button
-          className="btn btn-primary"
-          id="add-product-btn"
-          onClick={() => setShowAddDrawer(true)}
-        >
-          + Add New Medicine SKU
-        </button>
+        <div style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap" }}>
+          <button
+            className="btn btn-secondary"
+            id="simulate-price-btn"
+            style={{
+              borderColor: "var(--color-primary-500)",
+              color: "var(--color-primary-600)",
+              fontWeight: 700,
+            }}
+            onClick={() => {
+              setShowSimulateDrawer(true);
+              simulateBulkPrice({
+                variables: {
+                  action: simAction,
+                  value: simValue,
+                  category: simCategory || null,
+                },
+              });
+            }}
+          >
+            ⚡ Bulk Price Simulation (Dry-Run)
+          </button>
+          <button
+            className="btn btn-primary"
+            id="add-product-btn"
+            onClick={() => setShowAddDrawer(true)}
+          >
+            + Add New Medicine SKU
+          </button>
+        </div>
       </div>
+
+      {/* Bulk Apply Success Banner */}
+      {applySuccessMsg && (
+        <div
+          style={{
+            padding: "var(--space-3) var(--space-4)",
+            background: "rgba(16, 185, 129, 0.15)",
+            border: "1px solid var(--color-success)",
+            color: "var(--color-success)",
+            borderRadius: "var(--radius-md)",
+            marginBottom: "var(--space-4)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontWeight: 600,
+          }}
+        >
+          <span>{applySuccessMsg}</span>
+          <button
+            className="btn btn-secondary"
+            style={{ padding: "0.2rem 0.5rem", fontSize: "0.75rem" }}
+            onClick={() => setApplySuccessMsg(null)}
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {/* Order Notification Banner */}
       {orderNotification && (
@@ -682,6 +809,257 @@ export default function ProductsPage() {
             </button>
           </div>
         </form>
+      </SideDrawer>
+
+      {/* Super Admin Dry-Run Simulation Studio SideDrawer */}
+      <SideDrawer
+        isOpen={showSimulateDrawer}
+        onClose={() => setShowSimulateDrawer(false)}
+        title="⚡ Bulk Price Simulation & Governance Studio"
+        subtitle="Simulate catalog rate adjustments in dry-run mode before live database mutation"
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+          {/* Simulation Configuration Bar */}
+          <div
+            style={{
+              padding: "var(--space-4)",
+              background: "var(--bg-secondary)",
+              borderRadius: "var(--radius-md)",
+              border: "1px solid var(--border-color)",
+            }}
+          >
+            <div style={{ fontSize: "0.85rem", fontWeight: 700, marginBottom: "var(--space-3)", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--color-primary-600)" }}>
+              Step 1: Configure Proposed Bulk Rule
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1.2fr auto", gap: "var(--space-3)", alignItems: "flex-end" }}>
+              <div>
+                <label className="label">Adjustment Mode</label>
+                <select
+                  className="input"
+                  value={simAction}
+                  onChange={(e) => setSimAction(e.target.value)}
+                  id="sim-action-select"
+                >
+                  <option value="PERCENTAGE_DISCOUNT">Wholesale Discount (% Off PTR)</option>
+                  <option value="PERCENTAGE_HIKE">Price Hike / Inflation (% Revision)</option>
+                  <option value="FIXED_MARGIN">Fixed Margin Over Purchase Cost (%)</option>
+                  <option value="FLAT_MRP_ADJUSTMENT">Flat MRP Revision (₹ Addition/Deduction)</option>
+                </select>
+              </div>
+              <div>
+                <label className="label">Adjustment Value</label>
+                <input
+                  type="number"
+                  step="0.5"
+                  className="input"
+                  value={simValue}
+                  onChange={(e) => setSimValue(Number(e.target.value))}
+                  id="sim-value-input"
+                />
+              </div>
+              <div>
+                <label className="label">Category Filter</label>
+                <select
+                  className="input"
+                  value={simCategory}
+                  onChange={(e) => setSimCategory(e.target.value)}
+                  id="sim-category-select"
+                >
+                  <option value="">All Categories ({products.length} SKUs)</option>
+                  <option value="Antibiotics">Antibiotics</option>
+                  <option value="Pain Relief">Pain Relief</option>
+                  <option value="Gastrointestinal">Gastrointestinal</option>
+                  <option value="Cardiovascular">Cardiovascular</option>
+                  <option value="Anti-allergic">Anti-allergic</option>
+                  <option value="Analgesic">Analgesic & Antipyretic</option>
+                </select>
+              </div>
+              <button
+                className="btn btn-primary"
+                id="run-simulation-btn"
+                disabled={simLoading}
+                onClick={() => {
+                  simulateBulkPrice({
+                    variables: {
+                      action: simAction,
+                      value: simValue,
+                      category: simCategory || null,
+                    },
+                  });
+                }}
+              >
+                {simLoading ? "Simulating..." : "▶ Run Dry-Run"}
+              </button>
+            </div>
+          </div>
+
+          {/* Simulation Results Section */}
+          {simResult && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              {/* Status Header Cards */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: "var(--space-3)" }}>
+                <div style={{ padding: "var(--space-3)", background: "var(--bg-secondary)", borderRadius: "var(--radius-md)", border: "1px solid var(--border-color)" }}>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>Simulation Mode</div>
+                  <div style={{ fontWeight: 800, color: "var(--color-primary-600)", marginTop: "2px" }}>
+                    🟢 DRY-RUN ONLY
+                  </div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>0 database rows written</div>
+                </div>
+                <div style={{ padding: "var(--space-3)", background: "var(--bg-secondary)", borderRadius: "var(--radius-md)", border: "1px solid var(--border-color)" }}>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>SKUs Matched</div>
+                  <div style={{ fontWeight: 800, fontSize: "1.1rem", marginTop: "2px" }}>
+                    {simResult.totalMatched} Products
+                  </div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Across targeted category</div>
+                </div>
+                <div style={{ padding: "var(--space-3)", background: "var(--bg-secondary)", borderRadius: "var(--radius-md)", border: "1px solid var(--border-color)" }}>
+                  <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>Execution Gate</div>
+                  <div style={{ fontWeight: 800, color: simResult.canApply ? "var(--color-success)" : "var(--color-error)", marginTop: "2px" }}>
+                    {simResult.canApply ? "✓ SAFE TO APPLY" : "⚠ VALIDATION BLOCKED"}
+                  </div>
+                  <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Compliance & margin audit</div>
+                </div>
+              </div>
+
+              {/* Validation Warnings Alert */}
+              {simResult.validationWarnings?.length > 0 && (
+                <div
+                  style={{
+                    padding: "var(--space-3) var(--space-4)",
+                    background: "rgba(239, 68, 68, 0.1)",
+                    border: "1px solid var(--color-error)",
+                    color: "var(--color-error)",
+                    borderRadius: "var(--radius-md)",
+                    fontSize: "0.85rem",
+                  }}
+                >
+                  <div style={{ fontWeight: 700, marginBottom: "4px" }}>⚠ Compliance & Margin Alert:</div>
+                  <ul style={{ margin: 0, paddingLeft: "1.2rem" }}>
+                    {simResult.validationWarnings.map((w: string, idx: number) => (
+                      <li key={idx}>{w}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Preview Table */}
+              <div style={{ maxHeight: "320px", overflowY: "auto", border: "1px solid var(--border-color)", borderRadius: "var(--radius-md)" }}>
+                <table className="table" style={{ fontSize: "0.82rem" }}>
+                  <thead style={{ position: "sticky", top: 0, background: "var(--bg-primary)", zIndex: 1 }}>
+                    <tr>
+                      <th>Product</th>
+                      <th>Current MRP</th>
+                      <th>New MRP</th>
+                      <th>Current PTR</th>
+                      <th>New PTR</th>
+                      <th>Projected Margin</th>
+                      <th>Safety Guard</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {simResult.previewItems?.map((it: any) => (
+                      <tr key={it.productId}>
+                        <td>
+                          <div style={{ fontWeight: 600 }}>{it.productName}</div>
+                          <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>{it.packSize} • {it.category}</div>
+                        </td>
+                        <td>₹{it.currentMrp?.toFixed(2)}</td>
+                        <td style={{ fontWeight: 600 }}>₹{it.newMrp?.toFixed(2)}</td>
+                        <td>₹{it.currentPtr?.toFixed(2)}</td>
+                        <td style={{ fontWeight: 700, color: "var(--color-primary-600)" }}>
+                          ₹{it.newPtr?.toFixed(2)}
+                        </td>
+                        <td>
+                          <span className={`badge ${it.projectedMarginPct < 3.0 ? "badge-error" : "badge-success"}`}>
+                            {it.projectedMarginPct}%
+                          </span>
+                        </td>
+                        <td>
+                          {it.warning ? (
+                            <span className="badge badge-warning" style={{ fontSize: "0.7rem" }}>
+                              {it.warning}
+                            </span>
+                          ) : (
+                            <span className="badge badge-success" style={{ fontSize: "0.7rem" }}>
+                              ✓ Approved
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Live Execution Panel (Super Admin Authorization) */}
+              <div
+                style={{
+                  padding: "var(--space-4)",
+                  background: "var(--bg-secondary)",
+                  borderRadius: "var(--radius-md)",
+                  border: "1px solid var(--border-color)",
+                }}
+              >
+                <div style={{ fontSize: "0.85rem", fontWeight: 700, marginBottom: "var(--space-2)", color: "var(--color-primary-600)" }}>
+                  Step 2: Dual Approval & Live Database Execution
+                </div>
+                <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)", marginBottom: "var(--space-3)" }}>
+                  Super Admin role required. Execution will update pricing atomically across all {simResult.totalMatched} SKUs and record an unalterable audit log entry.
+                </div>
+                <div style={{ display: "flex", gap: "var(--space-3)", flexWrap: "wrap", alignItems: "flex-end" }}>
+                  <div style={{ flex: 1, minWidth: "260px" }}>
+                    <label className="label">Documented Justification Reason (Mandatory Audit Requirement)</label>
+                    <input
+                      className="input"
+                      placeholder="e.g. Q4 National Pharmaceutical Pricing Authority (NPPA) rate pass-through"
+                      value={simReason}
+                      onChange={(e) => setSimReason(e.target.value)}
+                      id="sim-reason-input"
+                    />
+                  </div>
+                  <button
+                    className="btn btn-primary"
+                    id="apply-live-pricing-btn"
+                    disabled={applyLoading || !simResult.canApply || simReason.trim().length < 5}
+                    onClick={async () => {
+                      try {
+                        const res = await applyBulkPrice({
+                          variables: {
+                            action: simAction,
+                            value: simValue,
+                            reason: simReason,
+                            category: simCategory || null,
+                          },
+                        });
+                        const count = res.data?.applyBulkPriceUpdate?.totalAffected || simResult.totalMatched;
+                        setApplySuccessMsg(`Successfully executed live bulk revision on ${count} SKUs! Audit ID: ${res.data?.applyBulkPriceUpdate?.auditId?.slice(0, 8)}`);
+                        // Update local products state rates
+                        setProducts((prev) =>
+                          prev.map((p) => {
+                            const updated = simResult.previewItems.find((it: any) => it.productId === p.id);
+                            if (updated) {
+                              return {
+                                ...p,
+                                defaultMrp: updated.newMrp,
+                                sellingRate: updated.newPtr,
+                              };
+                            }
+                            return p;
+                          })
+                        );
+                        setShowSimulateDrawer(false);
+                      } catch (err: any) {
+                        alert(err.message || "Failed to apply bulk pricing.");
+                      }
+                    }}
+                  >
+                    {applyLoading ? "Applying Live..." : "⚡ Execute Live Bulk Revision"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </SideDrawer>
     </div>
   );

@@ -5,6 +5,7 @@
 ---
 
 ## 🚦 Implementation Status Legend
+
 - [ ] **Pending**: Ready for implementation.
 - [🔄] **In Progress**: Currently active development.
 - [x] **Completed**: Implemented, verified, and passing all tests.
@@ -12,6 +13,7 @@
 ---
 
 ## Phase 1: Role-Based Access Control (RBAC) & Authority Guards
+>
 > **Objective**: Restrict user creation and role assignment per strict hierarchy rules.
 
 - [x] **1.1 Backend RBAC Mutation Guard**
@@ -30,6 +32,7 @@
 ---
 
 ## Phase 2: Database Schema & Relational Models
+>
 > **Objective**: Add data models for Delivery Challans, Challan Returns, Invoice Returns (Credit Notes), and Advance Payments.
 
 - [x] **2.1 SQLAlchemy Declarative Models**
@@ -45,6 +48,7 @@
 ---
 
 ## Phase 3: Service Layer & Business Logic Engines
+>
 > **Objective**: Implement clean, isolated service functions for warehouse logistics, GST tax math, and financial ledgers.
 
 - [x] **3.1 Delivery Challan Service**
@@ -69,6 +73,7 @@
 ---
 
 ## Phase 4: GraphQL Resolvers & Schema Exposure
+>
 > **Objective**: Expose all new domain capabilities via Strawberry GraphQL queries and mutations.
 
 - [x] **4.1 GraphQL Types & Input Definitions**
@@ -92,6 +97,7 @@
 ---
 
 ## Phase 5: Warehouse Staff Frontend Modules
+>
 > **Objective**: Provide comprehensive floor controls for Invoices, Challans, Returns, and Advances.
 
 - [x] **5.1 Multi-Tab Invoices & Documents Hub**
@@ -114,6 +120,7 @@
 ---
 
 ## Phase 6: Retail Shopkeeper Catalog & Instant Order Flow
+>
 > **Objective**: Streamline the ordering experience and guarantee instantaneous warehouse queue synchronization.
 
 - [x] **6.1 Catalog Ordering Experience**
@@ -128,6 +135,7 @@
 ---
 
 ## Phase 7: Delivery Boy Mobile Experience & Digital Signature POD
+>
 > **Objective**: Enable couriers to view assigned orders, accept bay pickup, and upload retail counter signatures.
 
 - [x] **7.1 Live Courier Trips Feed**
@@ -143,6 +151,7 @@
 ---
 
 ## Phase 8: Verification, Test Coverage & EC2 Deployment
+>
 > **Objective**: Validate the entire ecosystem with automated tests and deploy to production.
 
 - [x] **8.1 Backend Test Suite Verification**
@@ -159,34 +168,40 @@
 ---
 
 ## 🔮 Advanced Future Works & Next-Gen Phases (Phases 9 - 14)
+>
 > **Objective**: Strategic enterprise scaling, government integrations, hardware connectivity, and high availability.
 
 ### Phase 9: Statutory Government & Tax Integrations
+
 - [ ] **9.1 National E-Way Bill API Connectivity**: Automated generation of NIC E-Way bills for dispatches over ₹50,000.
 - [ ] **9.2 Drug & Cosmetics Act Schedule H1 Register**: Statutory compliance logs for antibiotic & narcotic formulations.
 - [ ] **9.3 Tally Prime & Busy Accounting Synchronization**: Direct export of XML/JSON vouchers for external chartered accountants.
 
 ### Phase 10: Real-Time WebSockets & Streaming Architecture
+
 - [ ] **10.1 Strawberry GraphQL Subscriptions**: Redis Pub/Sub powered live order broadcasts directly to warehouse terminal displays.
 - [ ] **10.2 Live GPS Courier Fleet Tracking**: Real-time vehicle location streaming for delivery boys on route to pharmacies.
 - [ ] **10.3 Instant Audio Alerts**: Web Audio API chime sounding on the warehouse floor upon new order placement.
 
 ### Phase 11: Warehouse Hardware & Edge Automation
+
 - [ ] **11.1 Web Bluetooth Portable Thermal Printing**: Direct 2-inch and 3-inch slip/challan printing without OS print dialogues.
 - [ ] **11.2 Camera Barcode & QR Scanner**: Real-time carton barcode decoding via `@zxing/library` during inward receiving and order picking.
 - [ ] **11.3 Drag-and-Drop Floor Kanban**: Interactive visual board on `/dashboard/orders` for warehouse dispatch bay managers.
 
 ### Phase 12: Offline-First Courier Mobility
+
 - [ ] **12.1 Progressive Web App (PWA) with Background Sync**: Offline route access and signature capture in subterranean pharmacy counters.
 - [ ] **12.2 Native OS Push Notifications**: Immediate alerts on delivery assignments and dispatch schedule updates.
 
 ### Phase 13: High-Concurrency Data & Partitioning
+
 - [ ] **13.1 PostgreSQL Annual Partitioning**: Declarative range partitioning of `orders` and `invoices` by Indian Financial Year (`FY26-27`).
 - [ ] **13.2 Distributed Redis Mutex Locking (Redlock)**: Race condition prevention on rapid concurrent orders claiming identical medicine batches.
 - [ ] **13.3 Read-Only Analytical Replicas & PgBouncer**: Dedicated query routing for reports to preserve primary OLTP transaction throughput.
 
 ### Phase 14: Omnichannel Customer Engagement
+
 - [ ] **14.1 WhatsApp Business Transactional API**: Order confirmations, dispatch ETAs, and PDF tax invoices delivered directly via WhatsApp.
 - [ ] **14.2 Dynamic Counter UPI QR Codes**: Printable BharatQR codes on Delivery Challans for instant digital bank settlement at delivery.
 - [ ] **14.3 Bilingual Regionalization**: Full Bengali (বাংলা) and English UI toggling for retail chemists and logistics staff.
-

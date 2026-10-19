@@ -9,8 +9,9 @@ from strawberry.types import Info
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
-from app.db.models import Product, StockBatch
+from app.db.models import Product, StockBatch, UserRole
 from app.db.session import async_session_factory
+from app.graphql.resolvers.auth import _get_caller
 from app.graphql.types import (
     ProductType,
     PaginatedProducts,
@@ -116,8 +117,16 @@ class ProductQuery:
 @strawberry.type
 class ProductMutation:
     @strawberry.mutation
-    async def add_product(self, input: ProductInput) -> ProductType:
-        """Add a new product to the catalog."""
+    async def add_product(self, info: Info, input: ProductInput) -> ProductType:
+        """Add a new product to the catalog (Super Admin, Admin, or Warehouse only)."""
+        _, role = _get_caller(info)
+        if role not in (
+            UserRole.SUPER_ADMIN.value,
+            UserRole.ADMIN.value,
+            UserRole.WAREHOUSE.value,
+        ):
+            raise Exception("Permission denied: You are not authorized to add products.")
+
         async with async_session_factory() as session:
             product = Product(
                 name=input.name,
@@ -136,8 +145,16 @@ class ProductMutation:
             return _product_to_type(product)
 
     @strawberry.mutation
-    async def add_stock_batch(self, input: StockBatchInput) -> StockBatchType:
-        """Add a stock batch for a product (incoming inventory)."""
+    async def add_stock_batch(self, info: Info, input: StockBatchInput) -> StockBatchType:
+        """Add a stock batch for a product (Super Admin, Admin, or Warehouse only)."""
+        _, role = _get_caller(info)
+        if role not in (
+            UserRole.SUPER_ADMIN.value,
+            UserRole.ADMIN.value,
+            UserRole.WAREHOUSE.value,
+        ):
+            raise Exception("Permission denied: You are not authorized to add inventory stock.")
+
         async with async_session_factory() as session:
             batch = StockBatch(
                 product_id=input.product_id,

@@ -7,6 +7,7 @@
 ## 1. Public & Authentication Screens
 
 ### 1.1 `/` — Enterprise Landing Portal
+
 - **Audience**: All visitors, prospective retail pharmacies, couriers, and staff.
 - **Key Sections**:
   - Hero banner highlighting digital B2B pharmaceutical wholesale in West Bengal.
@@ -15,6 +16,7 @@
   - Live Theme Toggle & Security Assurance badges.
 
 ### 1.2 `/login` — Multi-Role Universal Authentication
+
 - **Audience**: All 5 user roles.
 - **Features**:
   - Single login input accepting either **Email address** (admins/warehouse) OR **Phone number** (retailers/couriers).
@@ -23,6 +25,7 @@
   - Automatic redirect to `/dashboard` upon successful JWT issuance.
 
 ### 1.3 `/register` — Self-Service Onboarding
+
 - **Audience**: Retail Shopkeepers & Delivery Boys.
 - **Features**:
   - Role switcher tab: **🏪 Retail Shopkeeper** vs. **🛵 Delivery Boy**.
@@ -31,6 +34,7 @@
   - Instant activation (no admin approval required; accounts are activated immediately).
 
 ### 1.4 `/forgot-password` — Credential Recovery
+
 - **Features**:
   - Clean input for registered Email or Phone.
   - Dispatches temporary recovery instructions and displays support hotline for warehouse dispatch office.
@@ -40,6 +44,7 @@
 ## 2. Dashboard Workspace Screens
 
 ### 2.1 `/dashboard` — Executive & Operational Overview
+
 - **Role Customization**:
   - **Super Admin & Operations Admin**: Daily sales turnover, pending orders, aggregate outstanding credit balance, low stock count.
   - **Warehouse Staff**: Floor overview, orders in picking queue, batches nearing expiry (< 30/60/90 days), bay dispatch ready count.
@@ -53,6 +58,7 @@
 ---
 
 ### 2.2 `/dashboard/products` — SKU Catalog Master
+
 - **Primary Roles**: Warehouse Staff, Operations Admin, Super Admin (Full CRUD); Retail Shopkeeper (Browse & Order).
 - **Features**:
   - Dual-axis scrollable table: Brand Name, Composition, Pack Size, HSN Code, Category, MRP, Selling Rate, Available Units, Status.
@@ -62,6 +68,7 @@
 ---
 
 ### 2.3 `/dashboard/inventory` — Warehouse Rack Batches & FEFO
+
 - **Primary Roles**: Warehouse Staff, Operations Admin, Super Admin.
 - **Features**:
   - Lot-level inventory table: Product, Batch Number, Expiry Date (MM/YY), Expiry Health Badge, Purchase Rate, Selling Rate, MRP, Units In Stock, Units Dispatched.
@@ -76,6 +83,7 @@
 ---
 
 ### 2.4 `/dashboard/orders` — Wholesale Orders & Picking Queue
+
 - **Primary Roles**: Retail Shopkeeper (Place Order); Warehouse Staff & Admins (Fulfill & Dispatch).
 - **Features**:
   - Segmented status tabs: **All**, **Placed (New)**, **Confirmed**, **Picking**, **Packed**, **Dispatched**, **Delivered**.
@@ -90,6 +98,7 @@
 ---
 
 ### 2.5 `/dashboard/deliveries` — Fleet Logistics & Signature POD
+
 - **Primary Roles**: Delivery Boy (Execution); Operations Admin & Warehouse Staff (Assignment & Tracking).
 - **Features**:
   - Active Delivery Cards: Shop Name, Address, Destination Map / Dial link, Carton Count, Bill Amount.
@@ -104,6 +113,7 @@
 ---
 
 ### 2.6 `/dashboard/invoices` — Tax Invoices, Challans, Returns & Advances
+
 - **Primary Roles**: Warehouse Staff, Operations Admin, Super Admin (Full Management); Retail Shopkeeper (View Own).
 - **Multi-Tab Architecture**:
   - **Tab 1: Tax Invoices**:
@@ -122,6 +132,7 @@
 ---
 
 ### 2.7 `/dashboard/shopkeepers` — Pharmacy Directory & Credit Ceilings
+
 - **Primary Roles**: Operations Admin, Super Admin, Warehouse Staff.
 - **Features**:
   - Directory table: Shop Name, Owner Name, Contact Phone, Drug License No, GSTIN, Area, Credit Limit, Outstanding Balance, Payment Status.
@@ -130,6 +141,7 @@
 ---
 
 ### 2.8 `/dashboard/users` — Staff RBAC & Role Governance
+
 - **Primary Roles**: Super Admin (All Roles); Operations Admin (All Roles except Super Admin).
 - **Features**:
   - User Directory: Full Name, Contact Info, Assigned Role Badge, Account Status (`Active`/`Deactivated`), Created Date.
@@ -142,6 +154,7 @@
 ---
 
 ### 2.9 `/dashboard/reports` — Statutory Tax & Sales Analytics
+
 - **Primary Roles**: Operations Admin, Super Admin.
 - **Features**:
   - Sales performance charts (turnover over time, top selling medicines, top purchasing retail stores).
@@ -153,6 +166,7 @@
 ## 🔮 Future Works & Implementation TODOs
 
 ### 📋 Phase PG.1: Camera Barcode Scanner & Rapid Picking
+
 - [ ] **PG.1.1 Web Camera Barcode / QR Scanner**:
   - Embed HTML5 video barcode reader (`@zxing/library` or native Barcode Detection API) in the Inward Stock Drawer and Order Picking Drawer.
   - Allows warehouse staff to scan manufacturer carton barcodes to auto-populate product, batch number, and expiry date.
@@ -160,13 +174,14 @@
   - Add a toggleable Kanban Board view on `/dashboard/orders` allowing floor managers to drag order cards across `Placed` ➔ `Confirmed` ➔ `Picking` ➔ `Packed` columns.
 
 ### 📋 Phase PG.2: Courier Navigation & Mapping
+
 - [ ] **PG.2.1 Interactive Delivery Beat Map**:
   - Embed an interactive OpenStreetMap / Leaflet view on `/dashboard/deliveries` displaying pharmacy destination pins across Durgapur, Benachity, and City Centre.
   - Compute shortest multi-stop courier route from warehouse bay to all assigned pharmacy counters.
 
 ### 📋 Phase PG.3: Financial Ledger & CSV Ingestion
+
 - [ ] **PG.3.1 Bulk Distributor Purchase Bill CSV Ingestion**:
   - Provide a drag-and-drop CSV / Excel uploader on `/dashboard/inventory` that automatically parses multi-page distributor purchase bills into structured `PurchaseEntry` records.
 - [ ] **PG.3.2 Printable Retailer Statement of Accounts**:
   - On `/dashboard/shopkeepers`, add a one-click button to download a customer statement of accounts (PDF) showing all debits, credits, invoices, returns, and advance receipts for any custom date range.
-

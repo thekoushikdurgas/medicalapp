@@ -11,10 +11,16 @@ import {
   RECORD_ADVANCE_PAYMENT_MUTATION,
   ORDERS_QUERY,
   USERS_QUERY,
+  MY_LEDGER_QUERY,
+  RETURN_CLAIMS_QUERY,
+  SUBMIT_RETURN_CLAIM_MUTATION,
+  REVIEW_RETURN_CLAIM_MUTATION,
+  PRODUCTS_QUERY,
 } from "@/lib/graphql-queries";
+import { useAuth } from "@/hooks/use-auth";
 import { SideDrawer } from "@/components/ui/side-drawer";
 
-type ActiveTab = "INVOICES" | "CHALLANS" | "RETURNS" | "ADVANCES";
+type ActiveTab = "INVOICES" | "CHALLANS" | "RETURNS" | "ADVANCES" | "LEDGER" | "CLAIMS";
 
 interface TaxInvoice {
   id: string;
@@ -51,6 +57,10 @@ interface TaxInvoice {
 }
 
 export default function InvoicesPage() {
+  const { user } = useAuth();
+  const isAdminOrWarehouse =
+    user?.role === "SUPER_ADMIN" || user?.role === "ADMIN" || user?.role === "WAREHOUSE";
+
   const [activeTab, setActiveTab] = useState<ActiveTab>("INVOICES");
   const [selectedInvoice, setSelectedInvoice] = useState<TaxInvoice | null>(null);
 
@@ -58,6 +68,14 @@ export default function InvoicesPage() {
   const [showChallanDrawer, setShowChallanDrawer] = useState(false);
   const [showReturnDrawer, setShowReturnDrawer] = useState(false);
   const [showAdvanceDrawer, setShowAdvanceDrawer] = useState(false);
+  const [showClaimDrawer, setShowClaimDrawer] = useState(false);
+  const [showReviewDrawer, setShowReviewDrawer] = useState(false);
+  const [selectedClaimForReview, setSelectedClaimForReview] = useState<any>(null);
+
+  // Filter & Ledger selection
+  const [selectedShopkeeperForLedger, setSelectedShopkeeperForLedger] = useState<string>("");
+  const [claimStatusFilter, setClaimStatusFilter] = useState<string>("ALL");
+  const [advanceAllocationFilter, setAdvanceAllocationFilter] = useState<"ALL" | "UNALLOCATED" | "SETTLED">("ALL");
 
   // Success / Error feedback
   const [bannerSuccess, setBannerSuccess] = useState("");
@@ -82,6 +100,28 @@ export default function InvoicesPage() {
     fetchPolicy: "cache-first",
   });
 
+  const { data: ledgerData, refetch: refetchLedger } = useQuery(MY_LEDGER_QUERY, {
+    variables: {
+      shopkeeperId: selectedShopkeeperForLedger ? selectedShopkeeperForLedger : undefined,
+      limit: 100,
+    },
+    fetchPolicy: "network-only",
+  });
+
+  const { data: claimsData, refetch: refetchClaims } = useQuery(RETURN_CLAIMS_QUERY, {
+    variables: {
+      status: claimStatusFilter === "ALL" ? undefined : claimStatusFilter,
+      page: 1,
+      perPage: 50,
+    },
+    fetchPolicy: "network-only",
+  });
+
+  const { data: productsData } = useQuery(PRODUCTS_QUERY, {
+    variables: { page: 1, perPage: 100 },
+    fetchPolicy: "cache-first",
+  });
+
   // Apollo Mutations
   const [createChallanMutation, { loading: creatingChallan }] = useMutation(
     CREATE_DELIVERY_CHALLAN_MUTATION
@@ -91,6 +131,12 @@ export default function InvoicesPage() {
   );
   const [recordAdvanceMutation, { loading: recordingAdvance }] = useMutation(
     RECORD_ADVANCE_PAYMENT_MUTATION
+  );
+  const [submitClaimMutation, { loading: submittingClaim }] = useMutation(
+    SUBMIT_RETURN_CLAIM_MUTATION
+  );
+  const [reviewClaimMutation, { loading: reviewingClaim }] = useMutation(
+    REVIEW_RETURN_CLAIM_MUTATION
   );
 
   // Form States
@@ -116,6 +162,20 @@ export default function InvoicesPage() {
     paymentMethod: "UPI",
     referenceNo: "UPI/32948291039",
     notes: "Advance deposit for monthly wholesale order",
+  });
+
+  const [claimForm, setClaimForm] = useState({
+    productId: "",
+    batchNumber: "",
+    quantity: 1,
+    reason: "Damaged packaging / Seal Broken",
+    remarks: "",
+    imageUrl: "",
+  });
+
+  const [reviewForm, setReviewForm] = useState({
+    action: "APPROVE",
+    rejectionReason: "",
   });
 
   // Static/Fallback Invoices
@@ -352,11 +412,242 @@ export default function InvoicesPage() {
     }
   };
 
+  const handleSubmitClaim = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBannerSuccess("");
+    setBannerError("");
+
+    if (!claimForm.productId) {
+      alert("Please select a medicine/product");
+      return;
+    }
+    if (claimForm.quantity <= 0) {
+      alert("Quantity must be at least 1");
+      return;
+    }
+
+    try {
+      const res = await submitClaimMutation({
+        variables: {
+          input: {
+            productId: claimForm.productId,
+            quantity: Number(claimForm.quantity),
+            reason: claimForm.reason,
+            remarks: claimForm.remarks ? claimForm.remarks : null,
+            imageUrl: claimForm.imageUrl ? claimForm.imageUrl : null,
+          },
+        },
+      });
+
+      if (res.data?.submitReturnClaim) {
+        setBannerSuccess(
+          `Return claim ${res.data.submitReturnClaim.requestNumber} submitted! Warehouse team will inspect.`
+        );
+        setShowClaimDrawer(false);
+        setClaimForm({
+          productId: "",
+          batchNumber: "",
+          quantity: 1,
+          reason: "Damaged packaging / Seal Broken",
+          remarks: "",
+          imageUrl: "",
+        });
+        refetchClaims();
+      }
+    } catch (err: unknown) {
+      setBannerError(err instanceof Error ? err.message : "Failed to submit return claim.");
+    }
+  };
+
+  const handleReviewClaim = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBannerSuccess("");
+    setBannerError("");
+
+    if (!selectedClaimForReview) return;
+    if (reviewForm.action === "REJECT" && !reviewForm.rejectionReason) {
+      alert("Please provide reason for rejection.");
+      return;
+    }
+
+    try {
+      const res = await reviewClaimMutation({
+        variables: {
+          input: {
+            requestId: selectedClaimForReview.id,
+            action: reviewForm.action,
+            rejectionReason: reviewForm.action === "REJECT" ? reviewForm.rejectionReason : null,
+          },
+        },
+      });
+
+      if (res.data?.reviewReturnClaim) {
+        setBannerSuccess(
+          `Claim status updated to ${res.data.reviewReturnClaim.status}!`
+        );
+        setShowReviewDrawer(false);
+        setSelectedClaimForReview(null);
+        setReviewForm({ action: "APPROVE", rejectionReason: "" });
+        refetchClaims();
+      }
+    } catch (err: unknown) {
+      setBannerError(err instanceof Error ? err.message : "Failed to review return claim.");
+    }
+  };
+
+  const fallbackLedger = [
+    {
+      id: "led-1",
+      entryType: "DEBIT",
+      amount: 12742.82,
+      balanceAfter: 12742.82,
+      referenceNumber: "INV-2026-004448",
+      description: "Tax invoice delivered (Order ORD-2026-004448)",
+      createdAt: "2026-10-13T10:30:00Z",
+      shopkeeperName: "Cheap Medical Stores",
+    },
+    {
+      id: "led-2",
+      entryType: "CREDIT",
+      amount: 5000.0,
+      balanceAfter: 7742.82,
+      referenceNumber: "ADV-2026-0001",
+      description: "Advance deposit via UPI Ref: UPI/32948291039",
+      createdAt: "2026-10-14T11:00:00Z",
+      shopkeeperName: "Cheap Medical Stores",
+    },
+    {
+      id: "led-3",
+      entryType: "CREDIT",
+      amount: 500.0,
+      balanceAfter: 7242.82,
+      referenceNumber: "CN-2026-0001",
+      description: "GST Credit note issued for damaged packaging",
+      createdAt: "2026-10-15T14:15:00Z",
+      shopkeeperName: "Cheap Medical Stores",
+    },
+    {
+      id: "led-4",
+      entryType: "CREDIT",
+      amount: 7242.82,
+      balanceAfter: 0.0,
+      referenceNumber: "POD-4819",
+      description: "Counter delivery OTP remittance collected in cash",
+      createdAt: "2026-10-16T16:45:00Z",
+      shopkeeperName: "Cheap Medical Stores",
+    },
+  ];
+
+  const fallbackClaims = [
+    {
+      id: "ret-1",
+      requestNumber: "RET-2026-0001",
+      productName: "AZITHRAL 500MG TAB",
+      batchNumber: "2613000703",
+      quantity: 5,
+      reason: "Damaged packaging / Seal Broken",
+      remarks: "2 blisters crushed during courier transit",
+      imageUrl: "",
+      status: "PENDING",
+      rejectionReason: null,
+      createdAt: "2026-10-14T09:15:00Z",
+      shopkeeperName: "Cheap Medical Stores",
+    },
+    {
+      id: "ret-2",
+      requestNumber: "RET-2026-0002",
+      productName: "PAN D CAP",
+      batchNumber: "2611004510",
+      quantity: 10,
+      reason: "Near Expiry / Broken Seal",
+      remarks: "Batch exp within 45 days, returned for GST reversal",
+      imageUrl: "",
+      status: "APPROVED",
+      rejectionReason: null,
+      createdAt: "2026-10-12T14:20:00Z",
+      shopkeeperName: "Gupta Pharmacy & Clinic",
+    },
+  ];
+
   const deliveryChallans = challansData?.deliveryChallans || [];
   const invoiceReturns = returnsData?.invoiceReturns || [];
-  const advancePayments = advancesData?.advancePayments || [];
+  const fallbackAdvances = [
+    {
+      id: "adv-1",
+      receiptNumber: "ADV-2026-0001",
+      paidAt: "2026-10-14T11:00:00Z",
+      shopkeeperName: "Cheap Medical Stores",
+      amount: 15000.0,
+      allocatedAmount: 10000.0,
+      unallocatedAmount: 5000.0,
+      paymentMethod: "UPI",
+      referenceNo: "UPI/32948291039",
+      notes: "Advance payment for weekly antibiotics stocking",
+    },
+    {
+      id: "adv-2",
+      receiptNumber: "ADV-2026-0002",
+      paidAt: "2026-10-18T09:30:00Z",
+      shopkeeperName: "Cheap Medical Stores",
+      amount: 8500.0,
+      allocatedAmount: 0.0,
+      unallocatedAmount: 8500.0,
+      paymentMethod: "BANK_TRANSFER",
+      referenceNo: "NEFT/SBIN00482910",
+      notes: "Advance deposit for seasonal order reserve",
+    },
+    {
+      id: "adv-3",
+      receiptNumber: "ADV-2026-0003",
+      paidAt: "2026-10-05T14:00:00Z",
+      shopkeeperName: "Gupta Pharmacy & Clinic",
+      amount: 12000.0,
+      allocatedAmount: 12000.0,
+      unallocatedAmount: 0.0,
+      paymentMethod: "CASH",
+      referenceNo: "CSH-REC-9912",
+      notes: "Advance settled against invoice INV-2026-004445",
+    },
+  ];
+
+  const rawAdvances = advancesData?.advancePayments?.length ? advancesData.advancePayments : fallbackAdvances;
+  const processedAdvances = rawAdvances.map((adv: any) => {
+    const allocated = typeof adv.allocatedAmount === "number" ? adv.allocatedAmount : 0.0;
+    const unallocated = typeof adv.unallocatedAmount === "number" ? adv.unallocatedAmount : Math.max(0, (adv.amount || 0) - allocated);
+    const allocationStatus = unallocated === 0 ? "FULLY_ALLOCATED" : (allocated > 0 ? "PARTIALLY_ALLOCATED" : "UNALLOCATED");
+    return {
+      ...adv,
+      allocatedAmount: allocated,
+      unallocatedAmount: unallocated,
+      allocationStatus,
+    };
+  });
+
+  const totalAdvancesDeposited = processedAdvances.reduce((sum: number, a: any) => sum + (a.amount || 0), 0);
+  const totalAdvancesAllocated = processedAdvances.reduce((sum: number, a: any) => sum + (a.allocatedAmount || 0), 0);
+  const totalAdvancesUnallocated = processedAdvances.reduce((sum: number, a: any) => sum + (a.unallocatedAmount || 0), 0);
+
+  const filteredAdvances = processedAdvances.filter((adv: any) => {
+    if (advanceAllocationFilter === "UNALLOCATED") return adv.unallocatedAmount > 0;
+    if (advanceAllocationFilter === "SETTLED") return adv.unallocatedAmount === 0;
+    return true;
+  });
+
+  const advancePayments = filteredAdvances;
   const availableOrders = ordersData?.orders?.items || [];
   const shopkeepersList = usersData?.users || [];
+  const productsList = productsData?.products?.items || [];
+  const ledgerEntries = ledgerData?.myLedger?.length ? ledgerData.myLedger : fallbackLedger;
+  const returnClaims = claimsData?.returnClaims?.length ? claimsData.returnClaims : fallbackClaims;
+
+  const totalLedgerDebits = ledgerEntries
+    .filter((e: any) => e.entryType === "DEBIT")
+    .reduce((acc: number, curr: any) => acc + (curr.amount || 0), 0);
+  const totalLedgerCredits = ledgerEntries
+    .filter((e: any) => e.entryType === "CREDIT")
+    .reduce((acc: number, curr: any) => acc + (curr.amount || 0), 0);
+  const currentLedgerBalance =
+    ledgerEntries.length > 0 ? ledgerEntries[0].balanceAfter : 0.0;
 
   return (
     <div className="animate-fade-in">
@@ -376,7 +667,7 @@ export default function InvoicesPage() {
             Invoices, Challans &amp; Returns Hub
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
-            B2B GST Tax Invoices, Transporter Delivery Challans, Credit Notes, and Retailer Deposits
+            B2B GST Tax Invoices, Transporter Delivery Challans, Credit Notes, Ledger and Returns
           </p>
         </div>
 
@@ -403,6 +694,22 @@ export default function InvoicesPage() {
               onClick={() => setShowAdvanceDrawer(true)}
             >
               + Record Advance Payment
+            </button>
+          )}
+          {activeTab === "CLAIMS" && (
+            <button
+              className="btn btn-primary"
+              onClick={() => setShowClaimDrawer(true)}
+            >
+              + Raise Return Claim
+            </button>
+          )}
+          {activeTab === "LEDGER" && (
+            <button
+              className="btn btn-secondary"
+              onClick={() => window.print()}
+            >
+              🖨️ Print Party Statement
             </button>
           )}
         </div>
@@ -479,6 +786,20 @@ export default function InvoicesPage() {
           onClick={() => setActiveTab("ADVANCES")}
         >
           💰 Advance Payments ({advancePayments.length})
+        </button>
+        <button
+          className={`btn ${activeTab === "LEDGER" ? "btn-primary" : "btn-secondary"}`}
+          style={{ borderRadius: "var(--radius-md) var(--radius-md) 0 0", borderBottom: "none" }}
+          onClick={() => setActiveTab("LEDGER")}
+        >
+          📒 Party Statement &amp; Ledger ({ledgerEntries.length})
+        </button>
+        <button
+          className={`btn ${activeTab === "CLAIMS" ? "btn-primary" : "btn-secondary"}`}
+          style={{ borderRadius: "var(--radius-md) var(--radius-md) 0 0", borderBottom: "none" }}
+          onClick={() => setActiveTab("CLAIMS")}
+        >
+          🛡️ Return / Damage Claims ({returnClaims.length})
         </button>
       </div>
 
@@ -726,56 +1047,517 @@ export default function InvoicesPage() {
         </div>
       )}
 
-      {/* TAB 4: ADVANCE PAYMENTS */}
+      {/* TAB 4: ADVANCE PAYMENTS & UNALLOCATED RECEIPTS */}
       {activeTab === "ADVANCES" && (
-        <div className="card">
-          <div className="table-wrapper">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Receipt #</th>
-                  <th>Date</th>
-                  <th>Retail Partner</th>
-                  <th>Amount (₹)</th>
-                  <th>Payment Mode</th>
-                  <th>Reference / Txn #</th>
-                  <th>Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {advancePayments.length === 0 ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+          {/* Unallocated Advance Overview Cards */}
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+            gap: "var(--space-4)",
+          }}>
+            <div className="card" style={{ padding: "var(--space-4)" }}>
+              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+                TOTAL ADVANCES DEPOSITED
+              </p>
+              <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--color-primary-700)", margin: "4px 0" }}>
+                ₹{totalAdvancesDeposited.toFixed(2)}
+              </p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", margin: 0 }}>
+                Cumulative funds collected in advance
+              </p>
+            </div>
+
+            <div className="card" style={{ padding: "var(--space-4)" }}>
+              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+                SETTLED AGAINST INVOICES
+              </p>
+              <p style={{ fontSize: "1.4rem", fontWeight: 800, color: "var(--text-primary)", margin: "4px 0" }}>
+                ₹{totalAdvancesAllocated.toFixed(2)}
+              </p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", margin: 0 }}>
+                Offset against finalized delivery tax invoices
+              </p>
+            </div>
+
+            <div className="card" style={{
+              padding: "var(--space-4)",
+              background: "linear-gradient(135deg, rgba(16, 185, 129, 0.08) 0%, rgba(5, 150, 105, 0.04) 100%)",
+              border: "1px solid rgba(16, 185, 129, 0.3)",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <p style={{ fontSize: "var(--font-size-xs)", color: "var(--color-success)", fontWeight: 700 }}>
+                  🟢 UNALLOCATED ADVANCE SURPLUS
+                </p>
+                <span className="badge badge-success" style={{ fontSize: "0.7rem" }}>Available Credit</span>
+              </div>
+              <p style={{ fontSize: "1.4rem", fontWeight: 900, color: "var(--color-success)", margin: "4px 0" }}>
+                ₹{totalAdvancesUnallocated.toFixed(2)}
+              </p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-secondary)", margin: 0 }}>
+                Surplus deposit ready for instant deduction on next order
+              </p>
+            </div>
+          </div>
+
+          {/* Table Card with Filter Controls */}
+          <div className="card">
+            <div style={{
+              padding: "var(--space-3) var(--space-4)",
+              borderBottom: "1px solid var(--border-color)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "var(--space-2)",
+            }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                <span style={{ fontSize: "0.85rem", fontWeight: 700 }}>Filter Allocation Status:</span>
+                <div style={{ display: "inline-flex", gap: "4px", background: "rgba(0,0,0,0.04)", padding: "2px", borderRadius: "var(--radius-md)" }}>
+                  <button
+                    type="button"
+                    onClick={() => setAdvanceAllocationFilter("ALL")}
+                    style={{
+                      border: "none",
+                      padding: "4px 10px",
+                      borderRadius: "var(--radius-sm)",
+                      fontSize: "0.78rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      background: advanceAllocationFilter === "ALL" ? "var(--color-primary-600)" : "transparent",
+                      color: advanceAllocationFilter === "ALL" ? "#ffffff" : "var(--text-secondary)",
+                    }}
+                  >
+                    All ({processedAdvances.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAdvanceAllocationFilter("UNALLOCATED")}
+                    style={{
+                      border: "none",
+                      padding: "4px 10px",
+                      borderRadius: "var(--radius-sm)",
+                      fontSize: "0.78rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      background: advanceAllocationFilter === "UNALLOCATED" ? "var(--color-success)" : "transparent",
+                      color: advanceAllocationFilter === "UNALLOCATED" ? "#ffffff" : "var(--text-secondary)",
+                    }}
+                  >
+                    🟢 Unallocated Surplus ({processedAdvances.filter((a: any) => a.unallocatedAmount > 0).length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAdvanceAllocationFilter("SETTLED")}
+                    style={{
+                      border: "none",
+                      padding: "4px 10px",
+                      borderRadius: "var(--radius-sm)",
+                      fontSize: "0.78rem",
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      background: advanceAllocationFilter === "SETTLED" ? "var(--color-primary-800)" : "transparent",
+                      color: advanceAllocationFilter === "SETTLED" ? "#ffffff" : "var(--text-secondary)",
+                    }}
+                  >
+                    ✓ Fully Settled ({processedAdvances.filter((a: any) => a.unallocatedAmount === 0).length})
+                  </button>
+                </div>
+              </div>
+
+              {totalAdvancesUnallocated > 0 && (
+                <div style={{ fontSize: "0.8rem", color: "var(--color-success)", fontWeight: 600 }}>
+                  💡 ₹{totalAdvancesUnallocated.toFixed(2)} surplus credit available on account
+                </div>
+              )}
+            </div>
+
+            <div className="table-wrapper">
+              <table className="table">
+                <thead>
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
-                      No advance deposits recorded yet. Click <strong>+ Record Advance Payment</strong> to credit a retailer ledger.
-                    </td>
+                    <th>Receipt #</th>
+                    <th>Date</th>
+                    <th>Retail Partner</th>
+                    <th>Deposited (₹)</th>
+                    <th>Settled (₹)</th>
+                    <th>Unallocated Surplus (₹)</th>
+                    <th>Allocation Status</th>
+                    <th>Mode & Reference</th>
+                    <th>Notes</th>
                   </tr>
-                ) : (
-                  advancePayments.map((adv: any) => (
-                    <tr key={adv.id}>
-                      <td>
-                        <span style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
-                          {adv.receiptNumber}
-                        </span>
-                      </td>
-                      <td>{new Date(adv.paidAt).toLocaleDateString()}</td>
-                      <td style={{ fontWeight: 600 }}>{adv.shopkeeperName || "Retail Shopkeeper"}</td>
-                      <td style={{ fontWeight: 800, color: "var(--color-success)", fontSize: "1rem" }}>
-                        +₹{adv.amount.toFixed(2)}
-                      </td>
-                      <td>
-                        <span className="badge badge-info">{adv.paymentMethod}</span>
-                      </td>
-                      <td>
-                        <code style={{ fontSize: "0.8rem" }}>{adv.referenceNo || "—"}</code>
-                      </td>
-                      <td style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
-                        {adv.notes || "—"}
+                </thead>
+                <tbody>
+                  {filteredAdvances.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                        No advance receipts matching current filter. Click <strong>+ Record Advance Payment</strong> to credit a retailer ledger.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    filteredAdvances.map((adv: any) => (
+                      <tr key={adv.id}>
+                        <td>
+                          <span style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+                            {adv.receiptNumber}
+                          </span>
+                        </td>
+                        <td>{new Date(adv.paidAt).toLocaleDateString()}</td>
+                        <td style={{ fontWeight: 600 }}>{adv.shopkeeperName || "Retail Shopkeeper"}</td>
+                        <td style={{ fontWeight: 700, fontSize: "0.95rem" }}>
+                          ₹{adv.amount.toFixed(2)}
+                        </td>
+                        <td style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>
+                          ₹{adv.allocatedAmount.toFixed(2)}
+                        </td>
+                        <td style={{
+                          fontWeight: 800,
+                          fontSize: "0.95rem",
+                          color: adv.unallocatedAmount > 0 ? "var(--color-success)" : "var(--text-muted)",
+                        }}>
+                          {adv.unallocatedAmount > 0 ? `₹${adv.unallocatedAmount.toFixed(2)}` : "₹0.00"}
+                        </td>
+                        <td>
+                          {adv.allocationStatus === "UNALLOCATED" && (
+                            <span className="badge badge-success" style={{ fontWeight: 700, fontSize: "0.75rem" }}>
+                              🟢 Unallocated Surplus
+                            </span>
+                          )}
+                          {adv.allocationStatus === "PARTIALLY_ALLOCATED" && (
+                            <span className="badge badge-warning" style={{ fontWeight: 700, fontSize: "0.75rem" }}>
+                              🟡 Partially Allocated
+                            </span>
+                          )}
+                          {adv.allocationStatus === "FULLY_ALLOCATED" && (
+                            <span className="badge badge-info" style={{ fontWeight: 600, fontSize: "0.75rem" }}>
+                              ✓ Fully Settled
+                            </span>
+                          )}
+                        </td>
+                        <td>
+                          <div style={{ display: "flex", flexDirection: "column" }}>
+                            <span className="badge badge-info" style={{ width: "fit-content", marginBottom: "2px" }}>
+                              {adv.paymentMethod}
+                            </span>
+                            <code style={{ fontSize: "0.75rem" }}>{adv.referenceNo || "—"}</code>
+                          </div>
+                        </td>
+                        <td style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>
+                          {adv.notes || "—"}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 5: PARTY STATEMENT & RUNNING LEDGER */}
+      {activeTab === "LEDGER" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
+          {/* Party Selection & Header Info */}
+          <div
+            className="card"
+            style={{
+              padding: "var(--space-4)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "var(--space-3)",
+            }}
+          >
+            <div>
+              <h3 style={{ fontSize: "1.1rem", fontWeight: 700, margin: 0 }}>
+                {selectedShopkeeperForLedger
+                  ? `Party Ledger: ${shopkeepersList.find((s: any) => s.id === selectedShopkeeperForLedger)?.fullName || "Retailer"}`
+                  : "Party Statement & Running Ledger"}
+              </h3>
+              <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", margin: 0 }}>
+                Real-time debit/credit statement with running ledger balance after every transaction
+              </p>
+            </div>
+
+            {isAdminOrWarehouse && (
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+                <label style={{ fontSize: "0.85rem", fontWeight: 600 }}>Filter by Retailer:</label>
+                <select
+                  className="input"
+                  style={{ width: "240px", padding: "0.35rem 0.6rem", fontSize: "0.85rem" }}
+                  value={selectedShopkeeperForLedger}
+                  onChange={(e) => setSelectedShopkeeperForLedger(e.target.value)}
+                >
+                  <option value="">All Retail Accounts</option>
+                  {shopkeepersList.map((sk: any) => (
+                    <option key={sk.id} value={sk.id}>
+                      {sk.fullName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
+
+          {/* Metric Cards */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "var(--space-4)",
+            }}
+          >
+            <div className="card" style={{ padding: "var(--space-4)" }}>
+              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+                OUTSTANDING BALANCE
+              </p>
+              <p
+                style={{
+                  fontSize: "var(--font-size-2xl)",
+                  fontWeight: 800,
+                  color: currentLedgerBalance > 0 ? "var(--color-warning)" : "var(--color-success)",
+                }}
+              >
+                ₹{currentLedgerBalance.toFixed(2)}
+              </p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                {currentLedgerBalance > 0 ? "Net payable by retailer" : "Account fully settled"}
+              </p>
+            </div>
+
+            <div className="card" style={{ padding: "var(--space-4)" }}>
+              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+                TOTAL GOODS INVOICED (DEBIT)
+              </p>
+              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-primary-700)" }}>
+                ₹{totalLedgerDebits.toFixed(2)}
+              </p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Cumulative invoice dispatches</p>
+            </div>
+
+            <div className="card" style={{ padding: "var(--space-4)" }}>
+              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+                SETTLEMENTS &amp; CREDITS (CREDIT)
+              </p>
+              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "var(--color-success)" }}>
+                ₹{totalLedgerCredits.toFixed(2)}
+              </p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Payments, Handshake Cash &amp; Credit Notes</p>
+            </div>
+
+            <div className="card" style={{ padding: "var(--space-4)" }}>
+              <p style={{ fontSize: "var(--font-size-xs)", color: "var(--text-secondary)", fontWeight: 600 }}>
+                STATEMENT ENTRIES
+              </p>
+              <p style={{ fontSize: "var(--font-size-2xl)", fontWeight: 800, color: "#0284c7" }}>
+                {ledgerEntries.length} Transactions
+              </p>
+              <p style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Audited chronological ledger</p>
+            </div>
+          </div>
+
+          {/* Statement Table */}
+          <div className="card">
+            <div className="table-wrapper">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Date &amp; Time</th>
+                    <th>Retail Pharmacy</th>
+                    <th>Type</th>
+                    <th>Document / Ref #</th>
+                    <th>Description</th>
+                    <th>Debit (₹)</th>
+                    <th>Credit (₹)</th>
+                    <th>Balance After (₹)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ledgerEntries.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                        No ledger transactions recorded yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    ledgerEntries.map((entry: any) => (
+                      <tr key={entry.id}>
+                        <td style={{ fontSize: "0.8rem", whiteSpace: "nowrap" }}>
+                          {new Date(entry.createdAt).toLocaleString()}
+                        </td>
+                        <td style={{ fontWeight: 600 }}>
+                          {entry.shopkeeperName || "Retail Shopkeeper"}
+                        </td>
+                        <td>
+                          <span
+                            className={`badge ${entry.entryType === "DEBIT" ? "badge-danger" : "badge-success"}`}
+                            style={{
+                              background: entry.entryType === "DEBIT" ? "rgba(239, 68, 68, 0.15)" : "rgba(16, 185, 129, 0.15)",
+                              color: entry.entryType === "DEBIT" ? "var(--color-error)" : "var(--color-success)",
+                              fontWeight: 700,
+                            }}
+                          >
+                            {entry.entryType}
+                          </span>
+                        </td>
+                        <td>
+                          <code style={{ fontSize: "0.8rem", fontWeight: 700 }}>
+                            {entry.referenceNumber || "—"}
+                          </code>
+                        </td>
+                        <td style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                          {entry.description}
+                        </td>
+                        <td style={{ fontWeight: 700, color: "var(--color-error)" }}>
+                          {entry.entryType === "DEBIT" ? `₹${entry.amount.toFixed(2)}` : "—"}
+                        </td>
+                        <td style={{ fontWeight: 700, color: "var(--color-success)" }}>
+                          {entry.entryType === "CREDIT" ? `₹${entry.amount.toFixed(2)}` : "—"}
+                        </td>
+                        <td style={{ fontWeight: 800, fontSize: "0.95rem" }}>
+                          ₹{entry.balanceAfter.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 6: RETURN / DAMAGE CLAIMS */}
+      {activeTab === "CLAIMS" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+          {/* Status Filter Bar */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "var(--space-3)",
+            }}
+          >
+            <div style={{ display: "flex", gap: "var(--space-2)" }}>
+              {["ALL", "PENDING", "APPROVED", "REJECTED"].map((st) => (
+                <button
+                  key={st}
+                  className={`btn ${claimStatusFilter === st ? "btn-primary" : "btn-secondary"}`}
+                  style={{ padding: "0.3rem 0.75rem", fontSize: "0.8rem" }}
+                  onClick={() => setClaimStatusFilter(st)}
+                >
+                  {st === "ALL" ? "All Claims" : st}
+                </button>
+              ))}
+            </div>
+
+            <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", margin: 0 }}>
+              Showing {returnClaims.length} claim(s)
+            </p>
+          </div>
+
+          {/* Claims Table */}
+          <div className="card">
+            <div className="table-wrapper">
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Claim #</th>
+                    <th>Date</th>
+                    <th>Retail Pharmacy</th>
+                    <th>Medicine &amp; Batch</th>
+                    <th>Qty</th>
+                    <th>Reason</th>
+                    <th>Remarks</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {returnClaims.length === 0 ? (
+                    <tr>
+                      <td colSpan={9} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                        No return claims found for this filter. Use <strong>+ Raise Return Claim</strong> to report transit damages or near-expiry batches.
+                      </td>
+                    </tr>
+                  ) : (
+                    returnClaims.map((claim: any) => (
+                      <tr key={claim.id}>
+                        <td>
+                          <span style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+                            {claim.requestNumber}
+                          </span>
+                        </td>
+                        <td style={{ fontSize: "0.8rem" }}>
+                          {new Date(claim.createdAt).toLocaleDateString()}
+                        </td>
+                        <td style={{ fontWeight: 600 }}>
+                          {claim.shopkeeperName || "Retail Shopkeeper"}
+                        </td>
+                        <td>
+                          <div style={{ fontWeight: 700 }}>{claim.productName || "Pharmaceutical Product"}</div>
+                          {claim.batchNumber && (
+                            <code style={{ fontSize: "0.75rem" }}>Batch: {claim.batchNumber}</code>
+                          )}
+                        </td>
+                        <td style={{ fontWeight: 700 }}>{claim.quantity} packs</td>
+                        <td style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                          {claim.reason}
+                        </td>
+                        <td style={{ fontSize: "0.8rem", color: "var(--text-muted)", maxWidth: "180px" }}>
+                          {claim.remarks || "—"}
+                          {claim.rejectionReason && (
+                            <div style={{ color: "var(--color-error)", marginTop: "2px" }}>
+                              Reason: {claim.rejectionReason}
+                            </div>
+                          )}
+                        </td>
+                        <td>
+                          <span
+                            className={`badge ${
+                              claim.status === "APPROVED"
+                                ? "badge-success"
+                                : claim.status === "REJECTED"
+                                ? "badge-danger"
+                                : "badge-warning"
+                            }`}
+                          >
+                            {claim.status === "PENDING"
+                              ? "⏳ PENDING REVIEW"
+                              : claim.status === "APPROVED"
+                              ? "✅ APPROVED"
+                              : "❌ REJECTED"}
+                          </span>
+                        </td>
+                        <td>
+                          {claim.status === "PENDING" && isAdminOrWarehouse ? (
+                            <button
+                              className="btn btn-primary"
+                              style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
+                              onClick={() => {
+                                setSelectedClaimForReview(claim);
+                                setReviewForm({ action: "APPROVE", rejectionReason: "" });
+                                setShowReviewDrawer(true);
+                              }}
+                            >
+                              Inspect &amp; Review
+                            </button>
+                          ) : (
+                            <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
+                              {claim.status === "APPROVED" ? "Credit Note Issued" : "Review Completed"}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
@@ -1006,7 +1788,199 @@ export default function InvoicesPage() {
         </form>
       </SideDrawer>
 
-      {/* Full GST Tax Invoice Preview Modal (Dark-Mode Safe) */}
+      {/* SideDrawer: Raise Return Claim */}
+      <SideDrawer
+        isOpen={showClaimDrawer}
+        onClose={() => setShowClaimDrawer(false)}
+        title="🛡️ Raise Return / Damage Claim"
+        subtitle="Report transit breakage, leakage, wrong batch, or near-expiry medicines"
+      >
+        <form onSubmit={handleSubmitClaim} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+          <div>
+            <label className="label">Select Medicine / Product *</label>
+            <select
+              className="input"
+              required
+              value={claimForm.productId}
+              onChange={(e) => setClaimForm({ ...claimForm, productId: e.target.value })}
+            >
+              <option value="">-- Choose Product --</option>
+              {productsList.length > 0 ? (
+                productsList.map((p: any) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} ({p.packSize || "Pack"})
+                  </option>
+                ))
+              ) : (
+                <>
+                  <option value="00000000-0000-0000-0000-000000000001">AZITHRAL 500MG TAB (10S)</option>
+                  <option value="00000000-0000-0000-0000-000000000002">HIFENAC MR TAB (10S)</option>
+                  <option value="00000000-0000-0000-0000-000000000003">PAN D CAP (15S)</option>
+                  <option value="00000000-0000-0000-0000-000000000004">TELMA 40MG TAB (15S)</option>
+                </>
+              )}
+            </select>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+            <div>
+              <label className="label">Quantity (Packs) *</label>
+              <input
+                type="number"
+                min={1}
+                className="input"
+                required
+                value={claimForm.quantity}
+                onChange={(e) => setClaimForm({ ...claimForm, quantity: Number(e.target.value) })}
+              />
+            </div>
+            <div>
+              <label className="label">Batch Number (Optional)</label>
+              <input
+                className="input"
+                placeholder="e.g. 2613000703"
+                value={claimForm.batchNumber}
+                onChange={(e) => setClaimForm({ ...claimForm, batchNumber: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="label">Reason for Return *</label>
+            <select
+              className="input"
+              value={claimForm.reason}
+              onChange={(e) => setClaimForm({ ...claimForm, reason: e.target.value })}
+            >
+              <option value="Damaged packaging / Seal Broken">Damaged packaging / Seal Broken</option>
+              <option value="Breakage / Leakage in transit">Breakage / Leakage in transit</option>
+              <option value="Near Expiry (< 60 Days)">Near Expiry (&lt; 60 Days)</option>
+              <option value="Expired Stock">Expired Stock</option>
+              <option value="Wrong Medicine / Batch Received">Wrong Medicine / Batch Received</option>
+              <option value="Quality Concern / Manufacturer Recall">Quality Concern / Manufacturer Recall</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="label">Detailed Remarks / Observations</label>
+            <textarea
+              className="input"
+              rows={3}
+              placeholder="Describe condition of boxes, seal status, or batch expiry details..."
+              value={claimForm.remarks}
+              onChange={(e) => setClaimForm({ ...claimForm, remarks: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="label">Photo Proof URL (Optional)</label>
+            <input
+              className="input"
+              placeholder="https://... photo proof of damage"
+              value={claimForm.imageUrl}
+              onChange={(e) => setClaimForm({ ...claimForm, imageUrl: e.target.value })}
+            />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
+            <button type="button" className="btn btn-secondary" onClick={() => setShowClaimDrawer(false)}>
+              Cancel
+            </button>
+            <button type="submit" className="btn btn-primary" disabled={submittingClaim}>
+              {submittingClaim ? "Submitting..." : "Submit Return Claim"}
+            </button>
+          </div>
+        </form>
+      </SideDrawer>
+
+      {/* SideDrawer: Review Return Claim (Warehouse / Admin) */}
+      <SideDrawer
+        isOpen={showReviewDrawer}
+        onClose={() => {
+          setShowReviewDrawer(false);
+          setSelectedClaimForReview(null);
+        }}
+        title="🔍 Inspect &amp; Review Claim"
+        subtitle={selectedClaimForReview ? `Claim #${selectedClaimForReview.requestNumber}` : ""}
+      >
+        {selectedClaimForReview && (
+          <form onSubmit={handleReviewClaim} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+            <div style={{ background: "var(--bg-secondary)", padding: "var(--space-4)", borderRadius: "var(--radius-md)", fontSize: "0.85rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+                <span>Retailer:</span>
+                <strong>{selectedClaimForReview.shopkeeperName || "Retail Shopkeeper"}</strong>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+                <span>Product:</span>
+                <strong>{selectedClaimForReview.productName}</strong>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+                <span>Claimed Qty:</span>
+                <strong>{selectedClaimForReview.quantity} packs</strong>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.25rem" }}>
+                <span>Reason:</span>
+                <span style={{ color: "var(--color-error)" }}>{selectedClaimForReview.reason}</span>
+              </div>
+              {selectedClaimForReview.remarks && (
+                <div style={{ marginTop: "0.5rem", borderTop: "1px solid var(--border-color)", paddingTop: "0.5rem" }}>
+                  <span style={{ color: "var(--text-muted)" }}>Remarks:</span> {selectedClaimForReview.remarks}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <label className="label">Inspection Decision *</label>
+              <select
+                className="input"
+                value={reviewForm.action}
+                onChange={(e) => setReviewForm({ ...reviewForm, action: e.target.value })}
+              >
+                <option value="APPROVE">Approve Claim &amp; Authorize GST Credit Note</option>
+                <option value="REJECT">Reject Claim (Invalid / Physical inspection failed)</option>
+              </select>
+            </div>
+
+            {reviewForm.action === "REJECT" && (
+              <div>
+                <label className="label">Rejection Reason *</label>
+                <textarea
+                  className="input"
+                  rows={3}
+                  required
+                  placeholder="Explain why this return claim was rejected..."
+                  value={reviewForm.rejectionReason}
+                  onChange={(e) => setReviewForm({ ...reviewForm, rejectionReason: e.target.value })}
+                />
+              </div>
+            )}
+
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  setShowReviewDrawer(false);
+                  setSelectedClaimForReview(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-primary"
+                style={{
+                  background: reviewForm.action === "APPROVE" ? "var(--color-success)" : "var(--color-error)",
+                  borderColor: reviewForm.action === "APPROVE" ? "var(--color-success)" : "var(--color-error)",
+                }}
+                disabled={reviewingClaim}
+              >
+                {reviewingClaim ? "Saving Decision..." : reviewForm.action === "APPROVE" ? "Approve & Issue Credit" : "Confirm Rejection"}
+              </button>
+            </div>
+          </form>
+        )}
+      </SideDrawer>
       {selectedInvoice && (
         <div
           style={{

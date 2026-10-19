@@ -85,6 +85,50 @@ async def allocate_batch_fefo(
     return allocated_batch
 
 
+async def allocate_batches_fefo_multi(
+    session: AsyncSession, product_id: uuid.UUID, requested_quantity: int
+) -> list[tuple[StockBatch, int]]:
+    """
+    Auto-allocate stock across multiple non-expired batches in FEFO order if necessary.
+    Returns a list of (StockBatch, allocated_quantity) pairs.
+    """
+    batches = await get_fefo_batches_for_product(session, product_id)
+    if not batches:
+        prod_res = await session.execute(select(Product.name).where(Product.id == product_id))
+        prod_name = prod_res.scalar_one_or_none() or str(product_id)
+        raise InsufficientStockError(f"No available stock batch found for product '{prod_name}'.")
+
+    total_avail = sum(b.quantity_available for b in batches)
+    if total_avail < requested_quantity:
+        prod_res = await session.execute(select(Product.name).where(Product.id == product_id))
+        prod_name = prod_res.scalar_one_or_none() or str(product_id)
+        raise InsufficientStockError(
+            f"Insufficient stock for '{prod_name}': requested {requested_quantity}, "
+            f"total available across all batches is {total_avail}."
+        )
+
+    # First check if any single batch satisfies the requested quantity
+    for batch in batches:
+        if batch.quantity_available >= requested_quantity:
+            batch.quantity_available -= requested_quantity
+            batch.quantity_sold += requested_quantity
+            return [(batch, requested_quantity)]
+
+    # Otherwise, split greedily in FEFO order
+    allocations: list[tuple[StockBatch, int]] = []
+    remaining = requested_quantity
+    for batch in batches:
+        if remaining <= 0:
+            break
+        alloc_qty = min(batch.quantity_available, remaining)
+        batch.quantity_available -= alloc_qty
+        batch.quantity_sold += alloc_qty
+        remaining -= alloc_qty
+        allocations.append((batch, alloc_qty))
+
+    return allocations
+
+
 async def restore_batch_stock(
     session: AsyncSession, stock_batch_id: uuid.UUID, quantity: int
 ) -> None:

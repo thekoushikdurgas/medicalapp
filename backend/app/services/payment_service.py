@@ -7,7 +7,8 @@ from datetime import date
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import AdvancePayment, PaymentMethod, ShopkeeperProfile, User
+from app.db.models import AdvancePayment, PaymentMethod, ShopkeeperProfile, User, LedgerEntryType
+from app.services.ledger_service import record_ledger_entry
 from app.core.logger import logger
 
 
@@ -61,6 +62,16 @@ async def record_advance_payment(
 
     new_balance = max(0.0, float(profile.outstanding_balance) - amount)
     profile.outstanding_balance = new_balance
+
+    await record_ledger_entry(
+        session=session,
+        shopkeeper_id=shopkeeper_id,
+        entry_type=LedgerEntryType.CREDIT,
+        amount=amount,
+        balance_after=new_balance,
+        reference_number=receipt_num,
+        description=f"Advance Deposit Receipt ({payment_method.value})",
+    )
 
     logger.info(
         f"Recorded advance payment {receipt_num} of ₹{amount:.2f} for {profile.shop_name} "

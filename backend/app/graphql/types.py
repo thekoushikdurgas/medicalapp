@@ -59,6 +59,7 @@ class UserType:
     role: str
     is_active: bool
     created_at: datetime
+    assigned_work_queue: str | None = None
 
 
 @strawberry.type
@@ -72,6 +73,14 @@ class ShopkeeperProfileType:
     city: str | None
     credit_limit: float
     outstanding_balance: float
+    user_id: uuid.UUID | None = None
+    verification_status: str = "VERIFIED"
+    verification_notes: str | None = None
+    credit_limit_reason: str | None = None
+    owner_name: str | None = None
+    phone: str | None = None
+    email: str | None = None
+    total_orders: int | None = 0
 
 
 @strawberry.type
@@ -129,6 +138,10 @@ class OrderType:
     delivered_at: datetime | None
     remarks: str | None
     item_count: int | None = None
+    delivery_otp: str | None = None
+    rating: int | None = None
+    feedback_text: str | None = None
+    estimated_arrival_window: str | None = None
 
 
 @strawberry.type
@@ -147,8 +160,21 @@ class InvoiceType:
 @strawberry.type
 class DeliveryAssignmentType:
     id: uuid.UUID
+    order_id: uuid.UUID | None = None
+    order_number: str | None = None
+    delivery_boy_id: uuid.UUID | None = None
+    delivery_boy_name: str | None = None
+    shop_name: str | None = None
+    shop_address: str | None = None
     status: str
     delivery_notes: str | None
+    proof_image_url: str | None = None
+    delivery_otp: str | None = None
+    cash_collected: float = 0.0
+    upi_collected: float = 0.0
+    payment_reference: str | None = None
+    failure_reason: str | None = None
+    failure_photo_url: str | None = None
     assigned_at: datetime
     delivered_at: datetime | None
 
@@ -408,3 +434,335 @@ class RecordAdvancePaymentInput:
     payment_method: str = "CASH"
     reference_no: str | None = None
     notes: str | None = None
+
+
+@strawberry.input
+class CompleteDeliveryInput:
+    assignment_id: uuid.UUID
+    otp: str
+    cash_collected: float = 0.0
+    upi_collected: float = 0.0
+    payment_reference: str | None = None
+    notes: str | None = None
+    proof_image_url: str | None = None
+
+
+# ── Financial Ledger & Claims Types ─────────────────────
+
+
+@strawberry.type
+class LedgerRecordType:
+    id: uuid.UUID
+    shopkeeper_id: uuid.UUID
+    entry_type: str
+    amount: float
+    balance_after: float
+    reference_number: str
+    description: str
+    created_at: datetime
+    shopkeeper_name: str | None = None
+
+
+@strawberry.type
+class ReturnClaimType:
+    id: uuid.UUID
+    request_number: str
+    shopkeeper_id: uuid.UUID
+    product_id: uuid.UUID
+    product_name: str | None = None
+    stock_batch_id: uuid.UUID | None = None
+    batch_number: str | None = None
+    quantity: int
+    reason: str
+    remarks: str | None = None
+    image_url: str | None = None
+    status: str
+    reviewed_by: uuid.UUID | None = None
+    rejection_reason: str | None = None
+    created_at: datetime
+    updated_at: datetime
+    shopkeeper_name: str | None = None
+
+
+@strawberry.input
+class SubmitReturnRequestInput:
+    product_id: uuid.UUID
+    quantity: int
+    reason: str
+    stock_batch_id: uuid.UUID | None = None
+    remarks: str | None = None
+    image_url: str | None = None
+
+
+@strawberry.input
+class ReviewReturnRequestInput:
+    request_id: uuid.UUID
+    action: str  # "APPROVE" or "REJECT"
+    rejection_reason: str | None = None
+
+
+@strawberry.type
+class DeliveryShiftSummaryType:
+    total_assigned: int
+    total_delivered: int
+    total_failed: int
+    cash_collected: float
+    upi_collected: float
+    total_collected: float
+    pending_handover: float
+
+
+@strawberry.input
+class ReportDeliveryFailureInput:
+    assignment_id: uuid.UUID
+    reason: str
+    notes: str | None = None
+    photo_url: str | None = None
+
+
+@strawberry.type
+class DeliveryRosterType:
+    id: uuid.UUID
+    delivery_boy_id: uuid.UUID
+    shift_date: date
+    shift_type: str
+    assigned_zone: str | None = None
+    status: str
+    notes: str | None = None
+
+
+@strawberry.input
+class RateOrderInput:
+    order_id: uuid.UUID
+    rating: int
+    feedback: str | None = None
+
+
+@strawberry.type
+class NotificationType:
+    id: uuid.UUID
+    user_id: uuid.UUID
+    title: str
+    message: str
+    category: str
+    is_read: bool
+    created_at: datetime
+
+
+@strawberry.input
+class UpdateNotificationPreferencesInput:
+    in_app: bool
+    sms: bool
+    whatsapp: bool
+
+
+@strawberry.type
+class AutomationJobType:
+    id: uuid.UUID
+    job_type: str
+    payload: str | None = None
+    status: str
+    retry_count: int
+    max_retries: int
+    error_message: str | None = None
+    created_at: datetime
+    updated_at: datetime
+
+
+@strawberry.type
+class IntegrationHealthType:
+    database_status: str
+    database_latency_ms: float
+    gst_einvoice_portal: str
+    gst_latency_ms: float
+    sms_dlt_gateway: str
+    whatsapp_api: str
+    redis_event_queue: str
+    failed_jobs_count: int
+    failed_notifications_count: int
+    active_workers: int
+
+
+# ── Super Admin Governance & Simulation Types ────────────
+
+
+@strawberry.type
+class BulkPricePreviewItem:
+    product_id: uuid.UUID
+    product_name: str
+    pack_size: str
+    category: str | None
+    current_mrp: float
+    new_mrp: float
+    current_ptr: float
+    new_ptr: float
+    projected_margin_pct: float
+    warning: str | None = None
+
+
+@strawberry.type
+class BulkPriceSimulationResult:
+    dry_run: bool
+    total_matched: int
+    total_affected: int
+    can_apply: bool
+    preview_items: list[BulkPricePreviewItem]
+    validation_warnings: list[str]
+    audit_id: str | None = None
+
+
+@strawberry.type
+class AutomationCircuitType:
+    subsystem: str
+    is_paused: bool
+    paused_by: str | None = None
+    pause_reason: str | None = None
+    updated_at: datetime
+
+
+@strawberry.type
+class HighRiskApprovalType:
+    id: uuid.UUID
+    action_type: str
+    target_id: str | None = None
+    description: str
+    status: str
+    requested_by_id: uuid.UUID
+    requested_by_name: str
+    approved_by_id: uuid.UUID | None = None
+    approved_by_name: str | None = None
+    rejection_reason: str | None = None
+    created_at: datetime
+    updated_at: datetime
+
+
+# ── Warehouse Floor, Barcodes & Picking Slip Types ───────
+
+
+@strawberry.type
+class StockAdjustmentType:
+    id: uuid.UUID
+    stock_batch_id: uuid.UUID
+    batch_number: str
+    product_name: str
+    adjustment_type: str
+    quantity_delta: int
+    reason: str
+    evidence_url: str | None = None
+    is_repeated: bool = False
+    adjusted_by_name: str = "Warehouse Officer"
+    created_at: datetime
+
+
+@strawberry.type
+class WarehousePickingLineType:
+    item_id: uuid.UUID
+    product_name: str
+    pack_size: str
+    batch_number: str
+    expiry_date: str
+    rack_location: str
+    quantity_to_pick: int
+    barcode: str
+    is_picked: bool
+    barcode_verified: bool
+
+
+@strawberry.type
+class WarehousePickingSlipType:
+    order_id: uuid.UUID
+    order_number: str
+    shopkeeper_name: str
+    delivery_area: str
+    priority: str
+    total_items_count: int
+    picking_lines: list[WarehousePickingLineType]
+    is_fully_picked: bool
+
+
+@strawberry.type
+class BarcodeVerificationResult:
+    is_valid: bool
+    matched_sku: str
+    matched_batch: str
+    message: str
+
+
+@strawberry.type
+class AccountAuditLogType:
+    id: uuid.UUID
+    user_id: uuid.UUID
+    action: str
+    details: str
+    performed_by_id: uuid.UUID
+    created_at: datetime
+    performed_by_name: str | None = None
+
+
+@strawberry.type
+class OperationsIncidentSummaryType:
+    breached_sla_orders_count: int
+    unresolved_disputes_count: int
+    critical_alerts_count: int
+    active_warehouse_pickers: int
+    active_delivery_couriers: int
+    avg_picker_orders_load: float
+    avg_retailer_kyc_review_minutes: float
+    flagged_late_payers_count: int
+    low_stock_replenishment_count: int
+    auth_failure_attempts_24h: int
+    reporting_data_balanced: bool
+
+
+# ── Super Admin Governance, Purchases & Audit Types ─────
+
+
+@strawberry.type
+class SupplierReconciliationItemType:
+    id: str
+    supplier_name: str
+    po_number: str
+    invoice_number: str
+    invoice_amount: float
+    received_amount: float
+    discrepancy_amount: float
+    discrepancy_type: str  # PRICE_MISMATCH, QUANTITY_SHORTAGE, TAX_MISMATCH, DUPLICATE_INVOICE
+    status: str            # PENDING_REVIEW, RESOLVED, CREDIT_NOTE_ISSUED
+    notes: str | None = None
+    created_at: datetime
+
+
+@strawberry.type
+class ProductChangeAuditItemType:
+    id: str
+    product_name: str
+    category: str | None
+    change_type: str       # MRP_UPDATE, TRADE_DISCOUNT, PACKAGING_REVISION, TAX_SLAB
+    old_value: str
+    new_value: str
+    performed_by: str
+    created_at: datetime
+
+
+@strawberry.type
+class SuperAdminGovernanceOverviewType:
+    pending_supplier_invoices_count: int
+    purchase_reconciliation_exceptions_count: int
+    supplier_discrepancies_count: int
+    supplier_reconciliations: list[SupplierReconciliationItemType]
+    mfa_enforced: bool
+    privileged_accounts_count: int
+    unusual_signin_alerts_count: int
+    unresolved_audit_exceptions_count: int
+    catalog_change_history: list[ProductChangeAuditItemType]
+    unusual_pricing_alerts_count: int
+    bank_reconciled_percentage: float
+    pending_external_settlements_count: int
+    automation_rules_version: str
+
+
+
+
+
+
+

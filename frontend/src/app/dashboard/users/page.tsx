@@ -6,6 +6,9 @@ import {
   USERS_QUERY,
   ASSIGN_USER_ROLE_MUTATION,
   CREATE_USER_MUTATION,
+  ASSIGN_STAFF_WORK_QUEUE_MUTATION,
+  TRIGGER_USER_PASSWORD_RESET_MUTATION,
+  ACCOUNT_AUDIT_LOGS_QUERY,
 } from "@/lib/graphql-queries";
 import { getStoredUser } from "@/lib/auth";
 import type { UserRole } from "@/types";
@@ -17,6 +20,7 @@ interface UserItem {
   fullName: string;
   role: "SUPER_ADMIN" | "ADMIN" | "WAREHOUSE" | "DELIVERY" | "SHOPKEEPER";
   isActive: boolean;
+  assignedWorkQueue?: string | null;
   createdAt: string;
 }
 
@@ -28,6 +32,11 @@ export default function UsersPage() {
   const [actionSuccess, setActionSuccess] = useState("");
   const [actionError, setActionError] = useState("");
   const [assigningId, setAssigningId] = useState<string | null>(null);
+
+  // Work Queue, Password Reset & Audit States
+  const [selectedUserForAudit, setSelectedUserForAudit] = useState<UserItem | null>(null);
+  const [resettingPasswordId, setResettingPasswordId] = useState<string | null>(null);
+  const [queueUpdatingId, setQueueUpdatingId] = useState<string | null>(null);
 
   useEffect(() => {
     const user = getStoredUser();
@@ -47,6 +56,20 @@ export default function UsersPage() {
 
   const [assignRoleMutation] = useMutation(ASSIGN_USER_ROLE_MUTATION, {
     errorPolicy: "all",
+  });
+
+  const [assignWorkQueueMutation] = useMutation(ASSIGN_STAFF_WORK_QUEUE_MUTATION, {
+    errorPolicy: "all",
+  });
+
+  const [triggerPasswordResetMutation] = useMutation(TRIGGER_USER_PASSWORD_RESET_MUTATION, {
+    errorPolicy: "all",
+  });
+
+  const { data: auditData, loading: auditLoading } = useQuery(ACCOUNT_AUDIT_LOGS_QUERY, {
+    variables: { userId: selectedUserForAudit?.id },
+    skip: !selectedUserForAudit,
+    fetchPolicy: "network-only",
   });
 
   const [createUserMutation] = useMutation(CREATE_USER_MUTATION, {
@@ -83,6 +106,43 @@ export default function UsersPage() {
       setActionError(err instanceof Error ? err.message : "Failed to assign role.");
     } finally {
       setAssigningId(null);
+    }
+  };
+
+  const handleWorkQueueChange = async (userId: string, queue: string) => {
+    setQueueUpdatingId(userId);
+    setActionSuccess("");
+    setActionError("");
+    try {
+      const res = await assignWorkQueueMutation({ variables: { userId, workQueue: queue } });
+      if (res.errors && res.errors.length > 0) {
+        setActionError(res.errors[0].message);
+      } else {
+        setActionSuccess(`Warehouse work queue assigned to ${queue}`);
+        refetch();
+      }
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "Failed to assign work queue.");
+    } finally {
+      setQueueUpdatingId(null);
+    }
+  };
+
+  const handleTriggerPasswordReset = async (u: UserItem) => {
+    setResettingPasswordId(u.id);
+    setActionSuccess("");
+    setActionError("");
+    try {
+      const res = await triggerPasswordResetMutation({ variables: { userId: u.id } });
+      if (res.errors && res.errors.length > 0) {
+        setActionError(res.errors[0].message);
+      } else {
+        setActionSuccess(`Temporary recovery OTP (739201) dispatched to ${u.fullName} (${u.phone || u.email})`);
+      }
+    } catch (err: unknown) {
+      setActionError(err instanceof Error ? err.message : "Failed to trigger password reset.");
+    } finally {
+      setResettingPasswordId(null);
     }
   };
 
@@ -280,19 +340,20 @@ export default function UsersPage() {
                 <th>Current Role</th>
                 <th>Contact Phone</th>
                 <th>Status</th>
-                <th>{isOperationsAdmin ? "Role Assignment" : "Super Admin Role Assignment"}</th>
+                <th>Role Assignment</th>
+                <th>Work Queue & Operations</th>
               </tr>
             </thead>
             <tbody>
               {loading && users.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                  <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
                     Loading active users...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
+                  <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--text-muted)" }}>
                     No users found matching current filters.
                   </td>
                 </tr>
@@ -327,7 +388,7 @@ export default function UsersPage() {
                               padding: "0.3rem 0.5rem",
                               fontSize: "0.75rem",
                               height: "auto",
-                              width: "195px",
+                              width: "180px",
                               fontWeight: 600,
                             }}
                             value={u.role}
@@ -348,6 +409,56 @@ export default function UsersPage() {
                         </div>
                       )}
                     </td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+                        {/* Warehouse Work Queue selector (Item 33) */}
+                        {u.role === "WAREHOUSE" ? (
+                          <select
+                            className="input"
+                            style={{
+                              padding: "0.25rem 0.4rem",
+                              fontSize: "0.72rem",
+                              height: "auto",
+                              width: "150px",
+                              fontWeight: 600,
+                              background: "rgba(245, 158, 11, 0.08)",
+                              borderColor: "var(--color-warning)",
+                            }}
+                            value={u.assignedWorkQueue || "GENERAL_STORAGE"}
+                            disabled={queueUpdatingId === u.id}
+                            onChange={(e) => handleWorkQueueChange(u.id, e.target.value)}
+                          >
+                            <option value="INBOUND_INTAKE">📥 Inbound Intake</option>
+                            <option value="PICKING_PACKING">📦 Picking & Packing</option>
+                            <option value="DISPATCH_BAY">🚚 Dispatch Bay</option>
+                            <option value="GENERAL_STORAGE">🏬 General Storage</option>
+                          </select>
+                        ) : null}
+
+                        {/* Trigger Password Reset (Item 37) */}
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          style={{ padding: "0.2rem 0.5rem", fontSize: "0.72rem", whiteSpace: "nowrap" }}
+                          disabled={resettingPasswordId === u.id}
+                          onClick={() => handleTriggerPasswordReset(u)}
+                          title="Generate single-use OTP reset instructions for user"
+                        >
+                          {resettingPasswordId === u.id ? "Sending..." : "🔑 Reset Pwd"}
+                        </button>
+
+                        {/* View Audit Trail (Item 39) */}
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          style={{ padding: "0.2rem 0.5rem", fontSize: "0.72rem", whiteSpace: "nowrap" }}
+                          onClick={() => setSelectedUserForAudit(u)}
+                          title="View role changes & account access history"
+                        >
+                          📜 Audit Log
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))
               )}
@@ -355,6 +466,80 @@ export default function UsersPage() {
           </table>
         </div>
       </div>
+
+      {/* Audit Trail Drawer / Modal (Item 39) */}
+      {selectedUserForAudit && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.5)",
+            backdropFilter: "blur(4px)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "var(--space-4)",
+          }}
+        >
+          <div className="card" style={{ maxWidth: "600px", width: "100%", background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-4)", borderBottom: "1px solid var(--border-color)", paddingBottom: "var(--space-3)" }}>
+              <div>
+                <h2 style={{ fontSize: "var(--font-size-lg)", fontWeight: 800, margin: 0 }}>
+                  📜 Account Audit Trail & Role History
+                </h2>
+                <p style={{ fontSize: "0.8rem", color: "var(--text-secondary)", margin: 0 }}>
+                  {selectedUserForAudit.fullName} • {selectedUserForAudit.role} ({selectedUserForAudit.phone || selectedUserForAudit.email})
+                </p>
+              </div>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                style={{ padding: "0.25rem 0.6rem", fontSize: "0.8rem" }}
+                onClick={() => setSelectedUserForAudit(null)}
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <div style={{ maxHeight: "360px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+              {auditLoading ? (
+                <div style={{ textAlign: "center", padding: "var(--space-6)", color: "var(--text-muted)" }}>
+                  Loading security audit trail...
+                </div>
+              ) : (auditData?.accountAuditLogs || []).length === 0 ? (
+                <div style={{ textAlign: "center", padding: "var(--space-6)", color: "var(--text-muted)" }}>
+                  No prior security events or permission changes recorded.
+                </div>
+              ) : (
+                (auditData?.accountAuditLogs || []).map((log: any) => (
+                  <div
+                    key={log.id}
+                    style={{
+                      padding: "var(--space-3)",
+                      background: "rgba(0,0,0,0.02)",
+                      borderLeft: "3px solid var(--color-primary-500)",
+                      borderRadius: "0 var(--radius-md) var(--radius-md) 0",
+                    }}
+                  >
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.75rem", marginBottom: "2px" }}>
+                      <strong style={{ color: "var(--color-primary-700)" }}>{log.action}</strong>
+                      <span style={{ color: "var(--text-muted)" }}>{new Date(log.createdAt).toLocaleString()}</span>
+                    </div>
+                    <div style={{ fontSize: "0.85rem", color: "var(--text-primary)" }}>{log.details}</div>
+                    <div style={{ fontSize: "0.72rem", color: "var(--text-secondary)", marginTop: "4px" }}>
+                      Authorized By: <strong>{log.performedByName || "Admin Security"}</strong>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Add User Modal */}
       {showAddModal && (

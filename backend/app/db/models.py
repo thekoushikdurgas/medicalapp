@@ -57,11 +57,31 @@ class DeliveryStatus(str, enum.Enum):
     FAILED = "FAILED"
 
 
+class NonDeliveryReason(str, enum.Enum):
+    SHOP_CLOSED = "SHOP_CLOSED"
+    RECIPIENT_UNAVAILABLE = "RECIPIENT_UNAVAILABLE"
+    ADDRESS_INCORRECT = "ADDRESS_INCORRECT"
+    PREMISES_BLOCKED = "PREMISES_BLOCKED"
+    DAMAGED_CARTON = "DAMAGED_CARTON"
+    REFUSED_BY_CHEMIST = "REFUSED_BY_CHEMIST"
+
+
 class PaymentMethod(str, enum.Enum):
     CASH = "CASH"
     UPI = "UPI"
     BANK_TRANSFER = "BANK_TRANSFER"
     CHEQUE = "CHEQUE"
+
+
+class LedgerEntryType(str, enum.Enum):
+    DEBIT = "DEBIT"
+    CREDIT = "CREDIT"
+
+
+class ReturnRequestStatus(str, enum.Enum):
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
 
 
 # ── Users ────────────────────────────────────────────────
@@ -79,6 +99,7 @@ class User(Base):
     role: Mapped[UserRole] = mapped_column(Enum(UserRole))
     full_name: Mapped[str] = mapped_column(String(255))
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    assigned_work_queue: Mapped[str | None] = mapped_column(String(50), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, server_default=func.now(), onupdate=func.now()
@@ -110,6 +131,12 @@ class ShopkeeperProfile(Base):
     city: Mapped[str | None] = mapped_column(String(100), nullable=True)
     credit_limit: Mapped[float] = mapped_column(Numeric(12, 2), default=0)
     outstanding_balance: Mapped[float] = mapped_column(Numeric(12, 2), default=0)
+    verification_status: Mapped[str] = mapped_column(String(50), default="VERIFIED")
+    verification_notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    credit_limit_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    notification_preferences: Mapped[str | None] = mapped_column(
+        String(255), default='{"in_app":true,"sms":false,"whatsapp":true}'
+    )
 
     user: Mapped[User] = relationship(back_populates="shopkeeper_profile")
 
@@ -149,6 +176,7 @@ class Product(Base):
     default_mrp: Mapped[float | None] = mapped_column(Numeric(10, 2), nullable=True)
     default_sgst_rate: Mapped[float] = mapped_column(Numeric(5, 2), default=2.5)
     default_cgst_rate: Mapped[float] = mapped_column(Numeric(5, 2), default=2.5)
+    barcode: Mapped[str | None] = mapped_column(String(50), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
@@ -169,6 +197,10 @@ class StockBatch(Base):
     quantity_received: Mapped[int] = mapped_column(Integer)
     quantity_available: Mapped[int] = mapped_column(Integer)
     quantity_sold: Mapped[int] = mapped_column(Integer, default=0)
+    rack_location: Mapped[str | None] = mapped_column(
+        String(50), nullable=True, default="Rack A - Bay 01"
+    )
+    barcode: Mapped[str | None] = mapped_column(String(50), nullable=True)
     supplier_invoice_no: Mapped[str | None] = mapped_column(
         String(50), nullable=True
     )
@@ -207,8 +239,11 @@ class Order(Base):
     placed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     confirmed_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
     delivered_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    rating: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    feedback_text: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     items: Mapped[list["OrderItem"]] = relationship(back_populates="order")
+    shopkeeper: Mapped["User"] = relationship(foreign_keys=[shopkeeper_id])
     invoice: Mapped["Invoice | None"] = relationship(
         back_populates="order", uselist=False
     )
@@ -247,9 +282,12 @@ class OrderItem(Base):
     sgst_amount: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
     cgst_amount: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
     line_total: Mapped[float] = mapped_column(Numeric(10, 2), default=0)
+    is_picked: Mapped[bool] = mapped_column(Boolean, default=False)
+    barcode_verified: Mapped[bool] = mapped_column(Boolean, default=False)
 
     order: Mapped[Order] = relationship(back_populates="items")
     product: Mapped[Product] = relationship()
+    stock_batch: Mapped[StockBatch | None] = relationship()
 
     __table_args__ = (Index("idx_order_items_order", "order_id"),)
 
@@ -303,12 +341,37 @@ class DeliveryAssignment(Base):
     proof_image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     assigned_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
     delivered_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    delivery_otp: Mapped[str | None] = mapped_column(String(6), nullable=True)
+    cash_collected: Mapped[float] = mapped_column(Numeric(12, 2), default=0.0)
+    upi_collected: Mapped[float] = mapped_column(Numeric(12, 2), default=0.0)
+    payment_reference: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    failure_reason: Mapped[NonDeliveryReason | None] = mapped_column(
+        Enum(NonDeliveryReason), nullable=True
+    )
+    failure_photo_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     order: Mapped[Order] = relationship(back_populates="delivery")
 
     __table_args__ = (
         Index("idx_delivery_assignments_boy", "delivery_boy_id", "status"),
     )
+
+
+class DeliveryRoster(Base):
+    __tablename__ = "delivery_rosters"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    delivery_boy_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    shift_date: Mapped[date] = mapped_column(Date)
+    shift_type: Mapped[str] = mapped_column(String(50), default="MORNING")
+    assigned_zone: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    status: Mapped[str] = mapped_column(String(50), default="SCHEDULED")
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    delivery_boy: Mapped[User] = relationship()
 
 
 # ── Payments ─────────────────────────────────────────────
@@ -522,3 +585,242 @@ class AdvancePayment(Base):
 
     shopkeeper: Mapped[User] = relationship(foreign_keys=[shopkeeper_id])
     recorder: Mapped[User] = relationship(foreign_keys=[recorded_by])
+
+
+# ── Financial Ledger ─────────────────────────────────────
+
+
+class LedgerEntry(Base):
+    __tablename__ = "ledger_entries"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    shopkeeper_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    entry_type: Mapped[LedgerEntryType] = mapped_column(Enum(LedgerEntryType))
+    amount: Mapped[float] = mapped_column(Numeric(12, 2))
+    balance_after: Mapped[float] = mapped_column(Numeric(12, 2))
+    reference_number: Mapped[str] = mapped_column(String(100))
+    description: Mapped[str] = mapped_column(String(255))
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    shopkeeper: Mapped[User] = relationship(foreign_keys=[shopkeeper_id])
+
+    __table_args__ = (
+        Index("idx_ledger_shopkeeper", "shopkeeper_id", "created_at"),
+    )
+
+
+# ── Return Claims / Requests ─────────────────────────────
+
+
+class ReturnRequest(Base):
+    __tablename__ = "return_requests"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    request_number: Mapped[str] = mapped_column(String(50), unique=True)
+    shopkeeper_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    product_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("products.id"))
+    stock_batch_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("stock_batches.id"), nullable=True
+    )
+    quantity: Mapped[int] = mapped_column(Integer)
+    reason: Mapped[str] = mapped_column(String(255))
+    remarks: Mapped[str | None] = mapped_column(Text, nullable=True)
+    image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    status: Mapped[ReturnRequestStatus] = mapped_column(
+        Enum(ReturnRequestStatus), default=ReturnRequestStatus.PENDING
+    )
+    reviewed_by: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), onupdate=func.now()
+    )
+
+    shopkeeper: Mapped[User] = relationship(foreign_keys=[shopkeeper_id])
+    product: Mapped[Product] = relationship()
+    stock_batch: Mapped[StockBatch | None] = relationship()
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    title: Mapped[str] = mapped_column(String(255))
+    message: Mapped[str] = mapped_column(Text)
+    category: Mapped[str] = mapped_column(String(50), default="ORDER")
+    is_read: Mapped[bool] = mapped_column(Boolean, default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    user: Mapped[User] = relationship()
+
+
+# ── Operations Automation & Background Jobs ─────────────
+
+
+class JobStatus(str, enum.Enum):
+    PENDING = "PENDING"
+    RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
+    FAILED = "FAILED"
+    RETRYING = "RETRYING"
+
+
+class AutomationJob(Base):
+    __tablename__ = "automation_jobs"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    job_type: Mapped[str] = mapped_column(String(100))
+    payload: Mapped[str | None] = mapped_column(Text, nullable=True)
+    status: Mapped[JobStatus] = mapped_column(
+        Enum(JobStatus), default=JobStatus.PENDING
+    )
+    retry_count: Mapped[int] = mapped_column(Integer, default=0)
+    max_retries: Mapped[int] = mapped_column(Integer, default=3)
+    error_message: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), onupdate=func.now()
+    )
+
+
+# ── Super Admin Governance, Circuit Breakers & Dual Approvals ──
+
+
+class AutomationCircuitBreaker(Base):
+    __tablename__ = "automation_circuit_breakers"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    subsystem: Mapped[str] = mapped_column(String(100), unique=True)
+    is_paused: Mapped[bool] = mapped_column(Boolean, default=False)
+    paused_by: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    pause_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), onupdate=func.now()
+    )
+
+
+class HighRiskApproval(Base):
+    __tablename__ = "high_risk_approvals"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    action_type: Mapped[str] = mapped_column(String(100))
+    target_id: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    description: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(50), default="PENDING")
+    requested_by_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    approved_by_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    rejection_reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime, server_default=func.now(), onupdate=func.now()
+    )
+
+    requested_by: Mapped[User] = relationship(foreign_keys=[requested_by_id])
+    approved_by: Mapped[User | None] = relationship(foreign_keys=[approved_by_id])
+
+
+# ── Warehouse Stock Audits & Adjustments ─────────────────
+
+
+class StockAdjustment(Base):
+    __tablename__ = "stock_adjustments"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    stock_batch_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("stock_batches.id"))
+    adjustment_type: Mapped[str] = mapped_column(String(50))  # DAMAGED, EXPIRED, COUNT_DISCREPANCY, LEAKAGE
+    quantity_delta: Mapped[int] = mapped_column(Integer)
+    reason: Mapped[str] = mapped_column(Text)
+    evidence_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    is_repeated: Mapped[bool] = mapped_column(Boolean, default=False)
+    adjusted_by_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    stock_batch: Mapped[StockBatch] = relationship()
+    adjusted_by: Mapped[User] = relationship()
+
+
+# ── Account & Security Audit Logs ───────────────────────
+
+
+class AccountAuditLog(Base):
+    __tablename__ = "account_audit_logs"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    action: Mapped[str] = mapped_column(String(100))  # ROLE_CHANGE, PASSWORD_RESET_TRIGGERED, STATUS_TOGGLE, WORK_QUEUE_ASSIGNED
+    details: Mapped[str] = mapped_column(Text)
+    performed_by_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    user: Mapped[User] = relationship(foreign_keys=[user_id])
+    performed_by: Mapped[User] = relationship(foreign_keys=[performed_by_id])
+
+
+# ── System Governance Policies ──────────────────────────
+
+
+class SystemGovernancePolicy(Base):
+    __tablename__ = "system_governance_policies"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    policy_key: Mapped[str] = mapped_column(String(100), unique=True)
+    is_enabled: Mapped[bool] = mapped_column(Boolean, default=True)
+    policy_value: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    updated_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    updated_by: Mapped[User | None] = relationship(foreign_keys=[updated_by_id])
+
+
+# ── Supplier Purchase Reconciliation Records ─────────────
+
+
+class SupplierReconciliationRecord(Base):
+    __tablename__ = "supplier_reconciliations"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    supplier_name: Mapped[str] = mapped_column(String(200))
+    po_number: Mapped[str] = mapped_column(String(100))
+    invoice_number: Mapped[str] = mapped_column(String(100))
+    invoice_amount: Mapped[float] = mapped_column(Numeric(12, 2))
+    received_amount: Mapped[float] = mapped_column(Numeric(12, 2))
+    discrepancy_amount: Mapped[float] = mapped_column(Numeric(12, 2), default=0.0)
+    discrepancy_type: Mapped[str] = mapped_column(String(100))  # PRICE_MISMATCH, QUANTITY_SHORTAGE, TAX_MISMATCH, DUPLICATE_INVOICE
+    status: Mapped[str] = mapped_column(String(50), default="PENDING_REVIEW")  # PENDING_REVIEW, RESOLVED, CREDIT_NOTE_ISSUED
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    resolved_by_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    resolved_by: Mapped[User | None] = relationship(foreign_keys=[resolved_by_id])
+
+
+
+
+
+

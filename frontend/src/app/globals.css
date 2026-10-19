@@ -43,14 +43,18 @@
   --color-gray-700: #374151;
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
+  --color-neutral-100: var(--color-gray-100);
 
   /* Status */
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-error: #ef4444;
+  --color-danger: var(--color-error);
   --color-info: #3b82f6;
 
   /* Badge backgrounds (light mode) */
+  --badge-primary-bg: var(--color-primary-100);
+  --badge-primary-text: var(--color-primary-800);
   --badge-success-bg: #d1fae5;
   --badge-success-text: #065f46;
   --badge-warning-bg: #fef3c7;
@@ -65,11 +69,13 @@
   /* Surfaces */
   --bg-primary: #ffffff;
   --bg-secondary: var(--color-gray-50);
+  --bg-surface: var(--bg-primary);
   --bg-dark: var(--color-gray-900);
   --text-primary: var(--color-gray-900);
   --text-secondary: var(--color-gray-600);
   --text-muted: var(--color-gray-400);
   --border-color: var(--color-gray-200);
+  --border-subtle: var(--color-gray-100);
 
   /* Typography */
   --font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -108,6 +114,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 
   /* Z-Index scale */
   --z-dropdown: 100;
@@ -133,11 +140,16 @@
 
   --bg-primary: #1e293b;
   --bg-secondary: #0f172a;
+  --bg-surface: #1e293b;
   --bg-dark: #020617;
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
   --border-color: #334155;
+  --border-subtle: #1e293b;
+
+  --color-primary-50: rgba(16, 185, 129, 0.12);
+  --color-danger: var(--color-error);
 
   --color-gray-50: #1e293b;
   --color-gray-100: #334155;
@@ -151,6 +163,8 @@
   --color-gray-900: #ffffff;
 
   /* Badge dark-mode colors */
+  --badge-primary-bg: rgba(16, 185, 129, 0.2);
+  --badge-primary-text: #6ee7b7;
   --badge-success-bg: rgba(16, 185, 129, 0.18);
   --badge-success-text: #6ee7b7;
   --badge-warning-bg: rgba(245, 158, 11, 0.18);
@@ -166,6 +180,7 @@
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.5);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -4px rgba(0, 0, 0, 0.6);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.7), 0 8px 10px -6px rgba(0, 0, 0, 0.7);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
 }
 
 /* ── Base ────────────────────────────────────────────────── */
@@ -229,6 +244,15 @@ a:hover {
   transition: all var(--transition-fast);
 }
 
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+  box-shadow: none;
+  transform: none;
+}
+
 .btn-primary {
   background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-700));
   color: white;
@@ -246,9 +270,19 @@ a:hover {
   border: 1px solid var(--border-color);
 }
 
+[data-theme="dark"] .btn-secondary {
+  color: var(--color-primary-300);
+  background: rgba(255, 255, 255, 0.05);
+}
+
 .btn-secondary:hover {
   background: var(--color-primary-50);
   border-color: var(--color-primary-300);
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: var(--color-primary-500);
 }
 
 .btn-danger {
@@ -275,6 +309,13 @@ a:hover {
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
+.input:disabled,
+.input[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: var(--bg-secondary);
+}
+
 .input:focus {
   border-color: var(--color-primary-400);
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
@@ -299,6 +340,11 @@ a:hover {
   border-radius: var(--radius-full);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+.badge-primary {
+  background: var(--badge-primary-bg);
+  color: var(--badge-primary-text);
 }
 
 .badge-success {
@@ -401,6 +447,7 @@ a:hover {
 .sidebar-container {
   width: var(--sidebar-width);
   min-height: 100vh;
+  max-height: 100dvh;
   background: var(--bg-dark);
   color: #f8fafc;
   display: flex;
@@ -411,6 +458,13 @@ a:hover {
   top: 0;
   z-index: var(--z-sidebar);
   transition: width var(--transition-base), transform var(--transition-base);
+}
+
+.dashboard-main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-6);
+  background: var(--bg-secondary);
 }
 
 .sidebar-container.collapsed {
@@ -573,9 +627,10 @@ a:hover {
   transition: background var(--transition-base), border-color var(--transition-base);
 }
 
-@supports (backdrop-filter: blur(12px)) {
+@supports (backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px)) {
   .dashboard-navbar {
     background: color-mix(in srgb, var(--bg-primary) 88%, transparent);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
   }
 }
@@ -660,12 +715,13 @@ a:hover {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   z-index: var(--z-modal);
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: 12vh;
+  padding: 10vh var(--space-4) var(--space-4);
   animation: fadeIn var(--transition-fast) ease-out;
 }
 
@@ -724,6 +780,19 @@ a:hover {
   position: relative;
 }
 
+/* Standard scrollbars (Firefox, Chrome 121+, Edge 121+) */
+@supports (scrollbar-width: thin) {
+  .table-scroll-container {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-gray-300) var(--bg-secondary);
+  }
+
+  [data-theme="dark"] .table-scroll-container {
+    scrollbar-color: var(--color-gray-700) var(--bg-secondary);
+  }
+}
+
+/* WebKit scrollbars (Safari, Chrome < 121, iOS) */
 .table-scroll-container::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -755,8 +824,9 @@ a:hover {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.45);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
-  z-index: 1000;
+  z-index: var(--z-modal);
   display: flex;
   justify-content: flex-end;
   animation: fadeIn var(--transition-fast) ease-out;
@@ -773,7 +843,7 @@ a:hover {
   flex-direction: column;
   animation: slideInRight var(--transition-base) cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
-  z-index: 1001;
+  z-index: calc(var(--z-modal) + 1);
 }
 
 .side-drawer-header {
@@ -881,6 +951,7 @@ a:hover {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(4px);
   backdrop-filter: blur(4px);
   z-index: calc(var(--z-sidebar) - 1);
   animation: fadeIn var(--transition-fast) ease-out;
@@ -960,6 +1031,7 @@ a:hover {
 
 .checkbox,
 .radio {
+  -webkit-appearance: none;
   appearance: none;
   width: 18px;
   height: 18px;
@@ -1108,6 +1180,11 @@ a:hover {
 .input:user-invalid {
   border-color: var(--color-error);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+}
+
+.input:user-invalid:focus {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.22);
 }
 
 .input:user-valid:not(:placeholder-shown) {

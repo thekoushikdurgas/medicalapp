@@ -14,10 +14,16 @@ from app.db.models import (
     OrderStatus,
     Product,
     ShopkeeperProfile,
+    LedgerEntryType,
 )
 from app.utils.gst import calculate_line_total
-from app.services.inventory_service import allocate_batch_fefo, restore_batch_stock
+from app.services.inventory_service import (
+    allocate_batch_fefo,
+    restore_batch_stock,
+    allocate_batches_fefo_multi,
+)
 from app.services.invoice_service import create_invoice_for_order
+from app.services.ledger_service import record_ledger_entry
 from app.core.logger import logger
 
 
@@ -43,11 +49,20 @@ async def place_order(
     """
     Validate shopkeeper credit limit, compute line totals with statutory GST, and create PLACED order.
     """
-    # 1. Fetch shopkeeper profile to verify credit limit
+    # 1. Fetch shopkeeper profile to verify credit limit and KYC status
     sk_result = await session.execute(
         select(ShopkeeperProfile).where(ShopkeeperProfile.user_id == shopkeeper_id)
     )
     sk_profile = sk_result.scalar_one_or_none()
+
+    if sk_profile:
+        v_status = getattr(sk_profile, "verification_status", "VERIFIED") or "VERIFIED"
+        if v_status in ("SUSPENDED", "REJECTED"):
+            notes = getattr(sk_profile, "verification_notes", None)
+            raise OrderDomainError(
+                f"Ordering blocked: Pharmacy account verification status is '{v_status}'. "
+                f"Reason: {notes or 'Please contact distributor operations admin.'}"
+            )
 
     # Pre-calculate estimated items to get order total
     line_computations = []
@@ -81,12 +96,14 @@ async def place_order(
         total_net += calc["total"]
 
     # Check credit limit if profile exists
-    if sk_profile and sk_profile.credit_limit > 0:
-        projected_balance = float(sk_profile.outstanding_balance) + total_net
-        if projected_balance > float(sk_profile.credit_limit):
+    if sk_profile:
+        lim = float(sk_profile.credit_limit or 0.0)
+        curr_out = float(sk_profile.outstanding_balance or 0.0)
+        projected_balance = curr_out + total_net
+        if lim > 0 and projected_balance > lim:
             raise CreditLimitExceededError(
-                f"Credit limit exceeded. Current outstanding: ₹{sk_profile.outstanding_balance:,.2f}, "
-                f"Order net: ₹{total_net:,.2f}, Limit: ₹{sk_profile.credit_limit:,.2f}."
+                f"Credit limit exceeded. Current outstanding: ₹{curr_out:,.2f}, "
+                f"Order net: ₹{total_net:,.2f}, Limit: ₹{lim:,.2f}."
             )
 
     order = Order(
@@ -146,15 +163,60 @@ async def confirm_order(
         raise OrderDomainError(f"Cannot confirm order in {order.status.value} status.")
 
     # Run FEFO batch allocation for each order line
-    for item in order.items:
-        allocated_batch = await allocate_batch_fefo(
+    items_to_process = list(order.items)
+    for item in items_to_process:
+        allocations = await allocate_batches_fefo_multi(
             session=session,
             product_id=item.product_id,
             requested_quantity=item.quantity,
         )
-        item.stock_batch_id = allocated_batch.id
-        item.mrp = float(allocated_batch.mrp)
-        item.rate = float(allocated_batch.purchase_rate) if allocated_batch.purchase_rate else item.rate
+        first_batch, first_qty = allocations[0]
+        item.stock_batch_id = first_batch.id
+        item.quantity = first_qty
+        item.mrp = float(first_batch.mrp)
+        item.rate = float(first_batch.purchase_rate) if first_batch.purchase_rate else item.rate
+        calc1 = calculate_line_total(
+            quantity=first_qty,
+            rate=item.rate,
+            discount1_pct=float(item.discount1_pct or 0.0),
+            discount2_pct=float(item.discount2_pct or 0.0),
+            sgst_pct=float(item.sgst_pct or 2.5),
+            cgst_pct=float(item.cgst_pct or 2.5),
+        )
+        item.sgst_amount = calc1["sgst"]
+        item.cgst_amount = calc1["cgst"]
+        item.line_total = calc1["total"]
+
+        for extra_batch, extra_qty in allocations[1:]:
+            calc_extra = calculate_line_total(
+                quantity=extra_qty,
+                rate=float(extra_batch.purchase_rate) if extra_batch.purchase_rate else item.rate,
+                discount1_pct=float(item.discount1_pct or 0.0),
+                discount2_pct=float(item.discount2_pct or 0.0),
+                sgst_pct=float(item.sgst_pct or 2.5),
+                cgst_pct=float(item.cgst_pct or 2.5),
+            )
+            extra_item = OrderItem(
+                order_id=order.id,
+                product_id=item.product_id,
+                stock_batch_id=extra_batch.id,
+                quantity=extra_qty,
+                rate=float(extra_batch.purchase_rate) if extra_batch.purchase_rate else item.rate,
+                mrp=float(extra_batch.mrp),
+                discount1_pct=item.discount1_pct,
+                discount2_pct=item.discount2_pct,
+                sgst_pct=item.sgst_pct,
+                cgst_pct=item.cgst_pct,
+                sgst_amount=calc_extra["sgst"],
+                cgst_amount=calc_extra["cgst"],
+                line_total=calc_extra["total"],
+            )
+            session.add(extra_item)
+            order.items.append(extra_item)
+
+    # Recalculate order totals if lines split
+    order.total_amount = round(sum(i.line_total for i in order.items), 2)
+    order.net_amount = round(sum(i.line_total for i in order.items), 2)
 
     # Create legal GST invoice
     await create_invoice_for_order(session, order)
@@ -192,6 +254,15 @@ async def update_order_status(
         sk = sk_result.scalar_one_or_none()
         if sk:
             sk.outstanding_balance = float(sk.outstanding_balance) + float(order.net_amount)
+            await record_ledger_entry(
+                session=session,
+                shopkeeper_id=order.shopkeeper_id,
+                entry_type=LedgerEntryType.DEBIT,
+                amount=float(order.net_amount),
+                balance_after=float(sk.outstanding_balance),
+                reference_number=order.order_number,
+                description=f"Delivery & Invoice for order {order.order_number}",
+            )
             logger.info(f"Updated shopkeeper {sk.shop_name} outstanding balance to ₹{sk.outstanding_balance:,.2f}")
 
     logger.info(f"Order {order.order_number} updated to status {new_status.value}")

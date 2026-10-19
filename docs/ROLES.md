@@ -3,6 +3,11 @@
 > **Pharmacy Fantasy — Role-Based Access Control, Hierarchy & Operational Matrix**
 
 ---
+👑 Super Admin
+🛡️ Operations Admin
+📦 Warehouse Staff
+🛵 Delivery Boy
+🏪 Retail Shopkeeper
 
 ## 1. Role Hierarchy
 
@@ -28,6 +33,7 @@
 ## 2. Role Profiles & Personas
 
 ### 👑 1. Super Admin (`SUPER_ADMIN`)
+
 - **Authority**: Highest-level administrative account.
 - **Role Assignment**: Can assign and create **all user types of roles** (`SUPER_ADMIN`, `ADMIN`, `WAREHOUSE`, `DELIVERY`, `SHOPKEEPER`).
 - **Core Scope**:
@@ -37,6 +43,7 @@
   - Full override privileges for credit ceilings and disputed deliveries.
 
 ### 🛡️ 2. Operations Admin (`ADMIN`)
+
 - **Authority**: Day-to-day administrative supervisor of warehouse logistics and retail trade.
 - **Role Assignment**: Can create and assign **all user types of roles EXCEPT Super Admin**.
   - Attempting to create or assign a user with `SUPER_ADMIN` returns a strict `403 Forbidden` error.
@@ -47,6 +54,7 @@
   - Review sales analytics, payment collections, and stock movement reports.
 
 ### 📦 3. Warehouse Staff (`WAREHOUSE`)
+
 - **Authority**: Warehouse floor operations manager located at Benachity Central Warehouse.
 - **Role Assignment**: None.
 - **Core Scope**:
@@ -61,6 +69,7 @@
   - **Advance Payments**: Record advance cash/cheque/UPI deposits received from shopkeepers.
 
 ### 🛵 4. Delivery Boy (`DELIVERY`)
+
 - **Authority**: Field courier and logistics runner handling two-wheeler or van delivery trips.
 - **Role Assignment**: None (Self-service registration with phone/vehicle details).
 - **Core Scope**:
@@ -72,6 +81,7 @@
   - Collect on-spot cash or UPI payments and hand over to warehouse cashier.
 
 ### 🏪 5. Retail Shopkeeper (`SHOPKEEPER`)
+
 - **Authority**: Commercial pharmacy owner / retailer (e.g., Cheap Medical Stores, Gupta Pharmacy).
 - **Role Assignment**: Self-service registration (Instant access via mobile phone + shop name).
 - **Core Scope**:
@@ -122,7 +132,7 @@
 | Mark Pickup from Warehouse | ✅ | ✅ | ✅ | ✅ | ❌ |
 | Collect Shopkeeper Signature | ❌ | ❌ | ❌ | ✅ | ✅ (Signs at Counter) |
 | Upload Signed POD to Server | ✅ | ✅ | ❌ | ✅ | ❌ |
-| Update Delivery Status (Delivered/Failed)| ✅ | ✅ | ❌ | ✅ | ❌ |
+| Update Delivery Status (Delivered/Failed) | ✅ | ✅ | ❌ | ✅ | ❌ |
 | **Tax Invoices & Credit Notes** | | | | | |
 | Generate Statutory GST Invoice | ✅ | ✅ | ✅ | ❌ | ❌ |
 | View All Invoices | ✅ | ✅ | ✅ | ❌ | Own Invoices |
@@ -148,10 +158,12 @@
    - Every GraphQL resolver inspects the validated JWT `sub` and `role` claims in `info.context["request"]`.
 2. **Operations Admin Ceiling Rule**:
    - If a caller has `role == "ADMIN"`, any mutation attempting `role = "SUPER_ADMIN"` or targeting a `SUPER_ADMIN` user record must abort immediately:
+
      ```python
      if caller.role == UserRole.ADMIN and target_role == UserRole.SUPER_ADMIN:
          raise PermissionError("Operations Admin is strictly prohibited from creating or modifying Super Admin accounts.")
      ```
+
 3. **Warehouse Operational Autonomy**:
    - Warehouse Staff have complete autonomous CRUD permissions on inventory, orders, invoices, challans, returns, and advances without requiring admin escalation.
 4. **Delivery Signature Integrity**:
@@ -164,6 +176,7 @@
 ## 🔮 Future Works & Implementation TODOs
 
 ### 📋 Phase R.1: Security Hardening & Session Revocation
+
 - [ ] **R.1.1 Immutable Role Audit Logging**:
   - Implement a dedicated `role_audit_logs` table tracking every role assignment, user creation, or permission change.
   - Store `actor_id`, `target_user_id`, `old_role`, `new_role`, `ip_address`, and `user_agent`.
@@ -173,6 +186,7 @@
   - Add optional or mandatory TOTP (Google Authenticator / Authy) for `SUPER_ADMIN` and `ADMIN` accounts to prevent unauthorized access to sensitive financial and drug registers.
 
 ### 📋 Phase R.2: Granular Role Scoping & Multi-Warehouse Support
+
 - [ ] **R.2.1 Sub-Role Scoping for Warehouse Staff**:
   - Introduce sub-permissions for warehouse floor staff (e.g., `PICKER` who can only view picking lists vs. `DISPATCH_MANAGER` who can finalize invoices and challans).
 - [ ] **R.2.2 Multi-Warehouse / Multi-Branch Scoping**:

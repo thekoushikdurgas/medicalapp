@@ -15,7 +15,9 @@ from app.db.models import (
     Order,
     ShopkeeperProfile,
     StockBatch,
+    LedgerEntryType,
 )
+from app.services.ledger_service import record_ledger_entry
 from app.core.logger import logger
 
 
@@ -127,6 +129,17 @@ async def create_invoice_return(
         if profile:
             new_balance = max(0.0, float(profile.outstanding_balance) - grand_refund)
             profile.outstanding_balance = new_balance
+
+            await record_ledger_entry(
+                session=session,
+                shopkeeper_id=invoice.order.shopkeeper_id,
+                entry_type=LedgerEntryType.CREDIT,
+                amount=grand_refund,
+                balance_after=new_balance,
+                reference_number=crn_number,
+                description=f"GST Credit Note for invoice {invoice.invoice_number}",
+            )
+
             logger.info(
                 f"Updated shopkeeper {profile.shop_name} outstanding balance to ₹{new_balance:.2f} "
                 f"after credit note {crn_number}"

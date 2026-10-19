@@ -1,81 +1,88 @@
 # Graph Report - pharmacyfantasy  (2026-10-19)
 
 ## Corpus Check
-- 335 files · ~335,908 words
+- 355 files · ~379,719 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 15 file(s) not represented in the graph (top: (none) 6, .gz 2, .bak 1)
 
 ## Summary
-- 3668 nodes · 5854 edges · 302 communities (271 shown, 16 thin omitted)
-- Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 445 edges (avg confidence: 0.87)
+- 4098 nodes · 6715 edges · 312 communities (279 shown, 18 thin omitted)
+- Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 529 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `051b5ef9`
+- Built from commit: `3f3ce34d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - search.mjs
 - n
-- execute
+- push
 - types.py
 - get
-- auth.py
-- order_service.py
+- UserRole
+- Order
 - graphql-queries.ts
 - f
 - Accessibility Coding Guidelines
-- orders.py
+- test_delivery_and_orders_rbac.py
 - modern-web.mjs
 - dashboard/page.tsx
-- it
-- R
+- toString
+- Pharmacy Fantasy — Complete Role & Responsibility Specification
 - compilerOptions
-- push
-- react
+- slice
+- products/page.tsx
 - StockBatch
 - models.py
 - Performance
-- lucide-react
-- schema.py
+- breadcrumb.tsx
+- delivery.py
 - 🔬 Pharmacy Fantasy — Elite UI/UX Audit Report
 - Forms
+- challan.py
+- payments.py
 - removeModel
-- mapNode
-- has
-- calculate_line_total
+- runKernelFunc
 - frontend/package.json
-- pop
-- @apollo/client
+- calculate_line_total
+- auth.ts
 - Mandatory Rules
-- main.py
+- 0%
 - devDependencies
 - render_html_invoice
 - Companion policies (deploy in parallel)
-- processStack
+- 0%
 - main.js
 - $t
+- 2. Dashboard Workspace Screens
 - Dos and Don'ts
 - Dos and Don'ts
 - HTML
-- auth.ts
+- react
+- 📝 Master Implementation Checklist & Phased Roadmap
+- 0%
 - modern-web-guidance/package.json
 - Detailed Guidelines
 - What You Must Do When Invoked
 - logger.ts
+- ⚛️ Frontend Architecture & Component Engineering Guide
 - Dark mode
 - next.config.js
 - next-env.d.ts
+- 🐍 Backend Architecture & Engineering Guide
 - How to implement
 - CSS: Modern Architecture
 - How to implement
+- index.ts
 - Common Rejection Reasons
 - Agentic JavaScript Tools
+- 0%
 - Implementation
-- Mutations
+- 🔌 GraphQL API Specification & Schema Reference
 - Implementation
-- 2. Core Modules
+- 3. End-to-End Core Modules
 - How to implement
 - Consistent Cross-Document Transitions
 - 🚀 Pharmacy Fantasy — Master Production Deployment Guide
@@ -271,8 +278,8 @@
 - Move DOM Element Without Losing State
 - Theming browser-generated UI
 - Customize the color or thickness of a scrollbar
-- 🗄️ Database Schema Design
-- 🔐 Roles & Permissions (RBAC)
+- 2. Table Specifications & Column Definitions
+- 2. Role Profiles & Personas
 - 📋 Pharmacy Fantasy — Frontend Engineering Backlog & TODO
 - graphify reference: add a URL and watch a folder
 - graphify reference: commit hook and native CLAUDE.md integration
@@ -289,13 +296,13 @@
 - Creating a stagger animation
 - Group Element Transitions
 - Persistent Top Layer UI
-- 📚 Pharmacy Fantasy — Documentation Index & Reference Library
+- 📚 Pharmacy Fantasy — Master Documentation Index
 - graphify reference: GitHub clone and cross-repo merge
 - graphify reference: transcribe video and audio
 - Form-Associated Custom Elements
 - Anchor Positioning Tab Underline
 - Platform Controls Dismiss Dialog
-- 🚀 Pharmacy Fantasy — Deployment Overview
+- 🚀 Production Deployment & Operations Manual
 - rules/graphify.md
 - modern-web-guidance.md
 - ponytail.md
@@ -303,6 +310,9 @@
 - extraction-spec.md
 - accessible-generated-content.md
 - workflows/graphify.md
+- 0%
+- checkbox.tsx
+- radio.tsx
 
 ## God Nodes (most connected - your core abstractions)
 1. `f()` - 144 edges
@@ -321,61 +331,61 @@
   backend/app/graphql/resolvers/auth.py → .agents/skills/modern-web-guidance/package.json
 - `AuthQuery` --references--> `type`  [EXTRACTED]
   backend/app/graphql/resolvers/auth.py → .agents/skills/modern-web-guidance/package.json
+- `ChallanMutation` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/resolvers/challan.py → .agents/skills/modern-web-guidance/package.json
+- `ChallanQuery` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/resolvers/challan.py → .agents/skills/modern-web-guidance/package.json
 - `DeliveryMutation` --references--> `type`  [EXTRACTED]
   backend/app/graphql/resolvers/delivery.py → .agents/skills/modern-web-guidance/package.json
-- `DeliveryQuery` --references--> `type`  [EXTRACTED]
-  backend/app/graphql/resolvers/delivery.py → .agents/skills/modern-web-guidance/package.json
-- `OrderMutation` --references--> `type`  [EXTRACTED]
-  backend/app/graphql/resolvers/orders.py → .agents/skills/modern-web-guidance/package.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (302 total, 16 thin omitted)
+## Communities (312 total, 18 thin omitted)
 
 ### Community 0 - "search.mjs"
 Cohesion: 0.02
-Nodes (135): $a(), ad(), applyGradients(), array(), arraySync(), assign(), backend(), bd() (+127 more)
+Nodes (100): $a(), ad(), array(), arraySync(), backend(), bd(), clearInstance(), contextIdforContexts() (+92 more)
 
 ### Community 1 - "n"
-Cohesion: 0.09
-Nodes (64): al(), As(), aw(), bb(), _build_trie(), a(), ci(), a() (+56 more)
+Cohesion: 0.07
+Nodes (78): As(), aw(), bb(), bi(), bl(), _build_trie(), a(), ci() (+70 more)
 
-### Community 2 - "execute"
-Cohesion: 0.16
-Nodes (20): addStructuredOutputNames(), checkInputs(), checkInputShapeAndType(), checkOutputs(), cloneAndKeepTensor(), cloneTensorList(), cloneTensorMap(), disposeIntermediateTensors() (+12 more)
+### Community 2 - "push"
+Cohesion: 0.04
+Nodes (99): add_node(), addStructuredOutputNames(), Ah(), al(), b1(), bpe(), Bs(), C_() (+91 more)
 
 ### Community 3 - "types.py"
-Cohesion: 0.11
-Nodes (33): type, _product_to_type(), ProductMutation, ProductQuery, field, mutation, UUID, Product & inventory resolvers. (+25 more)
+Cohesion: 0.07
+Nodes (55): type, InvoiceReturn, _product_to_type(), ProductMutation, ProductQuery, field, Info, mutation (+47 more)
 
 ### Community 4 - "get"
-Cohesion: 0.08
-Nodes (44): Ae(), ao(), ay(), bk(), buffer(), bufferSync(), common_prefix_search(), disposeIntermediateTensorInfo() (+36 more)
+Cohesion: 0.06
+Nodes (64): Ae(), ao(), ay(), bk(), buffer(), bufferSync(), bytes(), common_prefix_search() (+56 more)
 
-### Community 5 - "auth.py"
-Cohesion: 0.13
-Nodes (28): create_access_token(), create_refresh_token(), decode_token(), JWT token creation and verification + password hashing., Decode and verify a JWT token. Raises jwt.PyJWTError on failure., verify_password(), DeliveryProfile, ShopkeeperProfile (+20 more)
+### Community 5 - "UserRole"
+Cohesion: 0.09
+Nodes (40): create_access_token(), create_refresh_token(), decode_token(), Decode and verify a JWT token. Raises jwt.PyJWTError on failure., verify_password(), DeliveryProfile, UserRole, AuthMutation (+32 more)
 
-### Community 6 - "order_service.py"
-Cohesion: 0.16
-Nodes (24): Order, OrderStatus, create_invoice_for_order(), generate_invoice_number(), AsyncSession, Invoice Service — Handles legal GST invoice creation, calculations, and…, Generate sequential invoice number: INV-YYYYMMDD-XXXX., Generate and save an Invoice record for a confirmed wholesale order. (+16 more)
+### Community 6 - "Order"
+Cohesion: 0.14
+Nodes (22): Invoice, InvoiceReturnItem, Order, ShopkeeperProfile, create_invoice_for_order(), generate_invoice_number(), AsyncSession, Invoice Service — Handles legal GST invoice creation, calculations, and… (+14 more)
 
 ### Community 7 - "graphql-queries.ts"
-Cohesion: 0.12
-Nodes (14): UserItem, styles, RegisterRole, styles, ASSIGN_USER_ROLE_MUTATION, CONFIRM_ORDER_MUTATION, CREATE_USER_MUTATION, DASHBOARD_STATS_QUERY (+6 more)
+Cohesion: 0.09
+Nodes (24): ActiveTab, TaxInvoice, OrderRecord, UserItem, ASSIGN_DELIVERY_MUTATION, ASSIGN_USER_ROLE_MUTATION, CANCEL_ORDER_MUTATION, COMPLETE_DELIVERY_WITH_OTP_MUTATION (+16 more)
 
 ### Community 8 - "f"
 Cohesion: 0.05
-Nodes (125): _0(), a0(), ab(), aN(), at(), b(), b0(), be() (+117 more)
+Nodes (122): _0(), a0(), ab(), aN(), at(), b(), b0(), Bt() (+114 more)
 
 ### Community 9 - "Accessibility Coding Guidelines"
 Cohesion: 0.04
 Nodes (46): 10. Typography, 11. Motion and Preferences, 12. Modals and Native Dialogs, 13. Testing Validations, 1. Content Navigability and Structure, 2. Semantic HTML and ARIA, 3. Accessible Names and Descriptions, 4. Document Metadata and Language (+38 more)
 
-### Community 10 - "orders.py"
-Cohesion: 0.14
-Nodes (21): _generate_order_number(), _order_to_type(), OrderMutation, OrderQuery, field, mutation, UUID, Order resolvers — place, confirm, update status, cancel. (+13 more)
+### Community 10 - "test_delivery_and_orders_rbac.py"
+Cohesion: 0.12
+Nodes (26): OrderStatus, _generate_order_number(), _order_to_type(), OrderMutation, OrderQuery, field, Info, mutation (+18 more)
 
 ### Community 11 - "modern-web.mjs"
 Cohesion: 0.17
@@ -383,47 +393,43 @@ Nodes (23): bucketizeLatency(), constructor(), detectOS(), determineAgent(), #en
 
 ### Community 12 - "dashboard/page.tsx"
 Cohesion: 0.07
-Nodes (18): DashboardPage(), DashboardProps, DEMO_ORDERS, REVENUE_DATA, DataPoint, FLOW_STEPS, FlowStep, OrderFlowTimeline() (+10 more)
+Nodes (18): DEMO_ORDERS, REVENUE_DATA, EmptyStateProps, DataPoint, FLOW_STEPS, FlowStep, OrderFlowTimeline(), OrderFlowTimelineProps (+10 more)
 
-### Community 13 - "it"
-Cohesion: 0.36
-Nodes (9): Ep(), ie(), it(), ja(), je(), te(), vp(), Vr() (+1 more)
+### Community 13 - "toString"
+Cohesion: 0.11
+Nodes (27): be(), Bn(), de(), el(), Ep(), fd(), hr(), ie() (+19 more)
 
-### Community 14 - "R"
-Cohesion: 0.08
-Nodes (38): Aa(), ax(), bl(), Bn(), cd(), Da(), dataSync(), de() (+30 more)
+### Community 14 - "Pharmacy Fantasy — Complete Role & Responsibility Specification"
+Cohesion: 0.04
+Nodes (48): 10. Final recommended structure, 1. 👑 Super Admin — Complete Responsibilities, 2. 🛡️ Operations Admin — Complete Responsibilities, 3. 📦 Warehouse Staff — Complete Responsibilities, 4. 🛵 Delivery Boy — Complete Responsibilities, 5. 🏪 Retail Shopkeeper — Complete Responsibilities, 6. How all five roles work together, 7. Permission matrix — who can do what? (+40 more)
 
 ### Community 15 - "compilerOptions"
 Cohesion: 0.11
 Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
-### Community 16 - "push"
-Cohesion: 0.04
-Nodes (93): add_node(), Ah(), bpe(), Bs(), C_(), _call(), checkKeyAndValueTensor(), checkManifestAndWeightFiles() (+85 more)
+### Community 16 - "slice"
+Cohesion: 0.06
+Nodes (50): _call(), checkManifestAndWeightFiles(), Ck(), clean_text(), convert_tokens_to_string(), decode(), decode_chain(), embed() (+42 more)
 
-### Community 17 - "react"
-Cohesion: 0.07
-Nodes (16): DeliveryItem, BatchItem, InvoiceItem, OrderRecord, ProductItem, Shopkeeper, styles, Checkbox (+8 more)
+### Community 17 - "products/page.tsx"
+Cohesion: 0.16
+Nodes (8): DeliveryItem, BatchItem, ProductItem, SideDrawer(), SideDrawerProps, SignaturePad(), SignaturePadProps, PRODUCTS_QUERY
 
 ### Community 18 - "StockBatch"
-Cohesion: 0.13
-Nodes (27): asyncio, Product, PurchaseEntry, PurchaseItem, StockBatch, allocate_batch_fefo(), BatchExpiryWarning, get_fefo_batches_for_product() (+19 more)
+Cohesion: 0.08
+Nodes (46): Product, StockBatch, allocate_batch_fefo(), allocate_batches_fefo_multi(), BatchExpiryWarning, get_fefo_batches_for_product(), InsufficientStockError, AsyncSession (+38 more)
 
 ### Community 19 - "models.py"
-Cohesion: 0.17
-Nodes (23): hash_password(), Base, Declarative base for all SQLAlchemy models., DeliveryStatus, Invoice, OrderItem, Payment, PaymentMethod (+15 more)
+Cohesion: 0.07
+Nodes (40): do_run_migrations(), Alembic env.py — configured for async SQLAlchemy., run_async_migrations(), run_migrations_online(), Application configuration — loaded from environment variables., Settings, get_current_user_id(), FastAPI dependencies — database session, current user extraction. (+32 more)
 
 ### Community 20 - "Performance"
 Cohesion: 0.05
 Nodes (42): Code Examples, Code Examples, Code Examples, Code Examples, Code Examples, Code Examples, Code Examples, Code Examples (+34 more)
 
-### Community 21 - "lucide-react"
+### Community 22 - "delivery.py"
 Cohesion: 0.15
-Nodes (7): FEATURES, ROLES, styles, BreadcrumbItem, BreadcrumbProps, EmptyStateProps, lucide-react
-
-### Community 22 - "schema.py"
-Cohesion: 0.18
-Nodes (17): DeliveryAssignment, _delivery_to_type(), DeliveryMutation, DeliveryQuery, field, mutation, UUID, Delivery assignment resolvers. (+9 more)
+Nodes (23): DeliveryAssignment, DeliveryStatus, _delivery_to_type(), DeliveryMutation, DeliveryQuery, field, Info, mutation (+15 more)
 
 ### Community 23 - "🔬 Pharmacy Fantasy — Elite UI/UX Audit Report"
 Cohesion: 0.04
@@ -433,41 +439,41 @@ Nodes (44): 10. 🎨 Color System Critique, 11. 📱 Device-Specific Issues Summ
 Cohesion: 0.05
 Nodes (36): 10. Usability Testing and Analytics, 11. Multi-Page Forms, 1. Semantic Structure and Form Element, 2. Accessible Labeling and State, 3. Autofill and Input Hints, 4. Constraints and Validation, 5. Responsive Design and Typography, 6. Styling Form Controls (+28 more)
 
-### Community 25 - "removeModel"
-Cohesion: 0.16
-Nodes (18): cl(), fi(), fl(), getHandlers(), getInstance(), getLoadHandlers(), getManager(), getSaveHandlers() (+10 more)
+### Community 25 - "challan.py"
+Cohesion: 0.12
+Nodes (31): ChallanItem, ChallanReturn, ChallanReturnItem, DeliveryChallan, _challan_to_type(), ChallanMutation, ChallanQuery, field (+23 more)
 
-### Community 26 - "mapNode"
+### Community 26 - "payments.py"
 Cohesion: 0.15
-Nodes (18): ea(), getAttr(), mapArgsToSignature(), mapArgToTensorInfo(), mapFunction(), mapNode(), mapSignatureEntries(), na() (+10 more)
+Nodes (22): AdvancePayment, PaymentMethod, _advance_to_type(), PaymentMutation, PaymentQuery, field, Info, mutation (+14 more)
 
-### Community 27 - "has"
-Cohesion: 0.23
-Nodes (14): b1(), checkTensorForDisposal(), checkTensorForDisposalWithNodeLiveUntilInfo(), clearAndClose(), compile(), f1(), has(), ir() (+6 more)
+### Community 27 - "removeModel"
+Cohesion: 0.13
+Nodes (21): cl(), delete(), fi(), fl(), getHandlers(), getInstance(), getLoadHandlers(), getManager() (+13 more)
 
-### Community 28 - "calculate_line_total"
-Cohesion: 0.18
-Nodes (9): calculate_line_total(), Calculate a single order line's amounts. Returns dict with: base_amount,…, Tests for GST calculation utilities., No discounts, standard 2.5% SGST+CGST., Single discount of 14% — like HIFENAC MR TAB in invoice A004448., Cascading DIS1 and DIS2 — verifying correct chaining., AZITHRAL 500MG TAB from invoice A004448: Qty=36(3S), Rate=96.56, DIS1=12%,…, TestCalculateInvoiceTotals (+1 more)
+### Community 28 - "runKernelFunc"
+Cohesion: 0.08
+Nodes (35): addTapeNode(), applyGradients(), assign(), cast(), checkKernelForMemLeak(), En(), epsilon(), floatPrecision() (+27 more)
 
 ### Community 29 - "frontend/package.json"
 Cohesion: 0.08
 Nodes (24): dependencies, @apollo/client, graphql, lucide-react, next, react, react-dom, name (+16 more)
 
-### Community 30 - "pop"
-Cohesion: 0.21
-Nodes (12): extend(), _greater(), _left(), _parent(), pop(), _right(), _sift_down(), _sift_up() (+4 more)
+### Community 30 - "calculate_line_total"
+Cohesion: 0.15
+Nodes (12): calculate_invoice_totals(), calculate_line_total(), GST calculation utilities — mirrors the real invoice logic. Based on real…, Calculate a single order line's amounts. Returns dict with: base_amount,…, Sum up all line items to produce invoice-level totals. Each line_item should…, Tests for GST calculation utilities., No discounts, standard 2.5% SGST+CGST., Single discount of 14% — like HIFENAC MR TAB in invoice A004448. (+4 more)
 
-### Community 31 - "@apollo/client"
-Cohesion: 0.24
-Nodes (7): metadata, Providers(), apolloClient, authLink, httpLink, @apollo/client, next
+### Community 31 - "auth.ts"
+Cohesion: 0.10
+Nodes (16): metadata, styles, RegisterRole, styles, Providers(), apolloClient, authLink, httpLink (+8 more)
 
 ### Community 32 - "Mandatory Rules"
 Cohesion: 0.06
 Nodes (34): 10. Prompt API: available in service workers, popup, and side panel, 11. `chrome.action` API requires `action` in manifest, 12. `activeTab` only works on direct user gestures — not from side panels, 13. DevTools panel URLs are relative to the extension root, 14. Offscreen documents have NO access to most chrome.* APIs, 15. Notifications and badge icons must reference real image files, 16. Tab capture: guard against double-start with state locking, 17. `chrome.desktopCapture` requires a target tab with URL access (+26 more)
 
-### Community 33 - "main.py"
-Cohesion: 0.08
-Nodes (22): do_run_migrations(), Alembic env.py — configured for async SQLAlchemy., run_async_migrations(), run_migrations_online(), Application configuration — loaded from environment variables., Settings, get_current_user_id(), FastAPI dependencies — database session, current user extraction. (+14 more)
+### Community 33 - "0%"
+Cohesion: 0.12
+Nodes (16): 0%, 1. Delivery Boy responsibilities, 2. The 200-item Delivery Boy checklist, 3. How to automate Delivery Boy work, 4. Fifteen high-value automations, 5. Technical architecture for Delivery Boy automation, 6. Essential automation safeguards, 7. Implementation roadmap (+8 more)
 
 ### Community 34 - "devDependencies"
 Cohesion: 0.29
@@ -481,17 +487,21 @@ Nodes (7): Any, date, Statutory GST Tax Invoice Generator. Generates printable, 
 Cohesion: 0.06
 Nodes (31): 1.1 Secure Contexts, 1.2 Avoid Dangerous DOM Sinks, 1.3 Secure Cookies, 1.4 Clickjacking Protection (Frame-Ancestors & X-Frame-Options), 1.5 Secure Window Messaging (postMessage), 2.1 Inspect the Application, 2.2 Deploy Report-Only Policies, 2.3 Data Hygiene for Reports (+23 more)
 
-### Community 37 - "processStack"
-Cohesion: 0.50
-Nodes (5): executeWithControlFlow(), getFrozenTensorIds(), le(), processChildNodes(), processStack()
+### Community 37 - "0%"
+Cohesion: 0.12
+Nodes (16): 0%, 15, 1. Super Admin master checklist — 200 tasks, 2. Additional checklist — 20 advanced automation controls, 3. How to automate the Super Admin's work, 4. The 15 automations I would build first, 5. What the Super Admin dashboard should look like, 6. Implementation order (+8 more)
 
 ### Community 38 - "main.js"
 Cohesion: 0.42
 Nodes (7): enqueueEvent(), logger(), main(), onParentDeath(), parseWatchdogArgs(), #sendBatch(), sendShutdownEvent()
 
 ### Community 39 - "$t"
-Cohesion: 0.12
-Nodes (36): addTapeNode(), Co(), convertValue(), dr(), eh(), En(), Et(), Go() (+28 more)
+Cohesion: 0.11
+Nodes (35): Aa(), ax(), cd(), Co(), Da(), dr(), dx(), eh() (+27 more)
+
+### Community 40 - "2. Dashboard Workspace Screens"
+Cohesion: 0.10
+Nodes (20): 1.1 `/` — Enterprise Landing Portal, 1.2 `/login` — Multi-Role Universal Authentication, 1.3 `/register` — Self-Service Onboarding, 1.4 `/forgot-password` — Credential Recovery, 1. Public & Authentication Screens, 2.1 `/dashboard` — Executive & Operational Overview, 2.2 `/dashboard/products` — SKU Catalog Master, 2.3 `/dashboard/inventory` — Warehouse Rack Batches & FEFO (+12 more)
 
 ### Community 41 - "Dos and Don'ts"
 Cohesion: 0.06
@@ -505,9 +515,17 @@ Nodes (30): 1. Getting Started and Hardware Requirements, 2. Core Prompting Capa
 Cohesion: 0.06
 Nodes (30): 1. Fundamental Semantics and Validation, 2. Content Grouping and Attribution, 3. Resource Prioritization and Performance, 4. Native Overlays: Dialogs and Popovers, 5. Disclosures: Details and Summary, 6. Focus Boundaries and Visibility, 7. HTML APIs and Forms Grouping, 8. Native Media Elements (+22 more)
 
-### Community 46 - "auth.ts"
-Cohesion: 0.10
-Nodes (23): AuthGuard(), Props, DashboardNavbar(), NavbarProps, NavSection, Sidebar(), SidebarProps, ThemeToggle() (+15 more)
+### Community 44 - "react"
+Cohesion: 0.09
+Nodes (20): DashboardPage(), DashboardProps, Shopkeeper, UsersPage(), styles, FEATURES, ROLES, styles (+12 more)
+
+### Community 45 - "📝 Master Implementation Checklist & Phased Roadmap"
+Cohesion: 0.11
+Nodes (17): 🔮 Advanced Future Works & Next-Gen Phases (Phases 9 - 14), 🚦 Implementation Status Legend, 📝 Master Implementation Checklist & Phased Roadmap, Phase 10: Real-Time WebSockets & Streaming Architecture, Phase 11: Warehouse Hardware & Edge Automation, Phase 12: Offline-First Courier Mobility, Phase 13: High-Concurrency Data & Partitioning, Phase 14: Omnichannel Customer Engagement (+9 more)
+
+### Community 46 - "0%"
+Cohesion: 0.13
+Nodes (14): 0%, 1. Operations Admin responsibilities at a glance, 2. The 200-item Operations Admin checklist, 3. How to automate the Operations Admin's work, 4. Fifteen automations for the Operations Admin, 5. Operations Admin automation rules, 6. What to build in the Operations Admin dashboard, 7. Recommended implementation phases (+6 more)
 
 ### Community 47 - "modern-web-guidance/package.json"
 Cohesion: 0.40
@@ -521,9 +539,17 @@ Nodes (29): 1. Data Minimization and Purpose Limitation, 2. Transparency and Tru
 Cohesion: 0.07
 Nodes (26): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+18 more)
 
+### Community 51 - "⚛️ Frontend Architecture & Component Engineering Guide"
+Cohesion: 0.12
+Nodes (15): 1. Architectural Philosophy, 2. Directory Structure & Code Organization, 3.1 Color Tokens & Theme Engine, 3.2 Responsive Dual-Axis Tables, 3. Design System & CSS Token Architecture, 4.1 LinkedIn-Style SideDrawer (`components/ui/side-drawer.tsx`), 4.2 Courier Digital Signature Pad, 4. Key Interactive Components (+7 more)
+
 ### Community 52 - "Dark mode"
 Cohesion: 0.07
 Nodes (24): 1. Declare supported schemes in HTML, 2. Apply page-wide color scheme to CSS :root or html, 3. Define light and dark color tokens, 4. Varying images for light and dark mode, Alternative: one custom property per image, Dark mode, Fallback strategies, Fallbacks & browser support for accent-color (+16 more)
+
+### Community 62 - "🐍 Backend Architecture & Engineering Guide"
+Cohesion: 0.18
+Nodes (10): 1. Architectural Philosophy & Layered Organization, 2. Directory Structure & Component Roles, 3.1 First-Expiry-First-Out (FEFO) Allocation Algorithm, 3.2 Statutory GST & Discount Math Engine, 3.3 Shopkeeper Credit Limit Guard, 3.4 Context-Aware Role Authorization in GraphQL, 3. Core Domain Engines & Business Logic, 4. Database Session & Connection Management (+2 more)
 
 ### Community 65 - "How to implement"
 Cohesion: 0.08
@@ -537,6 +563,10 @@ Nodes (21): 10. Transitions & animations, 11. Generated content, 1. Foundations,
 Cohesion: 0.09
 Nodes (21): Allow password pasting, Build a sign-in form that follows best practice, Don't double up inputs, Enable the browser to suggest a strong password, Fallback strategies, Give mobile users the right keyboard, Help save users from accidentally missing inputs, Help users avoid re-entering sign-in data (+13 more)
 
+### Community 68 - "index.ts"
+Cohesion: 0.22
+Nodes (8): AuthState, DashboardStats, DeliveryStatus, Order, OrderStatus, PaymentMethod, Product, User
+
 ### Community 69 - "Common Rejection Reasons"
 Cohesion: 0.11
 Nodes (18): 1. Excessive Permissions, 2. Missing or Inadequate Single Purpose, 3. Misleading Description or Functionality, 4. Privacy Policy Issues, 5. Trademark Violation, 6. Code Readability, 7. Remote Code Execution, 8. User Data Disclosure Mismatch (+10 more)
@@ -545,21 +575,25 @@ Nodes (18): 1. Excessive Permissions, 2. Missing or Inadequate Single Purpose, 3
 Cohesion: 0.11
 Nodes (18): Agentic JavaScript Tools, API Notes, Cancelling in-flight executions, Controlling cross-origin tool exposure with `exposedTo`, Defining Parameters, Discovering available tools with `getTools()`, Execution Patterns, Fallback strategies (+10 more)
 
+### Community 71 - "0%"
+Cohesion: 0.14
+Nodes (13): 0%, 1. Warehouse Staff responsibilities, 2. The 200-item Warehouse Staff checklist, 3. How to automate Warehouse Staff work, 4. Fifteen high-value Warehouse Staff automations, 5. Essential warehouse automation rules, 6. Recommended Warehouse Staff screen layout, 7. Implementation roadmap (+5 more)
+
 ### Community 72 - "Implementation"
 Cohesion: 0.11
 Nodes (17): 1. Markup, 2. Styles, 3. Module state, 4. Drill down, 5. Click and back-button handling, 6. Sync from history (popstate), 7. `scrollsnapchange`: the single source of truth, 8. Initialization (including deep links) (+9 more)
 
-### Community 73 - "Mutations"
-Cohesion: 0.11
-Nodes (17): Auth, Auth & Users, Authentication, Dashboard & Reports, Delivery, Delivery, Endpoint, Enums (+9 more)
+### Community 73 - "🔌 GraphQL API Specification & Schema Reference"
+Cohesion: 0.05
+Nodes (41): 1.1 Queries, 1.2 Mutations, 1. Authentication & Role Governance API, 2.1 Queries, 2.2 Mutations, 2. Product Master & Warehouse Inventory API, 3.1 Queries, 3.2 Mutations (+33 more)
 
 ### Community 74 - "Implementation"
 Cohesion: 0.12
 Nodes (16): 1. Markup, 2. Styles, 3. Open and close the drawer, 4. Detect open and closed state, 5. Wire up the trigger and dismissal handlers, Backdrop fade fallback (no `animation-timeline` support):, Build the swipe surface with scroll snap, Fallback strategies (+8 more)
 
-### Community 75 - "2. Core Modules"
-Cohesion: 0.12
-Nodes (16): 1. Business Context, 2.1 Authentication & Authorization, 2.2 User Management, 2.3 Inventory / Warehouse, 2.4 Product Catalog, 2.5 Order Management, 2.6 Invoice Generation, 2.7 Delivery Management (+8 more)
+### Community 75 - "3. End-to-End Core Modules"
+Cohesion: 0.08
+Nodes (23): 1. Business Context & Operating Model, 2. Statutory Invoice Breakdown (From Live Field Invoices), 3.10 Advance Payments & Ledger Management, 3.1 Role Governance & Delegation, 3.2 Product SKU Master & Catalog, 3.3 Warehouse Stock & Inward Ingestion, 3.4 Retail Ordering & Real-Time Warehouse Queue, 3.5 FEFO Batch Allocation & Packing (+15 more)
 
 ### Community 76 - "How to implement"
 Cohesion: 0.12
@@ -1341,13 +1375,13 @@ Nodes (4): Multiple choice controls (select, radios, checkboxes), Non-textual `<
 Cohesion: 0.40
 Nodes (4): Apply `scrollbar-color` and `scrollbar-width`, Customize the color or thickness of a scrollbar, Fallback strategies, Fallbacks & browser support for scrollbar-color
 
-### Community 271 - "🗄️ Database Schema Design"
-Cohesion: 0.40
-Nodes (4): 🗄️ Database Schema Design, Entity-Relationship Diagram, Indexes, Tables Summary
+### Community 271 - "2. Table Specifications & Column Definitions"
+Cohesion: 0.08
+Nodes (25): 1. Entity-Relationship Diagram (ERD), 2.1 Identity & User Access, 2.2 Product Catalog & Inventory, 2.3 Wholesale Orders & Dispatch Documents, 2.4 Tax Invoices & Credit Notes, 2.5 Payments, Advances & Delivery Handover, 2. Table Specifications & Column Definitions, `advance_payments` (New) (+17 more)
 
-### Community 272 - "🔐 Roles & Permissions (RBAC)"
-Cohesion: 0.40
-Nodes (4): Notes, Permission Matrix, Role Hierarchy, 🔐 Roles & Permissions (RBAC)
+### Community 272 - "2. Role Profiles & Personas"
+Cohesion: 0.14
+Nodes (13): 1. Role Hierarchy, 👑 1. Super Admin (`SUPER_ADMIN`), 🛡️ 2. Operations Admin (`ADMIN`), 2. Role Profiles & Personas, 3. Comprehensive Permission Matrix, 📦 3. Warehouse Staff (`WAREHOUSE`), 🛵 4. Delivery Boy (`DELIVERY`), 4. Security & Server-Side Enforcement Rules (+5 more)
 
 ### Community 273 - "📋 Pharmacy Fantasy — Frontend Engineering Backlog & TODO"
 Cohesion: 0.40
@@ -1413,29 +1447,37 @@ Nodes (3): Fallback strategies, Group Element Transitions, Implementation steps
 Cohesion: 0.50
 Nodes (3): Fallback strategies, Persistent Top Layer UI, Reparenting open top-layer elements
 
-### Community 289 - "📚 Pharmacy Fantasy — Documentation Index & Reference Library"
-Cohesion: 0.50
-Nodes (3): 🗂️ Documentation Overview, 🏛️ Engineering Playbooks & Guidelines, 📚 Pharmacy Fantasy — Documentation Index & Reference Library
+### Community 289 - "📚 Pharmacy Fantasy — Master Documentation Index"
+Cohesion: 0.33
+Nodes (5): 🗂️ Complete Documentation Directory, 🔮 Future Roadmap & Advanced Architecture Matrix, 📚 Pharmacy Fantasy — Master Documentation Index, ⚡ Quick Verification Commands, 🏛️ Role Authority Quick Reference
+
+### Community 295 - "🚀 Production Deployment & Operations Manual"
+Cohesion: 0.14
+Nodes (13): 1. Production Topology & Architecture, 2. Environment Variables Configuration, 3. Production Docker Compose Setup, 4.1 Initial Host Provisioning (Ubuntu 22.04/24.04 LTS), 4.2 Resolving Git Deploy Conflicts on EC2, 4. EC2 Production Deployment & Troubleshooting, 5. Automated Database Backup & Retention, 6. Health Checks & Verification Commands (+5 more)
+
+### Community 309 - "0%"
+Cohesion: 0.15
+Nodes (12): 0%, 1. The 200-item Retail Shopkeeper checklist, 2. How to automate the Retail Shopkeeper's work, 3. Fifteen high-value automations, 4. Technical architecture using your existing stack, 5. Essential safeguards, 6. Implementation roadmap, 7. How to measure automation success (+4 more)
 
 ## Knowledge Gaps
-- **1683 isolated node(s):** `name`, `version`, `modern-web-guidance`, `require`, `nextConfig` (+1678 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2163 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **1883 isolated node(s):** `name`, `version`, `modern-web-guidance`, `require`, `nextConfig` (+1878 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2413 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **18 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `react` connect `react` to `graphql-queries.ts`, `dashboard/page.tsx`, `auth.ts`, `lucide-react`, `frontend/package.json`?**
+- **Why does `react` connect `react` to `index.ts`, `graphql-queries.ts`, `dashboard/page.tsx`, `products/page.tsx`, `breadcrumb.tsx`, `checkbox.tsx`, `radio.tsx`, `frontend/package.json`, `auth.ts`?**
   _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `type` connect `types.py` to `orders.py`, `auth.py`, `schema.py`, `modern-web-guidance/package.json`?**
+- **Why does `UserRole` connect `UserRole` to `types.py`, `Order`, `test_delivery_and_orders_rbac.py`, `models.py`, `delivery.py`, `challan.py`, `payments.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
-- **Why does `StockBatch` connect `StockBatch` to `types.py`, `orders.py`, `models.py`?**
+- **Why does `_get_caller()` connect `UserRole` to `types.py`, `test_delivery_and_orders_rbac.py`, `delivery.py`, `challan.py`, `payments.py`?**
   _High betweenness centrality (0.001) - this node is a cross-community bridge._
 - **Are the 2 inferred relationships involving `push()` (e.g. with `n()` and `r()`) actually correct?**
   _`push()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 2 inferred relationships involving `x()` (e.g. with `a()` and `o()`) actually correct?**
   _`x()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `name`, `version`, `modern-web-guidance` to the rest of the system?**
-  _1683 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _1883 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `search.mjs` be split into smaller, more focused modules?**
-  _Cohesion score 0.015384615384615385 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.015809357744841615 - nodes in this community are weakly interconnected._

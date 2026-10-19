@@ -6,6 +6,7 @@ import uuid
 import strawberry
 from strawberry.types import Info
 from sqlalchemy import select, or_, func
+from sqlalchemy.orm import selectinload
 
 from app.core.security import (
     verify_password,
@@ -14,13 +15,14 @@ from app.core.security import (
     decode_token,
     hash_password,
 )
-from app.db.models import User, UserRole, ShopkeeperProfile, DeliveryProfile
+from app.db.models import User, UserRole, ShopkeeperProfile, DeliveryProfile, Order, Notification
 from app.db.session import async_session_factory
 from app.graphql.types import (
     AuthPayload,
     UserType,
     CreateUserInput,
     RegisterInput,
+    ShopkeeperProfileType,
 )
 
 
@@ -30,9 +32,10 @@ def _user_to_type(user: User) -> UserType:
         email=user.email,
         phone=user.phone,
         full_name=user.full_name,
-        role=user.role.value,
+        role=user.role.value if hasattr(user.role, "value") else str(user.role),
         is_active=user.is_active,
         created_at=user.created_at,
+        assigned_work_queue=getattr(user, "assigned_work_queue", None),
     )
 
 
@@ -111,6 +114,69 @@ class AuthQuery:
             result = await session.execute(stmt)
             users_list = result.scalars().all()
             return [_user_to_type(u) for u in users_list]
+
+    @strawberry.field
+    async def shopkeepers(
+        self,
+        info: Info,
+        search: str | None = None,
+        status: str | None = None,
+        page: int = 1,
+        per_page: int = 50,
+    ) -> list[ShopkeeperProfileType]:
+        """List retail pharmacies with KYC verification status, credit limits and balances."""
+        caller_id, caller_role = _get_caller(info)
+        async with async_session_factory() as session:
+            stmt = select(ShopkeeperProfile).options(selectinload(ShopkeeperProfile.user))
+            if caller_role == UserRole.SHOPKEEPER.value and caller_id:
+                stmt = stmt.where(ShopkeeperProfile.user_id == uuid.UUID(str(caller_id)))
+            elif status and status != "ALL":
+                stmt = stmt.where(ShopkeeperProfile.verification_status == status)
+
+            if search and search.strip():
+                term = f"%{search.strip()}%"
+                stmt = stmt.where(
+                    or_(
+                        ShopkeeperProfile.shop_name.ilike(term),
+                        ShopkeeperProfile.area.ilike(term),
+                        ShopkeeperProfile.city.ilike(term),
+                        ShopkeeperProfile.gstin.ilike(term),
+                        ShopkeeperProfile.drug_license_no.ilike(term),
+                    )
+                )
+
+            stmt = stmt.offset((page - 1) * per_page).limit(per_page)
+            res = await session.execute(stmt)
+            profiles = res.scalars().all()
+
+            results = []
+            for p in profiles:
+                ord_q = await session.execute(
+                    select(func.count(Order.id)).where(Order.shopkeeper_id == p.user_id)
+                )
+                tot_orders = ord_q.scalar() or 0
+                results.append(
+                    ShopkeeperProfileType(
+                        id=p.id,
+                        user_id=p.user_id,
+                        shop_name=p.shop_name,
+                        shop_address=p.shop_address,
+                        gstin=p.gstin,
+                        drug_license_no=p.drug_license_no,
+                        area=p.area,
+                        city=p.city,
+                        credit_limit=float(p.credit_limit or 0.0),
+                        outstanding_balance=float(p.outstanding_balance or 0.0),
+                        verification_status=getattr(p, "verification_status", "VERIFIED") or "VERIFIED",
+                        verification_notes=getattr(p, "verification_notes", None),
+                        credit_limit_reason=getattr(p, "credit_limit_reason", None),
+                        owner_name=p.user.full_name if p.user else None,
+                        phone=p.user.phone if p.user else None,
+                        email=p.user.email if p.user else None,
+                        total_orders=tot_orders,
+                    )
+                )
+            return results
 
 
 @strawberry.type
@@ -380,4 +446,135 @@ class AuthMutation:
                 access_token=new_access,
                 refresh_token=new_refresh,
                 user=_user_to_type(user),
+            )
+
+    @strawberry.mutation
+    async def update_shopkeeper_kyc(
+        self,
+        info: Info,
+        shopkeeper_id: uuid.UUID,
+        status: str,
+        notes: str | None = None,
+    ) -> ShopkeeperProfileType:
+        """Approve, reject, or suspend a retail pharmacy's KYC verification (Admin only)."""
+        caller_id, caller_role = _get_caller(info)
+        if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
+            raise Exception("Permission denied: Only Operations Admin or Super Admin can verify retailers.")
+
+        if status not in ("VERIFIED", "PENDING_VERIFICATION", "REJECTED", "SUSPENDED"):
+            raise Exception(f"Invalid verification status '{status}'. Must be VERIFIED, PENDING_VERIFICATION, REJECTED, or SUSPENDED.")
+
+        async with async_session_factory() as session:
+            stmt = select(ShopkeeperProfile).options(selectinload(ShopkeeperProfile.user)).where(
+                (ShopkeeperProfile.id == shopkeeper_id) | (ShopkeeperProfile.user_id == shopkeeper_id)
+            )
+            res = await session.execute(stmt)
+            profile = res.scalar_one_or_none()
+            if not profile:
+                raise Exception(f"Shopkeeper profile {shopkeeper_id} not found.")
+
+            profile.verification_status = status
+            profile.verification_notes = notes
+
+            # Notify retailer about onboarding decisions (Item 57)
+            if status == "VERIFIED":
+                notif = Notification(
+                    user_id=profile.user_id,
+                    title="Pharmacy Account Verified",
+                    message=f"Congratulations! Your pharmacy '{profile.shop_name}' has been verified. You can now place wholesale orders within your approved credit line.",
+                    category="ONBOARDING",
+                )
+                session.add(notif)
+            elif status in ("REJECTED", "SUSPENDED"):
+                notif = Notification(
+                    user_id=profile.user_id,
+                    title="Pharmacy Verification Update",
+                    message=f"Verification status for '{profile.shop_name}' was set to {status}. Reason/Notes: {notes or 'Please re-verify submitted documents.'}",
+                    category="ONBOARDING",
+                )
+                session.add(notif)
+
+            await session.commit()
+            await session.refresh(profile)
+
+            ord_q = await session.execute(
+                select(func.count(Order.id)).where(Order.shopkeeper_id == profile.user_id)
+            )
+            tot_orders = ord_q.scalar() or 0
+
+            return ShopkeeperProfileType(
+                id=profile.id,
+                user_id=profile.user_id,
+                shop_name=profile.shop_name,
+                shop_address=profile.shop_address,
+                gstin=profile.gstin,
+                drug_license_no=profile.drug_license_no,
+                area=profile.area,
+                city=profile.city,
+                credit_limit=float(profile.credit_limit or 0.0),
+                outstanding_balance=float(profile.outstanding_balance or 0.0),
+                verification_status=profile.verification_status,
+                verification_notes=profile.verification_notes,
+                credit_limit_reason=profile.credit_limit_reason,
+                owner_name=profile.user.full_name if profile.user else None,
+                phone=profile.user.phone if profile.user else None,
+                email=profile.user.email if profile.user else None,
+                total_orders=tot_orders,
+            )
+
+    @strawberry.mutation
+    async def update_shopkeeper_credit_limit(
+        self,
+        info: Info,
+        shopkeeper_id: uuid.UUID,
+        new_limit: float,
+        reason: str,
+    ) -> ShopkeeperProfileType:
+        """Adjust or set retail pharmacy credit limit with documented reason (Admin only)."""
+        caller_id, caller_role = _get_caller(info)
+        if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
+            raise Exception("Permission denied: Only Operations Admin or Super Admin can adjust credit limits.")
+
+        if new_limit < 0:
+            raise Exception("Credit limit cannot be negative.")
+        if not reason or not reason.strip():
+            raise Exception("Documented justification reason is mandatory for credit limit adjustments.")
+
+        async with async_session_factory() as session:
+            stmt = select(ShopkeeperProfile).options(selectinload(ShopkeeperProfile.user)).where(
+                (ShopkeeperProfile.id == shopkeeper_id) | (ShopkeeperProfile.user_id == shopkeeper_id)
+            )
+            res = await session.execute(stmt)
+            profile = res.scalar_one_or_none()
+            if not profile:
+                raise Exception(f"Shopkeeper profile {shopkeeper_id} not found.")
+
+            profile.credit_limit = new_limit
+            profile.credit_limit_reason = reason.strip()
+            await session.commit()
+            await session.refresh(profile)
+
+            ord_q = await session.execute(
+                select(func.count(Order.id)).where(Order.shopkeeper_id == profile.user_id)
+            )
+            tot_orders = ord_q.scalar() or 0
+
+            return ShopkeeperProfileType(
+                id=profile.id,
+                user_id=profile.user_id,
+                shop_name=profile.shop_name,
+                shop_address=profile.shop_address,
+                gstin=profile.gstin,
+                drug_license_no=profile.drug_license_no,
+                area=profile.area,
+                city=profile.city,
+                credit_limit=float(profile.credit_limit or 0.0),
+                outstanding_balance=float(profile.outstanding_balance or 0.0),
+                verification_status=profile.verification_status,
+                verification_notes=profile.verification_notes,
+                credit_limit_reason=profile.credit_limit_reason,
+                owner_name=profile.user.full_name if profile.user else None,
+                phone=profile.user.phone if profile.user else None,
+                email=profile.user.email if profile.user else None,
+                total_orders=tot_orders,
             )
