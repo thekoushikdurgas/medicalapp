@@ -215,6 +215,9 @@ class Order(Base):
     delivery: Mapped["DeliveryAssignment | None"] = relationship(
         back_populates="order", uselist=False
     )
+    challan: Mapped["DeliveryChallan | None"] = relationship(
+        back_populates="order", uselist=False
+    )
 
     __table_args__ = (
         Index("idx_orders_shopkeeper", "shopkeeper_id", "status"),
@@ -274,6 +277,9 @@ class Invoice(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
     order: Mapped[Order] = relationship(back_populates="invoice")
+    returns: Mapped[list["InvoiceReturn"]] = relationship(
+        back_populates="invoice", cascade="all, delete-orphan"
+    )
 
 
 # ── Delivery ─────────────────────────────────────────────
@@ -370,3 +376,149 @@ class PurchaseItem(Base):
     line_total: Mapped[float] = mapped_column(Numeric(10, 2))
 
     purchase_entry: Mapped[PurchaseEntry] = relationship(back_populates="items")
+
+
+# ── Delivery Challans ────────────────────────────────────
+
+
+class DeliveryChallan(Base):
+    __tablename__ = "delivery_challans"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    order_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("orders.id"), unique=True)
+    challan_number: Mapped[str] = mapped_column(String(50), unique=True)
+    challan_date: Mapped[date] = mapped_column(Date)
+    transporter_name: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    vehicle_number: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    total_cartons: Mapped[int] = mapped_column(Integer, default=1)
+    created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    order: Mapped[Order] = relationship(back_populates="challan")
+    items: Mapped[list["ChallanItem"]] = relationship(
+        back_populates="challan", cascade="all, delete-orphan"
+    )
+    returns: Mapped[list["ChallanReturn"]] = relationship(
+        back_populates="challan", cascade="all, delete-orphan"
+    )
+
+
+class ChallanItem(Base):
+    __tablename__ = "challan_items"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    challan_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("delivery_challans.id"))
+    product_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("products.id"))
+    stock_batch_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("stock_batches.id"))
+    quantity: Mapped[int] = mapped_column(Integer)
+    free_quantity: Mapped[int] = mapped_column(Integer, default=0)
+
+    challan: Mapped[DeliveryChallan] = relationship(back_populates="items")
+    product: Mapped[Product] = relationship()
+    stock_batch: Mapped[StockBatch] = relationship()
+
+
+class ChallanReturn(Base):
+    __tablename__ = "challan_returns"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    challan_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("delivery_challans.id"))
+    return_number: Mapped[str] = mapped_column(String(50), unique=True)
+    return_date: Mapped[date] = mapped_column(Date)
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    processed_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    challan: Mapped[DeliveryChallan] = relationship(back_populates="returns")
+    items: Mapped[list["ChallanReturnItem"]] = relationship(
+        back_populates="challan_return", cascade="all, delete-orphan"
+    )
+
+
+class ChallanReturnItem(Base):
+    __tablename__ = "challan_return_items"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    challan_return_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("challan_returns.id"))
+    product_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("products.id"))
+    stock_batch_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("stock_batches.id"))
+    quantity: Mapped[int] = mapped_column(Integer)
+
+    challan_return: Mapped[ChallanReturn] = relationship(back_populates="items")
+    product: Mapped[Product] = relationship()
+    stock_batch: Mapped[StockBatch] = relationship()
+
+
+# ── Invoice Returns (Credit Notes) ───────────────────────
+
+
+class InvoiceReturn(Base):
+    __tablename__ = "invoice_returns"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    invoice_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("invoices.id"))
+    credit_note_no: Mapped[str] = mapped_column(String(50), unique=True)
+    return_date: Mapped[date] = mapped_column(Date)
+    refund_subtotal: Mapped[float] = mapped_column(Numeric(12, 2))
+    refund_sgst: Mapped[float] = mapped_column(Numeric(12, 2))
+    refund_cgst: Mapped[float] = mapped_column(Numeric(12, 2))
+    grand_refund: Mapped[float] = mapped_column(Numeric(12, 2))
+    reason: Mapped[str | None] = mapped_column(Text, nullable=True)
+    restock_status: Mapped[str] = mapped_column(String(20), default="RESTOCKED")
+    created_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    invoice: Mapped[Invoice] = relationship(back_populates="returns")
+    items: Mapped[list["InvoiceReturnItem"]] = relationship(
+        back_populates="invoice_return", cascade="all, delete-orphan"
+    )
+
+
+class InvoiceReturnItem(Base):
+    __tablename__ = "invoice_return_items"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    invoice_return_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("invoice_returns.id"))
+    product_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("products.id"))
+    stock_batch_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("stock_batches.id"))
+    quantity: Mapped[int] = mapped_column(Integer)
+    rate: Mapped[float] = mapped_column(Numeric(10, 2))
+    discount_pct: Mapped[float] = mapped_column(Numeric(5, 2), default=0)
+
+    invoice_return: Mapped[InvoiceReturn] = relationship(back_populates="items")
+    product: Mapped[Product] = relationship()
+    stock_batch: Mapped[StockBatch] = relationship()
+
+
+# ── Advance Payments ─────────────────────────────────────
+
+
+class AdvancePayment(Base):
+    __tablename__ = "advance_payments"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4
+    )
+    receipt_number: Mapped[str] = mapped_column(String(50), unique=True)
+    shopkeeper_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    amount: Mapped[float] = mapped_column(Numeric(12, 2))
+    payment_method: Mapped[PaymentMethod] = mapped_column(Enum(PaymentMethod))
+    reference_no: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    notes: Mapped[str | None] = mapped_column(Text, nullable=True)
+    recorded_by: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    paid_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
+
+    shopkeeper: Mapped[User] = relationship(foreign_keys=[shopkeeper_id])
+    recorder: Mapped[User] = relationship(foreign_keys=[recorded_by])

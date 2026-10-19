@@ -176,7 +176,7 @@ export default function OrdersPage() {
   const getStatusBadge = (status: OrderRecord["status"]) => {
     switch (status) {
       case "PLACED":
-        return <span className="badge badge-neutral">⏳ Awaiting Approval</span>;
+        return <span className="badge badge-warning">⚡ New (Picking Queue)</span>;
       case "CONFIRMED":
         return <span className="badge badge-primary">✓ Confirmed</span>;
       case "PICKING":
@@ -587,6 +587,46 @@ export default function OrdersPage() {
               </span>
             </div>
           </div>
+
+          {/* Live Retailer Credit Validation */}
+          {(() => {
+            const estimatedNet = ((newOrder.quantity * newOrder.rate) * (1 - newOrder.discount1 / 100)) * 1.05;
+            const creditLimit = 50000;
+            const currentOutstanding = 12742.82;
+            const isExceeded = (currentOutstanding + estimatedNet) > creditLimit;
+
+            return (
+              <div
+                style={{
+                  background: isExceeded ? "rgba(239, 68, 68, 0.12)" : "rgba(16, 185, 129, 0.12)",
+                  border: `1px solid ${isExceeded ? "rgba(239, 68, 68, 0.3)" : "rgba(16, 185, 129, 0.3)"}`,
+                  padding: "var(--space-3)",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: "0.8rem",
+                }}
+              >
+                <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700 }}>
+                  <span>Retailer Credit Check:</span>
+                  <span style={{ color: isExceeded ? "var(--color-error)" : "var(--color-primary-800)" }}>
+                    {isExceeded ? "⚠️ Credit Line Exceeded" : "✅ Credit Approved"}
+                  </span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "3px", color: "var(--text-secondary)" }}>
+                  <span>Sanctioned Credit: ₹{creditLimit.toLocaleString("en-IN")}</span>
+                  <span>Ledger Balance: ₹{currentOutstanding.toLocaleString("en-IN")}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "2px", fontWeight: 600 }}>
+                  <span>Available Credit:</span>
+                  <span>₹{Math.max(0, creditLimit - currentOutstanding).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                </div>
+                {isExceeded && (
+                  <p style={{ color: "var(--color-error)", fontSize: "0.75rem", marginTop: "4px" }}>
+                    Order exceeds available credit. Advance deposit or admin override required.
+                  </p>
+                )}
+              </div>
+            );
+          })()}
 
           <div>
             <label className="label">Delivery Instructions</label>

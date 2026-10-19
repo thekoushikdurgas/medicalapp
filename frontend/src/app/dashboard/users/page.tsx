@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   USERS_QUERY,
   ASSIGN_USER_ROLE_MUTATION,
   CREATE_USER_MUTATION,
 } from "@/lib/graphql-queries";
+import { getStoredUser } from "@/lib/auth";
+import type { UserRole } from "@/types";
 
 interface UserItem {
   id: string;
@@ -19,12 +21,24 @@ interface UserItem {
 }
 
 export default function UsersPage() {
+  const [currentUser, setCurrentUser] = useState<{ role: UserRole; fullName: string; email: string } | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [roleFilter, setRoleFilter] = useState("ALL");
   const [searchTerm, setSearchTerm] = useState("");
   const [actionSuccess, setActionSuccess] = useState("");
   const [actionError, setActionError] = useState("");
   const [assigningId, setAssigningId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const user = getStoredUser();
+    setCurrentUser(user);
+    if (user?.role === "ADMIN") {
+      setNewUser((prev) => ({ ...prev, role: "WAREHOUSE" }));
+    }
+  }, []);
+
+  const isSuperAdmin = currentUser?.role === "SUPER_ADMIN";
+  const isOperationsAdmin = currentUser?.role === "ADMIN";
 
   const { data, loading, refetch } = useQuery(USERS_QUERY, {
     variables: { role: roleFilter === "ALL" ? null : roleFilter },
@@ -44,7 +58,7 @@ export default function UsersPage() {
     phone: "",
     email: "",
     password: "admin123",
-    role: "ADMIN" as UserItem["role"],
+    role: "WAREHOUSE" as UserItem["role"],
     shopName: "",
     vehicleType: "Two-Wheeler",
   });
@@ -104,7 +118,7 @@ export default function UsersPage() {
           phone: "",
           email: "",
           password: "admin123",
-          role: "ADMIN",
+          role: isOperationsAdmin ? "WAREHOUSE" : "ADMIN",
           shopName: "",
           vehicleType: "Two-Wheeler",
         });
@@ -160,10 +174,12 @@ export default function UsersPage() {
       >
         <div>
           <h1 style={{ fontSize: "var(--font-size-3xl)", fontWeight: 800 }}>
-            Role-Based Access Control (RBAC)
+            {isOperationsAdmin ? "Staff & Operations Management" : "Role-Based Access Control (RBAC)"}
           </h1>
           <p style={{ color: "var(--text-secondary)" }}>
-            Super Admin Role Management: Assign any user to <strong>👑 Super Admin</strong>, <strong>🛡️ Operations Admin</strong>, or <strong>📦 Warehouse Staff</strong>
+            {isOperationsAdmin
+              ? "Provision and manage Warehouse Staff, Delivery Boys, and Retail Shopkeeper accounts"
+              : "Super Admin Role Management: Assign and provision all platform user tiers"}
           </p>
         </div>
         <button
@@ -264,7 +280,7 @@ export default function UsersPage() {
                 <th>Current Role</th>
                 <th>Contact Phone</th>
                 <th>Status</th>
-                <th>Super Admin Role Assignment</th>
+                <th>{isOperationsAdmin ? "Role Assignment" : "Super Admin Role Assignment"}</th>
               </tr>
             </thead>
             <tbody>
@@ -299,32 +315,38 @@ export default function UsersPage() {
                       </span>
                     </td>
                     <td>
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <select
-                          className="input"
-                          style={{
-                            padding: "0.3rem 0.5rem",
-                            fontSize: "0.75rem",
-                            height: "auto",
-                            width: "195px",
-                            fontWeight: 600,
-                          }}
-                          value={u.role}
-                          disabled={assigningId === u.id}
-                          onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                        >
-                          <option value="SUPER_ADMIN">👑 Super Admin</option>
-                          <option value="ADMIN">🛡️ Operations Admin</option>
-                          <option value="WAREHOUSE">📦 Warehouse Staff</option>
-                          <option value="DELIVERY">🛵 Delivery Boy</option>
-                          <option value="SHOPKEEPER">🏪 Retail Shopkeeper</option>
-                        </select>
-                        {assigningId === u.id && (
-                          <span style={{ fontSize: "0.75rem", color: "var(--color-primary-600)" }}>
-                            Saving...
-                          </span>
-                        )}
-                      </div>
+                      {isOperationsAdmin && (u.role === "SUPER_ADMIN" || u.role === "ADMIN") ? (
+                        <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontStyle: "italic" }}>
+                          🔒 Protected (Admin Tier)
+                        </span>
+                      ) : (
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <select
+                            className="input"
+                            style={{
+                              padding: "0.3rem 0.5rem",
+                              fontSize: "0.75rem",
+                              height: "auto",
+                              width: "195px",
+                              fontWeight: 600,
+                            }}
+                            value={u.role}
+                            disabled={assigningId === u.id}
+                            onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                          >
+                            {!isOperationsAdmin && <option value="SUPER_ADMIN">👑 Super Admin</option>}
+                            {!isOperationsAdmin && <option value="ADMIN">🛡️ Operations Admin</option>}
+                            <option value="WAREHOUSE">📦 Warehouse Staff</option>
+                            <option value="DELIVERY">🛵 Delivery Boy</option>
+                            <option value="SHOPKEEPER">🏪 Retail Shopkeeper</option>
+                          </select>
+                          {assigningId === u.id && (
+                            <span style={{ fontSize: "0.75rem", color: "var(--color-primary-600)" }}>
+                              Saving...
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -352,14 +374,15 @@ export default function UsersPage() {
             padding: "var(--space-4)",
           }}
         >
-          <div className="card" style={{ maxWidth: "520px", width: "100%", background: "#fff" }}>
+          <div className="card" style={{ maxWidth: "520px", width: "100%", background: "var(--bg-surface)", border: "1px solid var(--border-subtle)", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.5)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-4)" }}>
               <h2 style={{ fontSize: "var(--font-size-xl)", fontWeight: 800 }}>
-                👤 Provision Internal Staff or Partner
+                {isOperationsAdmin ? "👤 Provision Staff or Partner" : "👤 Provision Internal Staff or Partner"}
               </h2>
               <button
                 onClick={() => setShowAddModal(false)}
-                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer" }}
+                style={{ background: "none", border: "none", fontSize: "1.5rem", cursor: "pointer", color: "var(--text-secondary)" }}
+                aria-label="Close modal"
               >
                 ✕
               </button>
@@ -384,8 +407,8 @@ export default function UsersPage() {
                     value={newUser.role}
                     onChange={(e) => setNewUser({ ...newUser, role: e.target.value as any })}
                   >
-                    <option value="SUPER_ADMIN">👑 Super Admin</option>
-                    <option value="ADMIN">🛡️ Operations Admin</option>
+                    {!isOperationsAdmin && <option value="SUPER_ADMIN">👑 Super Admin</option>}
+                    {!isOperationsAdmin && <option value="ADMIN">🛡️ Operations Admin</option>}
                     <option value="WAREHOUSE">📦 Warehouse Staff</option>
                     <option value="DELIVERY">🛵 Delivery Boy</option>
                     <option value="SHOPKEEPER">🏪 Retail Shopkeeper</option>

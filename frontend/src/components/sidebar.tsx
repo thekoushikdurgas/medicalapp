@@ -152,6 +152,12 @@ export default function Sidebar({
               { href: "/dashboard/reports", label: "Reports" },
             ],
           },
+          {
+            title: "Administration",
+            items: [
+              { href: "/dashboard/users", label: "Staff & Users" },
+            ],
+          },
         ];
 
       case "WAREHOUSE":
@@ -164,6 +170,7 @@ export default function Sidebar({
             items: [
               { href: "/dashboard/inventory", label: "Inventory & Racks", badge: "FEFO", badgeColor: "var(--color-primary-600)" },
               { href: "/dashboard/orders", label: "Picking Queue", badge: "2", badgeColor: "var(--color-warning)" },
+              { href: "/dashboard/invoices", label: "Invoices & Challans" },
               { href: "/dashboard/products", label: "SKU Catalog" },
             ],
           },

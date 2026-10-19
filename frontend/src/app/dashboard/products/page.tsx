@@ -24,6 +24,16 @@ export default function ProductsPage() {
   const [categoryFilter, setCategoryFilter] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
   const [showAddDrawer, setShowAddDrawer] = useState(false);
+  const [quickOrderProduct, setQuickOrderProduct] = useState<ProductItem | null>(null);
+  const [orderQty, setOrderQty] = useState(30);
+  const [selectedShopkeeper, setSelectedShopkeeper] = useState("Cheap Medical Stores");
+  const [orderNotification, setOrderNotification] = useState<string | null>(null);
+
+  const shopkeeperCreditMap: Record<string, { limit: number; balance: number }> = {
+    "Cheap Medical Stores": { limit: 50000, balance: 13750 },
+    "Gupta Pharmacy & Clinic": { limit: 30000, balance: 11600 },
+    "Maa Tara Medical Hall": { limit: 60000, balance: 18000 },
+  };
 
   const { data: qData } = useQuery(PRODUCTS_QUERY, {
     variables: { page: 1, perPage: 20 },
@@ -222,6 +232,33 @@ export default function ProductsPage() {
         </button>
       </div>
 
+      {/* Order Notification Banner */}
+      {orderNotification && (
+        <div
+          style={{
+            padding: "var(--space-3) var(--space-4)",
+            background: "rgba(16, 185, 129, 0.15)",
+            border: "1px solid var(--color-success)",
+            color: "var(--color-success)",
+            borderRadius: "var(--radius-md)",
+            marginBottom: "var(--space-4)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            fontWeight: 600,
+          }}
+        >
+          <span>{orderNotification}</span>
+          <button
+            className="btn btn-secondary"
+            style={{ padding: "0.2rem 0.5rem", fontSize: "0.75rem" }}
+            onClick={() => setOrderNotification(null)}
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Search and Filters */}
       <div
         style={{
@@ -317,14 +354,26 @@ export default function ProductsPage() {
                     <div style={{ fontWeight: 700 }}>{p.stock} packs</div>
                     <div style={{ fontSize: "0.7rem", color: "var(--color-success)" }}>● Available</div>
                   </td>
-                  <td onClick={(e) => e.stopPropagation()}>
-                    <button
-                      className="btn btn-secondary"
-                      style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
-                      onClick={() => setSelectedProduct(p)}
-                    >
-                      Inspect
-                    </button>
+                  <td onClick={(e) => e.stopPropagation()} style={{ whiteSpace: "nowrap" }}>
+                    <div style={{ display: "flex", gap: "var(--space-2)" }}>
+                      <button
+                        className="btn btn-secondary"
+                        style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
+                        onClick={() => setSelectedProduct(p)}
+                      >
+                        Inspect
+                      </button>
+                      <button
+                        className="btn btn-primary"
+                        style={{ padding: "0.25rem 0.6rem", fontSize: "0.75rem" }}
+                        onClick={() => {
+                          setQuickOrderProduct(p);
+                          setOrderQty(20);
+                        }}
+                      >
+                        ⚡ Order
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))
@@ -340,9 +389,22 @@ export default function ProductsPage() {
         title={selectedProduct ? selectedProduct.name : ""}
         subtitle={selectedProduct ? `${selectedProduct.manufacturer} • ${selectedProduct.category}` : ""}
         footer={
-          <button className="btn btn-secondary" onClick={() => setSelectedProduct(null)}>
-            Close Inspection
-          </button>
+          <div style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
+            <button className="btn btn-secondary" onClick={() => setSelectedProduct(null)}>
+              Close
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                const prod = selectedProduct;
+                setSelectedProduct(null);
+                setQuickOrderProduct(prod);
+                setOrderQty(20);
+              }}
+            >
+              ⚡ Place Wholesale Order
+            </button>
+          </div>
         }
       >
         {selectedProduct && (
@@ -392,6 +454,134 @@ export default function ProductsPage() {
             </div>
           </>
         )}
+      </SideDrawer>
+
+      {/* SideDrawer: Quick Wholesale Order */}
+      <SideDrawer
+        isOpen={Boolean(quickOrderProduct)}
+        onClose={() => setQuickOrderProduct(null)}
+        title="Instant Wholesale Order"
+        subtitle={quickOrderProduct ? `${quickOrderProduct.name} • HSN ${quickOrderProduct.hsnCode}` : ""}
+      >
+        {quickOrderProduct && (() => {
+          const rate = quickOrderProduct.sellingRate;
+          const gross = rate * orderQty;
+          const discountAmount = gross * (quickOrderProduct.discount1 / 100);
+          const taxable = gross - discountAmount;
+          const gstAmount = taxable * 0.12;
+          const netPayable = taxable + gstAmount;
+
+          const creditProfile = shopkeeperCreditMap[selectedShopkeeper] || { limit: 50000, balance: 15000 };
+          const availableCredit = creditProfile.limit - creditProfile.balance;
+          const isExceeded = netPayable > availableCredit;
+
+          const handleSubmitOrder = (e: React.FormEvent) => {
+            e.preventDefault();
+            const ordNum = `ORD-2026-${Math.floor(100000 + Math.random() * 900000)}`;
+            setOrderNotification(`Order ${ordNum} for ${orderQty} packs of ${quickOrderProduct.name} placed successfully! Routed to Warehouse Picking Queue.`);
+            setQuickOrderProduct(null);
+          };
+
+          return (
+            <form onSubmit={handleSubmitOrder} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              <div>
+                <label className="label">Retail Chemist / Buyer Pharmacy</label>
+                <select
+                  className="input"
+                  value={selectedShopkeeper}
+                  onChange={(e) => setSelectedShopkeeper(e.target.value)}
+                >
+                  <option value="Cheap Medical Stores">Cheap Medical Stores (Durgapur)</option>
+                  <option value="Gupta Pharmacy & Clinic">Gupta Pharmacy & Clinic (City Centre)</option>
+                  <option value="Maa Tara Medical Hall">Maa Tara Medical Hall (Bidhannagar)</option>
+                </select>
+              </div>
+
+              {/* Live Credit Health */}
+              <div style={{ background: "var(--bg-secondary)", padding: "var(--space-3)", borderRadius: "var(--radius-md)", fontSize: "0.85rem" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.2rem" }}>
+                  <span style={{ color: "var(--text-secondary)" }}>Sanctioned Credit Limit:</span>
+                  <span style={{ fontWeight: 600 }}>₹{creditProfile.limit.toLocaleString()}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.2rem" }}>
+                  <span style={{ color: "var(--text-secondary)" }}>Outstanding Ledger Balance:</span>
+                  <span style={{ fontWeight: 600, color: "var(--color-warning)" }}>₹{creditProfile.balance.toLocaleString()}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", borderTop: "1px solid var(--border-color)", paddingTop: "0.3rem", fontWeight: 700 }}>
+                  <span>Available Ordering Credit:</span>
+                  <span style={{ color: isExceeded ? "var(--color-danger)" : "var(--color-success)" }}>
+                    ₹{availableCredit.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <label className="label">Order Quantity (Packs)</label>
+                <div style={{ display: "flex", gap: "var(--space-2)", alignItems: "center" }}>
+                  <input
+                    type="number"
+                    min="1"
+                    max={quickOrderProduct.stock}
+                    className="input"
+                    value={orderQty}
+                    onChange={(e) => setOrderQty(Math.max(1, Number(e.target.value)))}
+                    style={{ flex: 1 }}
+                  />
+                  <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
+                    of {quickOrderProduct.stock} in stock
+                  </span>
+                </div>
+              </div>
+
+              {/* Financial Math Preview */}
+              <div style={{ background: "var(--bg-secondary)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", fontSize: "0.85rem" }}>
+                <div style={{ fontSize: "0.75rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-secondary)", marginBottom: "var(--space-2)" }}>
+                  Order Math & GST Breakdown
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem" }}>
+                  <span>Gross Rate (₹{rate.toFixed(2)} × {orderQty}):</span>
+                  <span>₹{gross.toFixed(2)}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem", color: "var(--color-primary-600)" }}>
+                  <span>Standard Scheme Discount ({quickOrderProduct.discount1}%):</span>
+                  <span>-₹{discountAmount.toFixed(2)}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem" }}>
+                  <span>Taxable Value:</span>
+                  <span style={{ fontWeight: 600 }}>₹{taxable.toFixed(2)}</span>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.3rem", color: "var(--text-secondary)" }}>
+                  <span>Applicable GST (CGST 6% + SGST 6%):</span>
+                  <span>+₹{gstAmount.toFixed(2)}</span>
+                </div>
+                <div style={{ borderTop: "2px solid var(--border-color)", paddingTop: "0.4rem", marginTop: "0.4rem", display: "flex", justifyContent: "space-between", fontWeight: 800, fontSize: "1rem" }}>
+                  <span>Net Wholesale Payable:</span>
+                  <span style={{ color: "var(--color-primary-600)" }}>₹{netPayable.toFixed(2)}</span>
+                </div>
+              </div>
+
+              {isExceeded && (
+                <div style={{ padding: "var(--space-3)", background: "rgba(239, 68, 68, 0.12)", border: "1px solid var(--color-danger)", color: "var(--color-danger)", borderRadius: "var(--radius-md)", fontSize: "0.8rem", fontWeight: 600 }}>
+                  ⚠️ Order value exceeds available credit line (₹{availableCredit.toLocaleString()}). Requires Operations Admin approval or advance deposit.
+                </div>
+              )}
+
+              <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setQuickOrderProduct(null)}>
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={isExceeded}
+                  style={{ opacity: isExceeded ? 0.6 : 1, cursor: isExceeded ? "not-allowed" : "pointer" }}
+                >
+                  Confirm & Route to Picking
+                </button>
+              </div>
+            </form>
+          );
+        })()}
       </SideDrawer>
 
       {/* SideDrawer: Add Product SKU */}

@@ -40,6 +40,7 @@ const NAV_BY_ROLE: Record<UserRole, NavItem[]> = {
     { href: "/dashboard/deliveries", label: "Deliveries", icon: "🚚" },
     { href: "/dashboard/invoices", label: "Invoices", icon: "📄" },
     { href: "/dashboard/shopkeepers", label: "Shopkeepers", icon: "🏪" },
+    { href: "/dashboard/users", label: "Users", icon: "👥" },
     { href: "/dashboard/reports", label: "Reports", icon: "📈" },
   ],
   WAREHOUSE: [
@@ -47,6 +48,7 @@ const NAV_BY_ROLE: Record<UserRole, NavItem[]> = {
     { href: "/dashboard/products", label: "Products", icon: "💊" },
     { href: "/dashboard/inventory", label: "Inventory", icon: "📦" },
     { href: "/dashboard/orders", label: "Orders", icon: "🛒" },
+    { href: "/dashboard/invoices", label: "Invoices & Challans", icon: "📄" },
   ],
   DELIVERY: [
     SHARED_DASHBOARD,

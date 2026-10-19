@@ -283,3 +283,128 @@ class PaymentInput:
     method: str
     reference_number: str | None = None
     notes: str | None = None
+
+
+# ── Logistics & Returns Types ────────────────────────────
+
+
+@strawberry.type
+class ChallanItemType:
+    id: uuid.UUID
+    product_id: uuid.UUID
+    stock_batch_id: uuid.UUID
+    quantity: int
+    free_quantity: int
+    product_name: str | None = None
+
+
+@strawberry.type
+class ChallanReturnType:
+    id: uuid.UUID
+    challan_id: uuid.UUID
+    return_number: str
+    return_date: date
+    reason: str | None
+    created_at: datetime
+
+
+@strawberry.type
+class DeliveryChallanType:
+    id: uuid.UUID
+    order_id: uuid.UUID
+    challan_number: str
+    challan_date: date
+    transporter_name: str | None
+    vehicle_number: str | None
+    total_cartons: int
+    created_at: datetime
+    items: list[ChallanItemType] = strawberry.field(default_factory=list)
+    returns: list[ChallanReturnType] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class InvoiceReturnItemType:
+    id: uuid.UUID
+    product_id: uuid.UUID
+    stock_batch_id: uuid.UUID
+    quantity: int
+    rate: float
+    discount_pct: float
+    product_name: str | None = None
+
+
+@strawberry.type
+class InvoiceReturnType:
+    id: uuid.UUID
+    invoice_id: uuid.UUID
+    credit_note_no: str
+    return_date: date
+    refund_subtotal: float
+    refund_sgst: float
+    refund_cgst: float
+    grand_refund: float
+    reason: str | None
+    restock_status: str
+    created_at: datetime
+    items: list[InvoiceReturnItemType] = strawberry.field(default_factory=list)
+
+
+@strawberry.type
+class AdvancePaymentType:
+    id: uuid.UUID
+    receipt_number: str
+    shopkeeper_id: uuid.UUID
+    amount: float
+    payment_method: str
+    reference_no: str | None
+    notes: str | None
+    paid_at: datetime
+    shopkeeper_name: str | None = None
+
+
+@strawberry.input
+class CreateChallanInput:
+    order_id: uuid.UUID
+    transporter_name: str | None = None
+    vehicle_number: str | None = None
+    total_cartons: int = 1
+
+
+@strawberry.input
+class ChallanReturnLineInput:
+    product_id: uuid.UUID
+    stock_batch_id: uuid.UUID
+    quantity: int
+
+
+@strawberry.input
+class CreateChallanReturnInput:
+    challan_id: uuid.UUID
+    items: list[ChallanReturnLineInput]
+    reason: str | None = None
+
+
+@strawberry.input
+class InvoiceReturnLineInput:
+    product_id: uuid.UUID
+    stock_batch_id: uuid.UUID
+    quantity: int
+    rate: float
+    discount_pct: float = 0.0
+
+
+@strawberry.input
+class CreateInvoiceReturnInput:
+    invoice_id: uuid.UUID
+    items: list[InvoiceReturnLineInput]
+    restock_status: str = "RESTOCKED"
+    reason: str | None = None
+
+
+@strawberry.input
+class RecordAdvancePaymentInput:
+    shopkeeper_id: uuid.UUID
+    amount: float
+    payment_method: str = "CASH"
+    reference_no: str | None = None
+    notes: str | None = None

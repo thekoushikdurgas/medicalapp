@@ -36,19 +36,36 @@ def _user_to_type(user: User) -> UserType:
     )
 
 
+def _get_caller(info: Info) -> tuple[str, str]:
+    """Return (user_id, role) from Authorization header or test context."""
+    context = info.context
+    request = context.get("request") if isinstance(context, dict) else getattr(context, "request", None)
+    if not request:
+        user_id = context.get("user_id") if isinstance(context, dict) else getattr(context, "user_id", None)
+        role = context.get("role") if isinstance(context, dict) else getattr(context, "role", None)
+        if user_id and role:
+            return str(user_id), str(role)
+        raise Exception("Not authenticated")
+
+    auth_header = request.headers.get("authorization", "")
+    if not auth_header.startswith("Bearer "):
+        raise Exception("Not authenticated")
+
+    token = auth_header.split(" ", 1)[1]
+    payload = decode_token(token)
+    user_id = payload.get("sub")
+    role = payload.get("role")
+    if not user_id or not role:
+        raise Exception("Invalid token claims")
+    return user_id, role
+
+
 @strawberry.type
 class AuthQuery:
     @strawberry.field
     async def me(self, info: Info) -> UserType:
         """Return the currently authenticated user."""
-        request = info.context["request"]
-        auth_header = request.headers.get("authorization", "")
-        if not auth_header.startswith("Bearer "):
-            raise Exception("Not authenticated")
-
-        token = auth_header.split(" ", 1)[1]
-        payload = decode_token(token)
-        user_id = payload.get("sub")
+        user_id, _ = _get_caller(info)
 
         async with async_session_factory() as session:
             result = await session.execute(select(User).where(User.id == user_id))
@@ -67,6 +84,7 @@ class AuthQuery:
         per_page: int = 50,
     ) -> list[UserType]:
         """List users with optional role and search filtering."""
+        _get_caller(info)
         async with async_session_factory() as session:
             stmt = select(User)
             if role and role != "ALL":
@@ -219,24 +237,33 @@ class AuthMutation:
             )
 
     @strawberry.mutation
-    async def assign_user_role(self, user_id: uuid.UUID, new_role: str) -> UserType:
+    async def assign_user_role(self, info: Info, user_id: uuid.UUID, new_role: str) -> UserType:
         """
-        Super Admin assigns/changes any user's role to:
-        - 👑 Super Admin (SUPER_ADMIN)
-        - 🛡️ Operations Admin (ADMIN)
-        - 📦 Warehouse Staff (WAREHOUSE)
-        - 🛵 Delivery Boy (DELIVERY)
-        - 🏪 Retail Shopkeeper (SHOPKEEPER)
+        Super Admin or Operations Admin assigns/changes a user's role.
+        - Super Admin can assign any role.
+        - Operations Admin can only assign WAREHOUSE, DELIVERY, SHOPKEEPER (cannot assign or modify SUPER_ADMIN/ADMIN).
+        - Other roles are rejected.
         """
+        caller_id, caller_role = _get_caller(info)
+        if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
+            raise Exception("Permission denied: You are not authorized to assign roles.")
+
         valid_roles = [r.value for r in UserRole]
         if new_role not in valid_roles:
             raise Exception(f"Invalid role '{new_role}'. Must be one of: {', '.join(valid_roles)}")
+
+        if caller_role == UserRole.ADMIN.value:
+            if new_role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
+                raise Exception("Permission denied: Operations Admin cannot assign Admin or Super Admin roles.")
 
         async with async_session_factory() as session:
             result = await session.execute(select(User).where(User.id == user_id))
             user = result.scalar_one_or_none()
             if not user:
                 raise Exception("User not found.")
+
+            if caller_role == UserRole.ADMIN.value and user.role in (UserRole.SUPER_ADMIN, UserRole.ADMIN):
+                raise Exception("Permission denied: Operations Admin cannot modify Super Admin or Admin accounts.")
 
             target_role = UserRole(new_role)
             user.role = target_role
@@ -274,8 +301,16 @@ class AuthMutation:
             return _user_to_type(user)
 
     @strawberry.mutation
-    async def create_user(self, input: CreateUserInput) -> UserType:
+    async def create_user(self, info: Info, input: CreateUserInput) -> UserType:
         """Create a new staff or user account directly (Super Admin / Admin)."""
+        caller_id, caller_role = _get_caller(info)
+        if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
+            raise Exception("Permission denied: You are not authorized to create users.")
+
+        if caller_role == UserRole.ADMIN.value:
+            if input.role in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
+                raise Exception("Permission denied: Operations Admin cannot create Super Admin or Admin accounts.")
+
         clean_email = input.email.strip() if input.email and input.email.strip() else None
         clean_phone = input.phone.strip() if input.phone and input.phone.strip() else None
 

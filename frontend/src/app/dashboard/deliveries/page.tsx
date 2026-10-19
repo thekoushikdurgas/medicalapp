@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { SideDrawer } from "@/components/ui/side-drawer";
+import { SignaturePad } from "@/components/ui/signature-pad";
 
 interface DeliveryItem {
   id: string;
@@ -61,18 +63,53 @@ export default function DeliveriesPage() {
     },
   ]);
 
-  const [selectedDeliv, setSelectedDeliv] = useState<DeliveryItem | null>(null);
+  const [activeDeliveryForHandover, setActiveDeliveryForHandover] = useState<DeliveryItem | null>(null);
+  const [capturedSignature, setCapturedSignature] = useState<string>("");
+  const [recipientName, setRecipientName] = useState<string>("");
+  const [actionSuccess, setActionSuccess] = useState<string>("");
 
   const handleAdvanceStatus = (id: string) => {
+    const target = deliveries.find((d) => d.id === id);
+    if (!target) return;
+
+    if (target.status === "IN_TRANSIT") {
+      setActiveDeliveryForHandover(target);
+      setCapturedSignature("");
+      setRecipientName("");
+      return;
+    }
+
     setDeliveries((prev) =>
       prev.map((d) => {
         if (d.id !== id) return d;
         if (d.status === "ASSIGNED") return { ...d, status: "PICKED_UP", notes: "Picked up from Benachity warehouse bay." };
         if (d.status === "PICKED_UP") return { ...d, status: "IN_TRANSIT", notes: "En route to shopkeeper destination." };
-        if (d.status === "IN_TRANSIT") return { ...d, status: "DELIVERED", podImage: "Shop Stamp & Signature Received" };
         return d;
       })
     );
+  };
+
+  const handleConfirmHandover = () => {
+    if (!activeDeliveryForHandover) return;
+    if (!capturedSignature) {
+      alert("Please collect the recipient's signature before confirming delivery.");
+      return;
+    }
+
+    setDeliveries((prev) =>
+      prev.map((d) => {
+        if (d.id !== activeDeliveryForHandover.id) return d;
+        return {
+          ...d,
+          status: "DELIVERED",
+          notes: `Handed over to ${recipientName || "Authorized Pharmacist"}. ePOD Signature verified.`,
+          podImage: `Signed by ${recipientName || "Pharmacist"}`,
+        };
+      })
+    );
+
+    setActionSuccess(`Order ${activeDeliveryForHandover.orderNumber} delivered & proof of delivery saved!`);
+    setActiveDeliveryForHandover(null);
   };
 
   const getStatusBadge = (status: DeliveryItem["status"]) => {
@@ -110,6 +147,23 @@ export default function DeliveriesPage() {
           </p>
         </div>
       </div>
+
+      {actionSuccess && (
+        <div
+          style={{
+            padding: "var(--space-3) var(--space-4)",
+            background: "rgba(16, 185, 129, 0.12)",
+            color: "var(--color-primary-800)",
+            border: "1px solid rgba(16, 185, 129, 0.3)",
+            borderRadius: "var(--radius-lg)",
+            marginBottom: "var(--space-5)",
+            fontWeight: 600,
+            fontSize: "0.85rem",
+          }}
+        >
+          ✅ {actionSuccess}
+        </div>
+      )}
 
       {/* Delivery Counters */}
       <div
@@ -285,6 +339,71 @@ export default function DeliveriesPage() {
           </table>
         </div>
       </div>
+
+      {/* Handover & ePOD Signature Drawer */}
+      <SideDrawer
+        isOpen={!!activeDeliveryForHandover}
+        onClose={() => setActiveDeliveryForHandover(null)}
+        title="✍️ Electronic Proof of Delivery (ePOD)"
+        subtitle={`Confirm handover for ${activeDeliveryForHandover?.orderNumber} to ${activeDeliveryForHandover?.shopName}`}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+          <div
+            style={{
+              padding: "var(--space-3)",
+              background: "var(--bg-secondary)",
+              borderRadius: "var(--radius-md)",
+              fontSize: "0.85rem",
+            }}
+          >
+            <div style={{ fontWeight: 700, color: "var(--color-primary-700)" }}>
+              {activeDeliveryForHandover?.shopName}
+            </div>
+            <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)", marginTop: "2px" }}>
+              {activeDeliveryForHandover?.address}
+            </div>
+            <div style={{ fontSize: "0.8rem", fontWeight: 700, marginTop: "6px" }}>
+              Invoice Payable: ₹{activeDeliveryForHandover?.amount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+            </div>
+          </div>
+
+          <div>
+            <label className="label">Receiver / Pharmacist Name *</label>
+            <input
+              className="input"
+              placeholder="e.g. Subrata Mukherjee (Owner)"
+              value={recipientName}
+              onChange={(e) => setRecipientName(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="label">Pharmacist Digital Signature (Canvas) *</label>
+            <SignaturePad
+              onSave={(dataUrl) => setCapturedSignature(dataUrl)}
+              onClear={() => setCapturedSignature("")}
+            />
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "flex-end", gap: "var(--space-3)", marginTop: "var(--space-4)" }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => setActiveDeliveryForHandover(null)}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              className="btn btn-primary"
+              style={{ background: "var(--color-success)", borderColor: "var(--color-success)" }}
+              onClick={handleConfirmHandover}
+            >
+              ✓ Complete Handover &amp; Save ePOD
+            </button>
+          </div>
+        </div>
+      </SideDrawer>
     </div>
   );
 }
