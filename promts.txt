@@ -263,8 +263,3 @@ Guidelines:
 Learn, understand, and analyze deeply, breaking tasks into smaller steps."
 ==============================================================================
 
-👑 Super Admin
-🛡️ Operations Admin
-📦 Warehouse Staff
-🛵 Delivery Boy
-🏪 Retail Shopkeeper
