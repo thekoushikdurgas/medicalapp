@@ -6,9 +6,16 @@ import { defineConfig } from "vitest/config";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const isWindows = process.platform === "win32";
 const cpuCount = os.cpus()?.length || 2;
-const maxWorkers = isWindows ? 1 : Math.min(4, Math.max(1, Math.floor(cpuCount / 2)));
+const maxWorkers = isWindows
+  ? 1
+  : Math.min(4, Math.max(1, Math.floor(cpuCount / 2)));
 
 export default defineConfig({
+  oxc: {
+    jsx: {
+      runtime: "automatic",
+    },
+  },
   test: {
     environment: "node",
     globals: true,

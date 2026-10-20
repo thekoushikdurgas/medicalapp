@@ -11,8 +11,10 @@ from app.services.inventory_service import (
     allocate_batch_fefo,
     restore_batch_stock,
     InsufficientStockError,
+    record_purchase_entry,
 )
 from app.db.models import StockBatch
+from app.utils.invoice_gen import render_html_invoice
 
 
 class TestInventoryService:
@@ -144,8 +146,6 @@ class TestInventoryService:
     @pytest.mark.asyncio
     async def test_record_purchase_entry(self):
         """Verify recording supplier bill creates purchase entry and stock batch."""
-        from app.services.inventory_service import record_purchase_entry
-
         mock_session = AsyncMock()
         mock_session.add = MagicMock()
         mock_result = MagicMock()
@@ -188,8 +188,6 @@ class TestInventoryService:
 class TestInvoiceGeneration:
     def test_render_html_invoice_statutory_fields(self):
         """Verify rendered invoice contains mandatory statutory GST and license details."""
-        from app.utils.invoice_gen import render_html_invoice
-
         shopkeeper = {
             "name": "Cheap Medical Stores",
             "address": "Benachity, Durgapur-13",

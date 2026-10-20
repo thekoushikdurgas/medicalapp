@@ -5,7 +5,6 @@ Financial Ledger & Return Claims GraphQL resolvers.
 import uuid
 from datetime import date, datetime, timezone
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
@@ -75,7 +74,7 @@ class LedgerQuery:
     @strawberry.field
     async def my_ledger(
         self,
-        info: Info,
+        info: strawberry.Info,
         shopkeeper_id: uuid.UUID | None = None,
         limit: int = 50,
         offset: int = 0,
@@ -109,7 +108,7 @@ class LedgerQuery:
     @strawberry.field
     async def return_claims(
         self,
-        info: Info,
+        info: strawberry.Info,
         status: str | None = None,
         page: int = 1,
         per_page: int = 50,
@@ -154,7 +153,7 @@ class LedgerMutation:
     @strawberry.mutation
     async def submit_return_claim(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: SubmitReturnRequestInput,
     ) -> ReturnClaimType:
         """
@@ -203,7 +202,7 @@ class LedgerMutation:
     @strawberry.mutation
     async def review_return_claim(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: ReviewReturnRequestInput,
     ) -> ReturnClaimType:
         """

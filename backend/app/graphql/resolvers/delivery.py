@@ -7,7 +7,6 @@ import uuid
 from datetime import datetime, timezone
 
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -85,7 +84,7 @@ class DeliveryQuery:
     @strawberry.field
     async def my_deliveries(
         self,
-        info: Info,
+        info: strawberry.Info,
         delivery_boy_id: uuid.UUID | None = None,
         status: str | None = None,
     ) -> list[DeliveryAssignmentType]:
@@ -121,7 +120,7 @@ class DeliveryQuery:
     @strawberry.field
     async def delivery_shift_summary(
         self,
-        info: Info,
+        info: strawberry.Info,
         delivery_boy_id: uuid.UUID | None = None,
     ) -> DeliveryShiftSummaryType:
         """Returns shift summary, delivered/failed counts, and cash remittance totals."""
@@ -168,7 +167,7 @@ class DeliveryQuery:
     @strawberry.field
     async def delivery_rosters(
         self,
-        info: Info,
+        info: strawberry.Info,
         delivery_boy_id: uuid.UUID | None = None,
     ) -> list[DeliveryRosterType]:
         """View delivery driver shift and route rosters."""
@@ -205,7 +204,7 @@ class DeliveryMutation:
     @strawberry.mutation
     async def assign_delivery(
         self,
-        info: Info,
+        info: strawberry.Info,
         order_id: uuid.UUID,
         delivery_boy_id: uuid.UUID,
         assigned_by: uuid.UUID | None = None,
@@ -259,7 +258,7 @@ class DeliveryMutation:
     @strawberry.mutation
     async def update_delivery_status(
         self,
-        info: Info,
+        info: strawberry.Info,
         assignment_id: uuid.UUID,
         status: str,
         notes: str | None = None,
@@ -299,7 +298,7 @@ class DeliveryMutation:
     @strawberry.mutation
     async def complete_delivery_with_otp(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: CompleteDeliveryInput,
     ) -> DeliveryAssignmentType:
         """
@@ -416,7 +415,7 @@ class DeliveryMutation:
     @strawberry.mutation
     async def report_delivery_failure(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: ReportDeliveryFailureInput,
     ) -> DeliveryAssignmentType:
         """Record non-delivery exception with standardized reason code and photographic proof."""
@@ -456,7 +455,7 @@ class DeliveryMutation:
     @strawberry.mutation
     async def reconcile_cash_handover(
         self,
-        info: Info,
+        info: strawberry.Info,
         delivery_boy_id: uuid.UUID,
         amount_received: float,
         cashier_notes: str | None = None,

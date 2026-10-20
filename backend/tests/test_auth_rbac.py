@@ -7,7 +7,8 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.db.models import User, UserRole
-from app.graphql.resolvers.auth import AuthMutation
+from app.graphql.resolvers.auth import AuthMutation, _user_to_type
+from app.graphql.resolvers.orders import OrderQuery
 from app.graphql.types import CreateUserInput
 
 
@@ -150,8 +151,6 @@ class TestAuthRBACGuards:
 
     def test_user_to_type_includes_assigned_work_queue(self):
         """Regression test: User model with or without assigned_work_queue serializes cleanly to UserType."""
-        from app.graphql.resolvers.auth import _user_to_type
-
         user_with_queue = User(
             id=uuid.uuid4(),
             email="picker@test.com",
@@ -182,8 +181,6 @@ class TestAuthRBACGuards:
     @pytest.mark.asyncio
     async def test_dashboard_stats_resolves_cleanly(self):
         """Regression test: Dashboard stats handles timestamps without asyncpg offset-naive/aware DataError."""
-        from app.graphql.resolvers.orders import OrderQuery
-
         info = make_mock_info(user_id=str(uuid.uuid4()), role=UserRole.ADMIN.value)
         mock_session = AsyncMock()
         mock_result = MagicMock()

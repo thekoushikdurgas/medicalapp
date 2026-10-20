@@ -4,7 +4,6 @@ Delivery Challan GraphQL resolvers — queries and mutations.
 
 import uuid
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -73,7 +72,7 @@ class ChallanQuery:
     @strawberry.field
     async def delivery_challans(
         self,
-        info: Info,
+        info: strawberry.Info,
         page: int = 1,
         per_page: int = 50,
     ) -> list[DeliveryChallanType]:
@@ -97,7 +96,7 @@ class ChallanQuery:
     @strawberry.field
     async def delivery_challan(
         self,
-        info: Info,
+        info: strawberry.Info,
         id: uuid.UUID,
     ) -> DeliveryChallanType | None:
         """Get a single delivery challan by ID."""
@@ -121,7 +120,7 @@ class ChallanMutation:
     @strawberry.mutation
     async def create_delivery_challan(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: CreateChallanInput,
     ) -> DeliveryChallanType:
         """Create a delivery challan for a confirmed/packed order."""
@@ -163,7 +162,7 @@ class ChallanMutation:
     @strawberry.mutation
     async def create_challan_return(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: CreateChallanReturnInput,
     ) -> ChallanReturnType:
         """Process a logistics return from a delivery challan."""
