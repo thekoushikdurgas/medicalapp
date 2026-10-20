@@ -4,7 +4,6 @@ Payment & Advance Deposit GraphQL resolvers — queries and mutations.
 
 import uuid
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -38,7 +37,7 @@ class PaymentQuery:
     @strawberry.field
     async def advance_payments(
         self,
-        info: Info,
+        info: strawberry.Info,
         shopkeeper_id: uuid.UUID | None = None,
         page: int = 1,
         per_page: int = 50,
@@ -71,7 +70,7 @@ class PaymentMutation:
     @strawberry.mutation
     async def record_advance_payment(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: RecordAdvancePaymentInput,
     ) -> AdvancePaymentType:
         """Record an advance deposit from a retail shopkeeper."""

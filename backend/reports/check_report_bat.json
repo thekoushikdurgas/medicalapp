@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-10-20T11:19:07.733319",
+  "timestamp": "2026-10-20T12:06:44.279345",
   "project_root": "E:\\chanchal\\pharmacyfantasy\\backend",
   "summary": {
     "total_points": 121,
-    "passed": 86,
-    "failed": 35,
-    "score": 71.07
+    "passed": 121,
+    "failed": 0,
+    "score": 100.0
   },
   "categories": {
     "Project Structure": {
@@ -97,8 +97,8 @@
     },
     "Code Organization": {
       "total": 15,
-      "passed": 13,
-      "failed": 2,
+      "passed": 15,
+      "failed": 0,
       "results": [
         {
           "point_number": 11,
@@ -168,8 +168,8 @@
           "point_number": 19,
           "category": "Code Organization",
           "description": "GraphQL modules use queries.py + mutations.py pattern",
-          "passed": false,
-          "message": "app/graphql/modules/ not found",
+          "passed": true,
+          "message": "5/5 modules have queries+mutations",
           "severity": "info"
         },
         {
@@ -208,8 +208,8 @@
           "point_number": 24,
           "category": "Code Organization",
           "description": "DataLoaders to prevent N+1 queries (app/graphql/dataloaders.py)",
-          "passed": false,
-          "message": "dataloaders.py missing",
+          "passed": true,
+          "message": "dataloaders.py found",
           "severity": "info"
         },
         {
@@ -224,8 +224,8 @@
     },
     "Models & Database": {
       "total": 12,
-      "passed": 8,
-      "failed": 4,
+      "passed": 12,
+      "failed": 0,
       "results": [
         {
           "point_number": 26,
@@ -247,16 +247,16 @@
           "point_number": 28,
           "category": "Models & Database",
           "description": "Timestamp columns (created_at/updated_at) in base mixin or models",
-          "passed": false,
-          "message": "created_at/updated_at not found",
+          "passed": true,
+          "message": "created_at/updated_at in base mixin",
           "severity": "info"
         },
         {
           "point_number": 29,
           "category": "Models & Database",
           "description": "UUID primary keys used in models",
-          "passed": false,
-          "message": "UUID not found in models",
+          "passed": true,
+          "message": "UUID found in models",
           "severity": "info"
         },
         {
@@ -303,8 +303,8 @@
           "point_number": 35,
           "category": "Models & Database",
           "description": "Database indexes defined on models",
-          "passed": false,
-          "message": "Index definitions not found",
+          "passed": true,
+          "message": "Index definitions found",
           "severity": "info"
         },
         {
@@ -319,16 +319,16 @@
           "point_number": 37,
           "category": "Models & Database",
           "description": "Token blacklist / session revocation model",
-          "passed": false,
-          "message": "Token blacklist not found",
+          "passed": true,
+          "message": "Token blacklist found",
           "severity": "info"
         }
       ]
     },
     "FastAPI & GraphQL": {
       "total": 20,
-      "passed": 10,
-      "failed": 10,
+      "passed": 20,
+      "failed": 0,
       "results": [
         {
           "point_number": 38,
@@ -366,16 +366,16 @@
           "point_number": 42,
           "category": "FastAPI & GraphQL",
           "description": "Rate limiting configured (GRAPHQL_RATE_LIMIT_REQUESTS_PER_MINUTE or middleware)",
-          "passed": false,
-          "message": "Rate limiting not configured",
+          "passed": true,
+          "message": "Rate limiting found",
           "severity": "info"
         },
         {
           "point_number": 43,
           "category": "FastAPI & GraphQL",
           "description": "Query depth/complexity limits configured",
-          "passed": false,
-          "message": "Depth/complexity limits not found",
+          "passed": true,
+          "message": "Depth/complexity limits found",
           "severity": "info"
         },
         {
@@ -390,24 +390,24 @@
           "point_number": 45,
           "category": "FastAPI & GraphQL",
           "description": "Idempotency middleware for mutations",
-          "passed": false,
-          "message": "Idempotency not found",
+          "passed": true,
+          "message": "Idempotency found",
           "severity": "info"
         },
         {
           "point_number": 46,
           "category": "FastAPI & GraphQL",
           "description": "Auth middleware / dependency injection (require_auth / JWTBearer)",
-          "passed": false,
-          "message": "Auth guard not found",
+          "passed": true,
+          "message": "Auth guard found",
           "severity": "info"
         },
         {
           "point_number": 47,
           "category": "FastAPI & GraphQL",
           "description": "Request body size limit configured",
-          "passed": false,
-          "message": "Body size limit not configured",
+          "passed": true,
+          "message": "Body size limit found",
           "severity": "info"
         },
         {
@@ -430,16 +430,16 @@
           "point_number": 103,
           "category": "FastAPI & GraphQL",
           "description": "GraphQL modules define types.py (separate schema types)",
-          "passed": false,
-          "message": "0 module(s) with types.py (threshold: 5)",
+          "passed": true,
+          "message": "5 module(s) with types.py (threshold: 5)",
           "severity": "info"
         },
         {
           "point_number": 104,
           "category": "FastAPI & GraphQL",
           "description": "GraphQL modules define inputs.py (@strawberry.input for complex args)",
-          "passed": false,
-          "message": "0 module(s) with inputs.py (threshold: 3)",
+          "passed": true,
+          "message": "3 module(s) with inputs.py (threshold: 3)",
           "severity": "info"
         },
         {
@@ -454,8 +454,8 @@
           "point_number": 106,
           "category": "FastAPI & GraphQL",
           "description": "strawberry.lazy used for circular / forward type references",
-          "passed": false,
-          "message": "strawberry.lazy not found",
+          "passed": true,
+          "message": "strawberry.lazy found",
           "severity": "info"
         },
         {
@@ -470,17 +470,17 @@
           "point_number": 108,
           "category": "FastAPI & GraphQL",
           "description": "DataLoaders instantiated per-request in context (no module-level DataLoader factories)",
-          "passed": false,
-          "message": "context DataLoaders( missing; module-level DataLoader none",
+          "passed": true,
+          "message": "context DataLoaders( OK; module-level DataLoader none",
           "severity": "info"
         },
         {
           "point_number": 109,
           "category": "FastAPI & GraphQL",
           "description": "Resolvers use typed strawberry.Info parameter (explicit signatures)",
-          "passed": false,
-          "message": "files with info: strawberry.Info: 0 (threshold: 10)",
-          "severity": "warning"
+          "passed": true,
+          "message": "files with info: strawberry.Info: 12 (threshold: 10)",
+          "severity": "info"
         },
         {
           "point_number": 110,
@@ -494,8 +494,8 @@
     },
     "Security": {
       "total": 16,
-      "passed": 9,
-      "failed": 7,
+      "passed": 16,
+      "failed": 0,
       "results": [
         {
           "point_number": 50,
@@ -549,24 +549,24 @@
           "point_number": 56,
           "category": "Security",
           "description": "Token blacklist for JWT revocation",
-          "passed": false,
-          "message": "token_blacklist model missing",
+          "passed": true,
+          "message": "token_blacklist model found",
           "severity": "info"
         },
         {
           "point_number": 57,
           "category": "Security",
           "description": "API key authentication support",
-          "passed": false,
-          "message": "API key not found",
+          "passed": true,
+          "message": "API key found",
           "severity": "info"
         },
         {
           "point_number": 58,
           "category": "Security",
           "description": "Two-factor authentication (TOTP/HOTP) support",
-          "passed": false,
-          "message": "2FA not found",
+          "passed": true,
+          "message": "2FA found",
           "severity": "info"
         },
         {
@@ -589,33 +589,33 @@
           "point_number": 61,
           "category": "Security",
           "description": "Session cookies httponly/secure OR session table present",
-          "passed": false,
-          "message": "Session security not configured",
+          "passed": true,
+          "message": "Session security found",
           "severity": "info"
         },
         {
           "point_number": 111,
           "category": "Security",
           "description": "Resolver-level authorization hints in GraphQL modules (roles/ForbiddenError)",
-          "passed": false,
-          "message": "GraphQL resolvers no obvious field-level auth pattern",
-          "severity": "warning"
+          "passed": true,
+          "message": "GraphQL resolvers reference roles/forbidden checks",
+          "severity": "info"
         },
         {
           "point_number": 112,
           "category": "Security",
           "description": "Sanitized GraphQL errors (GraphQLAppError / handle_graphql_error)",
-          "passed": false,
-          "message": "app/graphql/errors.py missing or incomplete",
+          "passed": true,
+          "message": "app/graphql/errors.py defines GraphQLAppError/handle_graphql_error",
           "severity": "info"
         },
         {
           "point_number": 113,
           "category": "Security",
           "description": "GraphQL audit service used for sensitive mutations",
-          "passed": false,
-          "message": "graphql_audit_service.py: False; mutations files importing audit: 0",
-          "severity": "warning"
+          "passed": true,
+          "message": "graphql_audit_service.py: True; mutations files importing audit: 5",
+          "severity": "info"
         },
         {
           "point_number": 114,
@@ -629,23 +629,23 @@
     },
     "Performance": {
       "total": 12,
-      "passed": 9,
-      "failed": 3,
+      "passed": 12,
+      "failed": 0,
       "results": [
         {
           "point_number": 62,
           "category": "Performance",
           "description": "async/await used in \u226540% of app/ Python files",
           "passed": true,
-          "message": "async def in 27/53 files (50.9%)",
+          "message": "async def in 32/80 files (40.0%)",
           "severity": "info"
         },
         {
           "point_number": 63,
           "category": "Performance",
           "description": "tenacity retry decorators on external HTTP clients",
-          "passed": false,
-          "message": "tenacity @retry not found in app/clients",
+          "passed": true,
+          "message": "tenacity @retry found",
           "severity": "info"
         },
         {
@@ -692,16 +692,16 @@
           "point_number": 69,
           "category": "Performance",
           "description": "Background tasks (FastAPI BackgroundTasks or Celery)",
-          "passed": false,
-          "message": "Background tasks not found",
+          "passed": true,
+          "message": "Background tasks found",
           "severity": "info"
         },
         {
           "point_number": 70,
           "category": "Performance",
           "description": "DataLoaders for batched DB reads (GraphQL N+1 prevention)",
-          "passed": false,
-          "message": "DataLoaders not found",
+          "passed": true,
+          "message": "DataLoaders found",
           "severity": "info"
         },
         {
@@ -732,15 +732,15 @@
     },
     "Testing": {
       "total": 10,
-      "passed": 6,
-      "failed": 4,
+      "passed": 10,
+      "failed": 0,
       "results": [
         {
           "point_number": 72,
           "category": "Testing",
           "description": "tests/ directory with test files",
           "passed": true,
-          "message": "10 test_*.py file(s) found",
+          "message": "11 test_*.py file(s) found",
           "severity": "info"
         },
         {
@@ -763,8 +763,8 @@
           "point_number": 75,
           "category": "Testing",
           "description": "pytest-cov for test coverage measurement",
-          "passed": false,
-          "message": "pytest-cov missing",
+          "passed": true,
+          "message": "pytest-cov found",
           "severity": "info"
         },
         {
@@ -787,8 +787,8 @@
           "point_number": 78,
           "category": "Testing",
           "description": "Integration/GraphQL tests present (tests/integration/ or tests/graphql/)",
-          "passed": false,
-          "message": "Integration tests not found",
+          "passed": true,
+          "message": "Integration tests found",
           "severity": "info"
         },
         {
@@ -803,24 +803,24 @@
           "point_number": 117,
           "category": "Testing",
           "description": "ASGI/HTTP test client used in tests (httpx AsyncClient or TestClient)",
-          "passed": false,
-          "message": "httpx/TestClient not found",
-          "severity": "warning"
+          "passed": true,
+          "message": "httpx/TestClient found in tests/",
+          "severity": "info"
         },
         {
           "point_number": 118,
           "category": "Testing",
           "description": "GraphQL tests cover auth failure paths (401/403/Forbidden patterns)",
-          "passed": false,
-          "message": "tests/graphql/ no obvious auth-failure coverage",
-          "severity": "warning"
+          "passed": true,
+          "message": "tests/graphql/ has auth-failure assertions",
+          "severity": "info"
         }
       ]
     },
     "Deployment & Ops": {
       "total": 7,
-      "passed": 4,
-      "failed": 3,
+      "passed": 7,
+      "failed": 0,
       "results": [
         {
           "point_number": 80,
@@ -834,8 +834,8 @@
           "point_number": 82,
           "category": "Deployment & Ops",
           "description": "Structured JSON logging configured (app/core/logging_config.py)",
-          "passed": false,
-          "message": "Structured logging not found",
+          "passed": true,
+          "message": "Structured logging found",
           "severity": "info"
         },
         {
@@ -850,8 +850,8 @@
           "point_number": 85,
           "category": "Deployment & Ops",
           "description": ".env.example documents satellite service URLs",
-          "passed": false,
-          "message": "Satellite URL docs not found in .env.example",
+          "passed": true,
+          "message": "Satellite URL docs found",
           "severity": "info"
         },
         {
@@ -866,9 +866,9 @@
           "point_number": 120,
           "category": "Deployment & Ops",
           "description": "Request or trace ID propagated (context or middleware)",
-          "passed": false,
-          "message": "request_id/trace_id pattern not found",
-          "severity": "warning"
+          "passed": true,
+          "message": "request_id/trace_id pattern found",
+          "severity": "info"
         },
         {
           "point_number": 121,
@@ -882,15 +882,15 @@
     },
     "Python Code Quality": {
       "total": 19,
-      "passed": 17,
-      "failed": 2,
+      "passed": 19,
+      "failed": 0,
       "results": [
         {
           "point_number": 86,
           "category": "Python Code Quality",
           "description": "Return-type annotations in \u226540% of app/ files",
           "passed": true,
-          "message": "Type annotated: 24/53 files (45.3%)",
+          "message": "Type annotated: 32/80 files (40.0%)",
           "severity": "info"
         },
         {
@@ -913,8 +913,8 @@
           "point_number": 89,
           "category": "Python Code Quality",
           "description": "black formatter in dev dependencies",
-          "passed": false,
-          "message": "black not in deps",
+          "passed": true,
+          "message": "black found",
           "severity": "info"
         },
         {
@@ -930,7 +930,7 @@
           "category": "Python Code Quality",
           "description": "requirements.txt uses pinned versions (== or >=)",
           "passed": true,
-          "message": "18 pinned version(s) found",
+          "message": "21 pinned version(s) found",
           "severity": "info"
         },
         {
@@ -953,8 +953,8 @@
           "point_number": 94,
           "category": "Python Code Quality",
           "description": "from __future__ import annotations used (deferred evaluation)",
-          "passed": false,
-          "message": "__future__ annotations in 0 app/ files",
+          "passed": true,
+          "message": "__future__ annotations in 35 app/ files",
           "severity": "info"
         },
         {
@@ -1010,7 +1010,7 @@
           "category": "Python Code Quality",
           "description": "Module-level imports in app/ stay in the header block (allowed delayed: 5; set max_delayed_module_imports_app in config)",
           "passed": true,
-          "message": "2 delayed module-level import(s) in app/ \u2014 see import_analysis.per_file",
+          "message": "No delayed module imports in app/",
           "severity": "info"
         },
         {
@@ -1018,7 +1018,7 @@
           "category": "Python Code Quality",
           "description": "Nested imports in app/ stay at module scope when possible (set max_nested_imports_app in config)",
           "passed": true,
-          "message": "2 nested import(s) in app/ (allowed 5)",
+          "message": "No nested imports in app/",
           "severity": "info"
         },
         {
@@ -1026,7 +1026,7 @@
           "category": "Python Code Quality",
           "description": "Module-level imports stay in header across import_scan_roots (allowed delayed total: 15)",
           "passed": true,
-          "message": "3 delayed module-level import(s) \u2014 see import_analysis",
+          "message": "No delayed module imports in scan roots",
           "severity": "info"
         },
         {
@@ -1034,7 +1034,7 @@
           "category": "Python Code Quality",
           "description": "Nested imports across import_scan_roots (allowed nested total: 30)",
           "passed": true,
-          "message": "7 nested import(s) \u2014 see import_analysis",
+          "message": "1 nested import(s) \u2014 see import_analysis",
           "severity": "info"
         }
       ]
@@ -1189,8 +1189,8 @@
       "point_number": 19,
       "category": "Code Organization",
       "description": "GraphQL modules use queries.py + mutations.py pattern",
-      "passed": false,
-      "message": "app/graphql/modules/ not found",
+      "passed": true,
+      "message": "5/5 modules have queries+mutations",
       "severity": "info"
     },
     {
@@ -1229,8 +1229,8 @@
       "point_number": 24,
       "category": "Code Organization",
       "description": "DataLoaders to prevent N+1 queries (app/graphql/dataloaders.py)",
-      "passed": false,
-      "message": "dataloaders.py missing",
+      "passed": true,
+      "message": "dataloaders.py found",
       "severity": "info"
     },
     {
@@ -1261,16 +1261,16 @@
       "point_number": 28,
       "category": "Models & Database",
       "description": "Timestamp columns (created_at/updated_at) in base mixin or models",
-      "passed": false,
-      "message": "created_at/updated_at not found",
+      "passed": true,
+      "message": "created_at/updated_at in base mixin",
       "severity": "info"
     },
     {
       "point_number": 29,
       "category": "Models & Database",
       "description": "UUID primary keys used in models",
-      "passed": false,
-      "message": "UUID not found in models",
+      "passed": true,
+      "message": "UUID found in models",
       "severity": "info"
     },
     {
@@ -1317,8 +1317,8 @@
       "point_number": 35,
       "category": "Models & Database",
       "description": "Database indexes defined on models",
-      "passed": false,
-      "message": "Index definitions not found",
+      "passed": true,
+      "message": "Index definitions found",
       "severity": "info"
     },
     {
@@ -1333,8 +1333,8 @@
       "point_number": 37,
       "category": "Models & Database",
       "description": "Token blacklist / session revocation model",
-      "passed": false,
-      "message": "Token blacklist not found",
+      "passed": true,
+      "message": "Token blacklist found",
       "severity": "info"
     },
     {
@@ -1373,16 +1373,16 @@
       "point_number": 42,
       "category": "FastAPI & GraphQL",
       "description": "Rate limiting configured (GRAPHQL_RATE_LIMIT_REQUESTS_PER_MINUTE or middleware)",
-      "passed": false,
-      "message": "Rate limiting not configured",
+      "passed": true,
+      "message": "Rate limiting found",
       "severity": "info"
     },
     {
       "point_number": 43,
       "category": "FastAPI & GraphQL",
       "description": "Query depth/complexity limits configured",
-      "passed": false,
-      "message": "Depth/complexity limits not found",
+      "passed": true,
+      "message": "Depth/complexity limits found",
       "severity": "info"
     },
     {
@@ -1397,24 +1397,24 @@
       "point_number": 45,
       "category": "FastAPI & GraphQL",
       "description": "Idempotency middleware for mutations",
-      "passed": false,
-      "message": "Idempotency not found",
+      "passed": true,
+      "message": "Idempotency found",
       "severity": "info"
     },
     {
       "point_number": 46,
       "category": "FastAPI & GraphQL",
       "description": "Auth middleware / dependency injection (require_auth / JWTBearer)",
-      "passed": false,
-      "message": "Auth guard not found",
+      "passed": true,
+      "message": "Auth guard found",
       "severity": "info"
     },
     {
       "point_number": 47,
       "category": "FastAPI & GraphQL",
       "description": "Request body size limit configured",
-      "passed": false,
-      "message": "Body size limit not configured",
+      "passed": true,
+      "message": "Body size limit found",
       "severity": "info"
     },
     {
@@ -1437,16 +1437,16 @@
       "point_number": 103,
       "category": "FastAPI & GraphQL",
       "description": "GraphQL modules define types.py (separate schema types)",
-      "passed": false,
-      "message": "0 module(s) with types.py (threshold: 5)",
+      "passed": true,
+      "message": "5 module(s) with types.py (threshold: 5)",
       "severity": "info"
     },
     {
       "point_number": 104,
       "category": "FastAPI & GraphQL",
       "description": "GraphQL modules define inputs.py (@strawberry.input for complex args)",
-      "passed": false,
-      "message": "0 module(s) with inputs.py (threshold: 3)",
+      "passed": true,
+      "message": "3 module(s) with inputs.py (threshold: 3)",
       "severity": "info"
     },
     {
@@ -1461,8 +1461,8 @@
       "point_number": 106,
       "category": "FastAPI & GraphQL",
       "description": "strawberry.lazy used for circular / forward type references",
-      "passed": false,
-      "message": "strawberry.lazy not found",
+      "passed": true,
+      "message": "strawberry.lazy found",
       "severity": "info"
     },
     {
@@ -1477,17 +1477,17 @@
       "point_number": 108,
       "category": "FastAPI & GraphQL",
       "description": "DataLoaders instantiated per-request in context (no module-level DataLoader factories)",
-      "passed": false,
-      "message": "context DataLoaders( missing; module-level DataLoader none",
+      "passed": true,
+      "message": "context DataLoaders( OK; module-level DataLoader none",
       "severity": "info"
     },
     {
       "point_number": 109,
       "category": "FastAPI & GraphQL",
       "description": "Resolvers use typed strawberry.Info parameter (explicit signatures)",
-      "passed": false,
-      "message": "files with info: strawberry.Info: 0 (threshold: 10)",
-      "severity": "warning"
+      "passed": true,
+      "message": "files with info: strawberry.Info: 12 (threshold: 10)",
+      "severity": "info"
     },
     {
       "point_number": 110,
@@ -1549,24 +1549,24 @@
       "point_number": 56,
       "category": "Security",
       "description": "Token blacklist for JWT revocation",
-      "passed": false,
-      "message": "token_blacklist model missing",
+      "passed": true,
+      "message": "token_blacklist model found",
       "severity": "info"
     },
     {
       "point_number": 57,
       "category": "Security",
       "description": "API key authentication support",
-      "passed": false,
-      "message": "API key not found",
+      "passed": true,
+      "message": "API key found",
       "severity": "info"
     },
     {
       "point_number": 58,
       "category": "Security",
       "description": "Two-factor authentication (TOTP/HOTP) support",
-      "passed": false,
-      "message": "2FA not found",
+      "passed": true,
+      "message": "2FA found",
       "severity": "info"
     },
     {
@@ -1589,33 +1589,33 @@
       "point_number": 61,
       "category": "Security",
       "description": "Session cookies httponly/secure OR session table present",
-      "passed": false,
-      "message": "Session security not configured",
+      "passed": true,
+      "message": "Session security found",
       "severity": "info"
     },
     {
       "point_number": 111,
       "category": "Security",
       "description": "Resolver-level authorization hints in GraphQL modules (roles/ForbiddenError)",
-      "passed": false,
-      "message": "GraphQL resolvers no obvious field-level auth pattern",
-      "severity": "warning"
+      "passed": true,
+      "message": "GraphQL resolvers reference roles/forbidden checks",
+      "severity": "info"
     },
     {
       "point_number": 112,
       "category": "Security",
       "description": "Sanitized GraphQL errors (GraphQLAppError / handle_graphql_error)",
-      "passed": false,
-      "message": "app/graphql/errors.py missing or incomplete",
+      "passed": true,
+      "message": "app/graphql/errors.py defines GraphQLAppError/handle_graphql_error",
       "severity": "info"
     },
     {
       "point_number": 113,
       "category": "Security",
       "description": "GraphQL audit service used for sensitive mutations",
-      "passed": false,
-      "message": "graphql_audit_service.py: False; mutations files importing audit: 0",
-      "severity": "warning"
+      "passed": true,
+      "message": "graphql_audit_service.py: True; mutations files importing audit: 5",
+      "severity": "info"
     },
     {
       "point_number": 114,
@@ -1630,15 +1630,15 @@
       "category": "Performance",
       "description": "async/await used in \u226540% of app/ Python files",
       "passed": true,
-      "message": "async def in 27/53 files (50.9%)",
+      "message": "async def in 32/80 files (40.0%)",
       "severity": "info"
     },
     {
       "point_number": 63,
       "category": "Performance",
       "description": "tenacity retry decorators on external HTTP clients",
-      "passed": false,
-      "message": "tenacity @retry not found in app/clients",
+      "passed": true,
+      "message": "tenacity @retry found",
       "severity": "info"
     },
     {
@@ -1685,16 +1685,16 @@
       "point_number": 69,
       "category": "Performance",
       "description": "Background tasks (FastAPI BackgroundTasks or Celery)",
-      "passed": false,
-      "message": "Background tasks not found",
+      "passed": true,
+      "message": "Background tasks found",
       "severity": "info"
     },
     {
       "point_number": 70,
       "category": "Performance",
       "description": "DataLoaders for batched DB reads (GraphQL N+1 prevention)",
-      "passed": false,
-      "message": "DataLoaders not found",
+      "passed": true,
+      "message": "DataLoaders found",
       "severity": "info"
     },
     {
@@ -1726,7 +1726,7 @@
       "category": "Testing",
       "description": "tests/ directory with test files",
       "passed": true,
-      "message": "10 test_*.py file(s) found",
+      "message": "11 test_*.py file(s) found",
       "severity": "info"
     },
     {
@@ -1749,8 +1749,8 @@
       "point_number": 75,
       "category": "Testing",
       "description": "pytest-cov for test coverage measurement",
-      "passed": false,
-      "message": "pytest-cov missing",
+      "passed": true,
+      "message": "pytest-cov found",
       "severity": "info"
     },
     {
@@ -1773,8 +1773,8 @@
       "point_number": 78,
       "category": "Testing",
       "description": "Integration/GraphQL tests present (tests/integration/ or tests/graphql/)",
-      "passed": false,
-      "message": "Integration tests not found",
+      "passed": true,
+      "message": "Integration tests found",
       "severity": "info"
     },
     {
@@ -1789,17 +1789,17 @@
       "point_number": 117,
       "category": "Testing",
       "description": "ASGI/HTTP test client used in tests (httpx AsyncClient or TestClient)",
-      "passed": false,
-      "message": "httpx/TestClient not found",
-      "severity": "warning"
+      "passed": true,
+      "message": "httpx/TestClient found in tests/",
+      "severity": "info"
     },
     {
       "point_number": 118,
       "category": "Testing",
       "description": "GraphQL tests cover auth failure paths (401/403/Forbidden patterns)",
-      "passed": false,
-      "message": "tests/graphql/ no obvious auth-failure coverage",
-      "severity": "warning"
+      "passed": true,
+      "message": "tests/graphql/ has auth-failure assertions",
+      "severity": "info"
     },
     {
       "point_number": 80,
@@ -1813,8 +1813,8 @@
       "point_number": 82,
       "category": "Deployment & Ops",
       "description": "Structured JSON logging configured (app/core/logging_config.py)",
-      "passed": false,
-      "message": "Structured logging not found",
+      "passed": true,
+      "message": "Structured logging found",
       "severity": "info"
     },
     {
@@ -1829,8 +1829,8 @@
       "point_number": 85,
       "category": "Deployment & Ops",
       "description": ".env.example documents satellite service URLs",
-      "passed": false,
-      "message": "Satellite URL docs not found in .env.example",
+      "passed": true,
+      "message": "Satellite URL docs found",
       "severity": "info"
     },
     {
@@ -1845,9 +1845,9 @@
       "point_number": 120,
       "category": "Deployment & Ops",
       "description": "Request or trace ID propagated (context or middleware)",
-      "passed": false,
-      "message": "request_id/trace_id pattern not found",
-      "severity": "warning"
+      "passed": true,
+      "message": "request_id/trace_id pattern found",
+      "severity": "info"
     },
     {
       "point_number": 121,
@@ -1862,7 +1862,7 @@
       "category": "Python Code Quality",
       "description": "Return-type annotations in \u226540% of app/ files",
       "passed": true,
-      "message": "Type annotated: 24/53 files (45.3%)",
+      "message": "Type annotated: 32/80 files (40.0%)",
       "severity": "info"
     },
     {
@@ -1885,8 +1885,8 @@
       "point_number": 89,
       "category": "Python Code Quality",
       "description": "black formatter in dev dependencies",
-      "passed": false,
-      "message": "black not in deps",
+      "passed": true,
+      "message": "black found",
       "severity": "info"
     },
     {
@@ -1902,7 +1902,7 @@
       "category": "Python Code Quality",
       "description": "requirements.txt uses pinned versions (== or >=)",
       "passed": true,
-      "message": "18 pinned version(s) found",
+      "message": "21 pinned version(s) found",
       "severity": "info"
     },
     {
@@ -1925,8 +1925,8 @@
       "point_number": 94,
       "category": "Python Code Quality",
       "description": "from __future__ import annotations used (deferred evaluation)",
-      "passed": false,
-      "message": "__future__ annotations in 0 app/ files",
+      "passed": true,
+      "message": "__future__ annotations in 35 app/ files",
       "severity": "info"
     },
     {
@@ -1982,7 +1982,7 @@
       "category": "Python Code Quality",
       "description": "Module-level imports in app/ stay in the header block (allowed delayed: 5; set max_delayed_module_imports_app in config)",
       "passed": true,
-      "message": "2 delayed module-level import(s) in app/ \u2014 see import_analysis.per_file",
+      "message": "No delayed module imports in app/",
       "severity": "info"
     },
     {
@@ -1990,7 +1990,7 @@
       "category": "Python Code Quality",
       "description": "Nested imports in app/ stay at module scope when possible (set max_nested_imports_app in config)",
       "passed": true,
-      "message": "2 nested import(s) in app/ (allowed 5)",
+      "message": "No nested imports in app/",
       "severity": "info"
     },
     {
@@ -1998,7 +1998,7 @@
       "category": "Python Code Quality",
       "description": "Module-level imports stay in header across import_scan_roots (allowed delayed total: 15)",
       "passed": true,
-      "message": "3 delayed module-level import(s) \u2014 see import_analysis",
+      "message": "No delayed module imports in scan roots",
       "severity": "info"
     },
     {
@@ -2006,7 +2006,7 @@
       "category": "Python Code Quality",
       "description": "Nested imports across import_scan_roots (allowed nested total: 30)",
       "passed": true,
-      "message": "7 nested import(s) \u2014 see import_analysis",
+      "message": "1 nested import(s) \u2014 see import_analysis",
       "severity": "info"
     }
   ],
@@ -2017,10 +2017,10 @@
       "scripts"
     ],
     "totals": {
-      "files_scanned": 70,
-      "top_import_statements": 359,
-      "delayed_module_import_statements": 3,
-      "nested_import_statements": 7
+      "files_scanned": 98,
+      "top_import_statements": 490,
+      "delayed_module_import_statements": 0,
+      "nested_import_statements": 1
     },
     "parse_errors": [],
     "per_file": {
@@ -2031,85 +2031,90 @@
             "line": 5,
             "end_line": 5,
             "kind": "from",
-            "statement": "from contextlib import asynccontextmanager"
-          },
-          {
-            "line": 6,
-            "end_line": 6,
-            "kind": "from",
-            "statement": "from fastapi import FastAPI"
+            "statement": "from __future__ import annotations"
           },
           {
             "line": 7,
             "end_line": 7,
             "kind": "from",
-            "statement": "from fastapi.middleware.cors import CORSMiddleware"
+            "statement": "from contextlib import asynccontextmanager"
           },
           {
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from strawberry.fastapi import GraphQLRouter"
+            "statement": "from fastapi import FastAPI"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from fastapi.middleware.cors import CORSMiddleware"
           },
           {
             "line": 10,
             "end_line": 10,
             "kind": "from",
-            "statement": "from app.core.config import settings"
+            "statement": "from sqlalchemy import text"
           },
           {
             "line": 11,
             "end_line": 11,
             "kind": "from",
-            "statement": "from app.core.logger import setup_logging, logger"
-          },
-          {
-            "line": 12,
-            "end_line": 12,
-            "kind": "from",
-            "statement": "from app.graphql.schema import schema"
+            "statement": "from strawberry.fastapi import GraphQLRouter"
           },
           {
             "line": 13,
             "end_line": 13,
             "kind": "from",
-            "statement": "from app.db.base import Base"
+            "statement": "from app.core.config import settings"
           },
           {
             "line": 14,
             "end_line": 14,
             "kind": "from",
-            "statement": "from app.db.session import engine"
+            "statement": "from app.core.logger import setup_logging, logger"
           },
           {
             "line": 15,
-            "end_line": 15,
+            "end_line": 19,
+            "kind": "from",
+            "statement": "from app.core.middleware import RequestIdMiddleware, MaxBodySizeMiddleware, IdempotencyMiddleware"
+          },
+          {
+            "line": 20,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.graphql.schema import schema"
+          },
+          {
+            "line": 21,
+            "end_line": 21,
+            "kind": "from",
+            "statement": "from app.graphql.context import get_context"
+          },
+          {
+            "line": 22,
+            "end_line": 22,
+            "kind": "from",
+            "statement": "from app.db.base import Base"
+          },
+          {
+            "line": 23,
+            "end_line": 23,
+            "kind": "from",
+            "statement": "from app.db.session import engine"
+          },
+          {
+            "line": 24,
+            "end_line": 24,
             "kind": "from",
             "statement": "from app.db import models"
           }
         ],
-        "mid_file_imports": [
-          {
-            "path": "app/main.py",
-            "line": 26,
-            "end_line": 26,
-            "scope": "async_function:lifespan",
-            "kind": "from",
-            "statement": "from sqlalchemy import text",
-            "category": "nested"
-          }
-        ],
+        "mid_file_imports": [],
         "delayed_module_imports": [],
-        "nested_imports": [
-          {
-            "path": "app/main.py",
-            "line": 26,
-            "end_line": 26,
-            "scope": "async_function:lifespan",
-            "kind": "from",
-            "statement": "from sqlalchemy import text"
-          }
-        ]
+        "nested_imports": []
       },
       "app/__init__.py": {
         "path": "app/__init__.py",
@@ -2125,13 +2130,25 @@
             "line": 5,
             "end_line": 5,
             "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
             "statement": "from typing import Any, cast"
           },
           {
-            "line": 6,
-            "end_line": 6,
+            "line": 8,
+            "end_line": 8,
             "kind": "import",
             "statement": "import httpx"
+          },
+          {
+            "line": 9,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type"
           }
         ],
         "mid_file_imports": [],
@@ -2159,25 +2176,23 @@
             "line": 5,
             "end_line": 5,
             "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from functools import lru_cache"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
             "statement": "from pydantic_settings import BaseSettings, SettingsConfigDict"
           }
         ],
-        "mid_file_imports": [
-          {
-            "line": 43,
-            "end_line": 43,
-            "kind": "from",
-            "statement": "from functools import lru_cache"
-          }
-        ],
-        "delayed_module_imports": [
-          {
-            "line": 43,
-            "end_line": 43,
-            "kind": "from",
-            "statement": "from functools import lru_cache"
-          }
-        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
         "nested_imports": []
       },
       "app/core/deps.py": {
@@ -2218,20 +2233,132 @@
           {
             "line": 5,
             "end_line": 5,
-            "kind": "import",
-            "statement": "import logging"
-          },
-          {
-            "line": 6,
-            "end_line": 6,
-            "kind": "import",
-            "statement": "import sys"
+            "kind": "from",
+            "statement": "from __future__ import annotations"
           },
           {
             "line": 7,
             "end_line": 7,
+            "kind": "import",
+            "statement": "import logging"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "import",
+            "statement": "import sys"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
             "kind": "from",
             "statement": "from app.core.config import settings"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.core.logging_config import configure_structured_logging"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/core/logging_config.py": {
+        "path": "app/core/logging_config.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import json"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "import",
+            "statement": "import logging"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "import",
+            "statement": "import sys"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from datetime import datetime, timezone"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from typing import Any"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/core/middleware.py": {
+        "path": "app/core/middleware.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from typing import Callable, cast"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from fastapi import Request, Response, status"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from starlette.middleware.base import BaseHTTPMiddleware"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from starlette.responses import JSONResponse"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.core.config import settings"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
           }
         ],
         "mid_file_imports": [],
@@ -2245,43 +2372,53 @@
             "line": 5,
             "end_line": 5,
             "kind": "from",
-            "statement": "from datetime import datetime, timedelta, timezone"
+            "statement": "from __future__ import annotations"
           },
           {
             "line": 7,
             "end_line": 7,
-            "kind": "import",
-            "statement": "import jwt"
+            "kind": "from",
+            "statement": "from datetime import datetime, timedelta, timezone"
           },
           {
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from passlib.context import CryptContext"
+            "statement": "from typing import Any, cast"
           },
           {
             "line": 10,
             "end_line": 10,
+            "kind": "import",
+            "statement": "import jwt"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from fastapi import Depends, HTTPException, status"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from passlib.context import CryptContext"
+          },
+          {
+            "line": 15,
+            "end_line": 15,
             "kind": "from",
             "statement": "from app.core.config import settings"
           }
         ],
-        "mid_file_imports": [
-          {
-            "line": 41,
-            "end_line": 41,
-            "kind": "from",
-            "statement": "from typing import Any, cast"
-          }
-        ],
-        "delayed_module_imports": [
-          {
-            "line": 41,
-            "end_line": 41,
-            "kind": "from",
-            "statement": "from typing import Any, cast"
-          }
-        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
         "nested_imports": []
       },
       "app/core/__init__.py": {
@@ -2298,7 +2435,25 @@
             "line": 5,
             "end_line": 5,
             "kind": "from",
-            "statement": "from sqlalchemy.orm import DeclarativeBase"
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from datetime import datetime, timezone"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy import DateTime"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column"
           }
         ],
         "mid_file_imports": [],
@@ -2389,19 +2544,119 @@
             "line": 5,
             "end_line": 5,
             "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
             "statement": "from typing import Any"
           },
           {
-            "line": 6,
-            "end_line": 6,
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from fastapi import BackgroundTasks, Request"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
             "kind": "from",
             "statement": "from strawberry.fastapi import BaseContext"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.graphql.dataloaders import DataLoaders"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/dataloaders.py": {
+        "path": "app/graphql/dataloaders.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from typing import Sequence"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from strawberry.dataloader import DataLoader"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy import select"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.db.models import User, Product, Order"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/errors.py": {
+        "path": "app/graphql/errors.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
           },
           {
             "line": 7,
             "end_line": 7,
             "kind": "from",
-            "statement": "from sqlalchemy.ext.asyncio import AsyncSession"
+            "statement": "from typing import Any"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from strawberry.exceptions import StrawberryGraphQLError"
           }
         ],
         "mid_file_imports": [],
@@ -2565,6 +2820,200 @@
         "delayed_module_imports": [],
         "nested_imports": []
       },
+      "app/models/api_key.py": {
+        "path": "app/models/api_key.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from datetime import datetime"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy import Boolean, DateTime, Index, String"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy.dialects.postgresql import UUID as PG_UUID"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import Mapped, mapped_column"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.db.base import Base, TimestampMixin"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/models/session.py": {
+        "path": "app/models/session.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from datetime import datetime"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy import Boolean, DateTime, Index, String"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy.dialects.postgresql import UUID as PG_UUID"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import Mapped, mapped_column"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.db.base import Base, TimestampMixin"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/models/token_blacklist.py": {
+        "path": "app/models/token_blacklist.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from datetime import datetime, timezone"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy import DateTime, Index, String"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy.dialects.postgresql import UUID as PG_UUID"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import Mapped, mapped_column"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.db.base import Base, TimestampMixin"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/models/two_factor.py": {
+        "path": "app/models/two_factor.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from sqlalchemy import Boolean, Index, String"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from sqlalchemy.dialects.postgresql import UUID as PG_UUID"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from sqlalchemy.orm import Mapped, mapped_column"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.db.base import Base, TimestampMixin"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
       "app/models/__init__.py": {
         "path": "app/models/__init__.py",
         "top_imports": [
@@ -2572,7 +3021,37 @@
             "line": 5,
             "end_line": 5,
             "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
             "statement": "from app.db.models import *"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.models.api_key import ApiKey"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.models.session import UserSession"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.models.token_blacklist import TokenBlacklist"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.models.two_factor import TwoFactorAuth"
           }
         ],
         "mid_file_imports": [],
@@ -2860,6 +3339,44 @@
           {
             "line": 20,
             "end_line": 20,
+            "kind": "from",
+            "statement": "from app.core.logger import logger"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/services/graphql_audit_service.py": {
+        "path": "app/services/graphql_audit_service.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "import",
+            "statement": "import uuid"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from datetime import datetime, timezone"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from typing import Any"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
             "kind": "from",
             "statement": "from app.core.logger import logger"
           }
@@ -3289,13 +3806,13 @@
             "line": 6,
             "end_line": 6,
             "kind": "import",
-            "statement": "import strawberry"
+            "statement": "import jwt"
           },
           {
             "line": 7,
             "end_line": 7,
-            "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "kind": "import",
+            "statement": "import strawberry"
           },
           {
             "line": 8,
@@ -3357,47 +3874,41 @@
             "line": 7,
             "end_line": 7,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from sqlalchemy import select"
           },
           {
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from sqlalchemy import select"
+            "statement": "from sqlalchemy.orm import selectinload"
           },
           {
-            "line": 9,
-            "end_line": 9,
+            "line": 10,
+            "end_line": 10,
             "kind": "from",
-            "statement": "from sqlalchemy.orm import selectinload"
+            "statement": "from app.db.models import DeliveryChallan, UserRole"
           },
           {
             "line": 11,
             "end_line": 11,
             "kind": "from",
-            "statement": "from app.db.models import DeliveryChallan, UserRole"
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 12,
             "end_line": 12,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 13,
-            "end_line": 13,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 14,
-            "end_line": 20,
+            "line": 13,
+            "end_line": 19,
             "kind": "from",
             "statement": "from app.graphql.types import DeliveryChallanType, ChallanItemType, ChallanReturnType, CreateChallanInput, CreateChallanReturnInput"
           },
           {
-            "line": 21,
-            "end_line": 24,
+            "line": 20,
+            "end_line": 23,
             "kind": "from",
             "statement": "from app.services.challan_service import create_challan_for_order, process_challan_return"
           }
@@ -3437,47 +3948,41 @@
             "line": 10,
             "end_line": 10,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from sqlalchemy import select"
           },
           {
             "line": 11,
             "end_line": 11,
             "kind": "from",
-            "statement": "from sqlalchemy import select"
-          },
-          {
-            "line": 12,
-            "end_line": 12,
-            "kind": "from",
             "statement": "from sqlalchemy.orm import selectinload"
           },
           {
-            "line": 14,
-            "end_line": 26,
+            "line": 13,
+            "end_line": 25,
             "kind": "from",
             "statement": "from app.db.models import DeliveryAssignment, DeliveryStatus, NonDeliveryReason, DeliveryRoster, Order, OrderStatus, Payment, PaymentMethod, ShopkeeperProfile, UserRole, LedgerEntryType"
+          },
+          {
+            "line": 26,
+            "end_line": 26,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 27,
             "end_line": 27,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 28,
-            "end_line": 28,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 29,
-            "end_line": 35,
+            "line": 28,
+            "end_line": 34,
             "kind": "from",
             "statement": "from app.graphql.types import CompleteDeliveryInput, DeliveryAssignmentType, DeliveryShiftSummaryType, ReportDeliveryFailureInput, DeliveryRosterType"
           },
           {
-            "line": 36,
-            "end_line": 36,
+            "line": 35,
+            "end_line": 35,
             "kind": "from",
             "statement": "from app.services.ledger_service import record_ledger_entry"
           }
@@ -3511,47 +4016,41 @@
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from sqlalchemy import select, func"
           },
           {
             "line": 9,
             "end_line": 9,
             "kind": "from",
-            "statement": "from sqlalchemy import select, func"
-          },
-          {
-            "line": 10,
-            "end_line": 10,
-            "kind": "from",
             "statement": "from sqlalchemy.orm import selectinload"
           },
           {
-            "line": 12,
-            "end_line": 17,
+            "line": 11,
+            "end_line": 16,
             "kind": "from",
             "statement": "from app.db.models import LedgerEntry, ReturnRequest, ReturnRequestStatus, UserRole"
+          },
+          {
+            "line": 17,
+            "end_line": 17,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 18,
             "end_line": 18,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 19,
-            "end_line": 19,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 20,
-            "end_line": 25,
+            "line": 19,
+            "end_line": 24,
             "kind": "from",
             "statement": "from app.graphql.types import LedgerRecordType, ReturnClaimType, SubmitReturnRequestInput, ReviewReturnRequestInput"
           },
           {
-            "line": 26,
-            "end_line": 26,
+            "line": 25,
+            "end_line": 25,
             "kind": "from",
             "statement": "from app.services.ledger_service import get_shopkeeper_ledger"
           }
@@ -3588,32 +4087,26 @@
             "statement": "import strawberry"
           },
           {
-            "line": 10,
-            "end_line": 10,
+            "line": 11,
+            "end_line": 11,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from app.db.models import Notification, ShopkeeperProfile"
           },
           {
             "line": 12,
             "end_line": 12,
             "kind": "from",
-            "statement": "from app.db.models import Notification, ShopkeeperProfile"
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 13,
             "end_line": 13,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 14,
-            "end_line": 14,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 15,
-            "end_line": 18,
+            "line": 14,
+            "end_line": 17,
             "kind": "from",
             "statement": "from app.graphql.types import NotificationType, UpdateNotificationPreferencesInput"
           }
@@ -3656,32 +4149,26 @@
             "statement": "import strawberry"
           },
           {
-            "line": 12,
-            "end_line": 12,
-            "kind": "from",
-            "statement": "from strawberry.types import Info"
-          },
-          {
-            "line": 14,
-            "end_line": 24,
+            "line": 13,
+            "end_line": 23,
             "kind": "from",
             "statement": "from app.db.models import AutomationJob, JobStatus, Notification, UserRole, User, AccountAuditLog, Order, OrderStatus, ShopkeeperProfile"
+          },
+          {
+            "line": 24,
+            "end_line": 24,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 25,
             "end_line": 25,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 26,
-            "end_line": 26,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller, _user_to_type"
           },
           {
-            "line": 27,
-            "end_line": 33,
+            "line": 26,
+            "end_line": 32,
             "kind": "from",
             "statement": "from app.graphql.types import AutomationJobType, IntegrationHealthType, AccountAuditLogType, OperationsIncidentSummaryType, UserType"
           }
@@ -3703,19 +4190,13 @@
             "line": 6,
             "end_line": 6,
             "kind": "from",
-            "statement": "from datetime import datetime, timezone"
-          },
-          {
-            "line": 8,
-            "end_line": 8,
-            "kind": "import",
-            "statement": "import strawberry"
+            "statement": "from datetime import date, datetime, timedelta, timezone"
           },
           {
             "line": 9,
             "end_line": 9,
-            "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "kind": "import",
+            "statement": "import strawberry"
           },
           {
             "line": 10,
@@ -3760,28 +4241,9 @@
             "statement": "from app.services import order_service"
           }
         ],
-        "mid_file_imports": [
-          {
-            "path": "app/graphql/resolvers/orders.py",
-            "line": 127,
-            "end_line": 127,
-            "scope": "class:OrderQuery/async_function:dashboard_stats",
-            "kind": "from",
-            "statement": "from datetime import date, timedelta",
-            "category": "nested"
-          }
-        ],
+        "mid_file_imports": [],
         "delayed_module_imports": [],
-        "nested_imports": [
-          {
-            "path": "app/graphql/resolvers/orders.py",
-            "line": 127,
-            "end_line": 127,
-            "scope": "class:OrderQuery/async_function:dashboard_stats",
-            "kind": "from",
-            "statement": "from datetime import date, timedelta"
-          }
-        ]
+        "nested_imports": []
       },
       "app/graphql/resolvers/payments.py": {
         "path": "app/graphql/resolvers/payments.py",
@@ -3802,47 +4264,41 @@
             "line": 7,
             "end_line": 7,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from sqlalchemy import select"
           },
           {
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from sqlalchemy import select"
+            "statement": "from sqlalchemy.orm import selectinload"
           },
           {
-            "line": 9,
-            "end_line": 9,
+            "line": 10,
+            "end_line": 10,
             "kind": "from",
-            "statement": "from sqlalchemy.orm import selectinload"
+            "statement": "from app.db.models import AdvancePayment, PaymentMethod, UserRole"
           },
           {
             "line": 11,
             "end_line": 11,
             "kind": "from",
-            "statement": "from app.db.models import AdvancePayment, PaymentMethod, UserRole"
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 12,
             "end_line": 12,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 13,
-            "end_line": 13,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 14,
-            "end_line": 17,
+            "line": 13,
+            "end_line": 16,
             "kind": "from",
             "statement": "from app.graphql.types import AdvancePaymentType, RecordAdvancePaymentInput"
           },
           {
-            "line": 18,
-            "end_line": 18,
+            "line": 17,
+            "end_line": 17,
             "kind": "from",
             "statement": "from app.services.payment_service import record_advance_payment as svc_record_advance"
           }
@@ -3870,41 +4326,35 @@
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from sqlalchemy import select, func"
           },
           {
             "line": 9,
             "end_line": 9,
             "kind": "from",
-            "statement": "from sqlalchemy import select, func"
+            "statement": "from sqlalchemy.orm import selectinload"
           },
           {
-            "line": 10,
-            "end_line": 10,
+            "line": 11,
+            "end_line": 11,
             "kind": "from",
-            "statement": "from sqlalchemy.orm import selectinload"
+            "statement": "from app.db.models import Product, StockBatch, UserRole"
           },
           {
             "line": 12,
             "end_line": 12,
             "kind": "from",
-            "statement": "from app.db.models import Product, StockBatch, UserRole"
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 13,
             "end_line": 13,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 14,
-            "end_line": 14,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 15,
-            "end_line": 21,
+            "line": 14,
+            "end_line": 20,
             "kind": "from",
             "statement": "from app.graphql.types import ProductType, PaginatedProducts, StockBatchType, ProductInput, StockBatchInput"
           }
@@ -3932,47 +4382,41 @@
             "line": 7,
             "end_line": 7,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from sqlalchemy import select"
           },
           {
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from sqlalchemy import select"
+            "statement": "from sqlalchemy.orm import selectinload"
           },
           {
-            "line": 9,
-            "end_line": 9,
+            "line": 10,
+            "end_line": 10,
             "kind": "from",
-            "statement": "from sqlalchemy.orm import selectinload"
+            "statement": "from app.db.models import InvoiceReturn, UserRole"
           },
           {
             "line": 11,
             "end_line": 11,
             "kind": "from",
-            "statement": "from app.db.models import InvoiceReturn, UserRole"
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 12,
             "end_line": 12,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 13,
-            "end_line": 13,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 14,
-            "end_line": 18,
+            "line": 13,
+            "end_line": 17,
             "kind": "from",
             "statement": "from app.graphql.types import InvoiceReturnType, InvoiceReturnItemType, CreateInvoiceReturnInput"
           },
           {
-            "line": 19,
-            "end_line": 19,
+            "line": 18,
+            "end_line": 18,
             "kind": "from",
             "statement": "from app.services.return_service import create_invoice_return"
           }
@@ -4006,41 +4450,35 @@
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from sqlalchemy import select"
           },
           {
             "line": 9,
             "end_line": 9,
             "kind": "from",
-            "statement": "from sqlalchemy import select"
-          },
-          {
-            "line": 10,
-            "end_line": 10,
-            "kind": "from",
             "statement": "from sqlalchemy.orm import selectinload"
           },
           {
-            "line": 12,
-            "end_line": 22,
+            "line": 11,
+            "end_line": 21,
             "kind": "from",
             "statement": "from app.db.models import Product, ShopkeeperProfile, User, UserRole, AutomationCircuitBreaker, HighRiskApproval, AccountAuditLog, SystemGovernancePolicy, SupplierReconciliationRecord"
+          },
+          {
+            "line": 22,
+            "end_line": 22,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 23,
             "end_line": 23,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 24,
-            "end_line": 24,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 25,
-            "end_line": 33,
+            "line": 24,
+            "end_line": 32,
             "kind": "from",
             "statement": "from app.graphql.types import BulkPricePreviewItem, BulkPriceSimulationResult, AutomationCircuitType, HighRiskApprovalType, SupplierReconciliationItemType, ProductChangeAuditItemType, SuperAdminGovernanceOverviewType"
           }
@@ -4074,41 +4512,35 @@
             "line": 8,
             "end_line": 8,
             "kind": "from",
-            "statement": "from strawberry.types import Info"
+            "statement": "from sqlalchemy import select"
           },
           {
             "line": 9,
             "end_line": 9,
             "kind": "from",
-            "statement": "from sqlalchemy import select"
-          },
-          {
-            "line": 10,
-            "end_line": 10,
-            "kind": "from",
             "statement": "from sqlalchemy.orm import selectinload"
           },
           {
-            "line": 12,
-            "end_line": 20,
+            "line": 11,
+            "end_line": 19,
             "kind": "from",
             "statement": "from app.db.models import Order, OrderItem, OrderStatus, StockBatch, StockAdjustment, User, UserRole"
+          },
+          {
+            "line": 20,
+            "end_line": 20,
+            "kind": "from",
+            "statement": "from app.db.session import async_session_factory"
           },
           {
             "line": 21,
             "end_line": 21,
             "kind": "from",
-            "statement": "from app.db.session import async_session_factory"
-          },
-          {
-            "line": 22,
-            "end_line": 22,
-            "kind": "from",
             "statement": "from app.graphql.resolvers.auth import _get_caller"
           },
           {
-            "line": 23,
-            "end_line": 28,
+            "line": 22,
+            "end_line": 27,
             "kind": "from",
             "statement": "from app.graphql.types import StockAdjustmentType, WarehousePickingLineType, WarehousePickingSlipType, BarcodeVerificationResult"
           }
@@ -4120,6 +4552,462 @@
       "app/graphql/resolvers/__init__.py": {
         "path": "app/graphql/resolvers/__init__.py",
         "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/auth/inputs.py": {
+        "path": "app/graphql/modules/auth/inputs.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.graphql.types import LoginInput, RegisterInput, CreateUserInput"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/auth/mutations.py": {
+        "path": "app/graphql/modules/auth/mutations.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import AuthMutation"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.services.graphql_audit_service import append_graphql_audit_event"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/auth/queries.py": {
+        "path": "app/graphql/modules/auth/queries.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.auth import AuthQuery"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/auth/types.py": {
+        "path": "app/graphql/modules/auth/types.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from typing import Annotated"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "import",
+            "statement": "import strawberry"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.graphql.types import UserType, AuthPayload, ShopkeeperProfileType"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/delivery/mutations.py": {
+        "path": "app/graphql/modules/delivery/mutations.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.delivery import DeliveryMutation"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.services.graphql_audit_service import append_graphql_audit_event"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/delivery/queries.py": {
+        "path": "app/graphql/modules/delivery/queries.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.delivery import DeliveryQuery"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/delivery/types.py": {
+        "path": "app/graphql/modules/delivery/types.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.graphql.types import DeliveryChallanType, DeliveryRosterType, DeliveryAssignmentType, DeliveryShiftSummaryType"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/orders/inputs.py": {
+        "path": "app/graphql/modules/orders/inputs.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.graphql.types import PlaceOrderInput, RateOrderInput, OrderItemInput"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/orders/mutations.py": {
+        "path": "app/graphql/modules/orders/mutations.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.orders import OrderMutation"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.services.graphql_audit_service import append_graphql_audit_event"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/orders/queries.py": {
+        "path": "app/graphql/modules/orders/queries.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.orders import OrderQuery"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/orders/types.py": {
+        "path": "app/graphql/modules/orders/types.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.graphql.types import OrderType, OrderItemType, PaginatedOrders, DashboardStats"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/products/inputs.py": {
+        "path": "app/graphql/modules/products/inputs.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 10,
+            "kind": "from",
+            "statement": "from app.graphql.types import ProductInput, StockBatchInput"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/products/mutations.py": {
+        "path": "app/graphql/modules/products/mutations.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.products import ProductMutation"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.services.graphql_audit_service import append_graphql_audit_event"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/products/queries.py": {
+        "path": "app/graphql/modules/products/queries.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.products import ProductQuery"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/products/types.py": {
+        "path": "app/graphql/modules/products/types.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 11,
+            "kind": "from",
+            "statement": "from app.graphql.types import ProductType, StockBatchType, PaginatedProducts"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/warehouse/mutations.py": {
+        "path": "app/graphql/modules/warehouse/mutations.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.warehouse_ops import WarehouseOpsMutation"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          },
+          {
+            "line": 9,
+            "end_line": 9,
+            "kind": "from",
+            "statement": "from app.services.graphql_audit_service import append_graphql_audit_event"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/warehouse/queries.py": {
+        "path": "app/graphql/modules/warehouse/queries.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 7,
+            "kind": "from",
+            "statement": "from app.graphql.resolvers.warehouse_ops import WarehouseOpsQuery"
+          },
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from app.graphql.errors import ForbiddenError"
+          }
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "app/graphql/modules/warehouse/types.py": {
+        "path": "app/graphql/modules/warehouse/types.py",
+        "top_imports": [
+          {
+            "line": 5,
+            "end_line": 5,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 7,
+            "end_line": 12,
+            "kind": "from",
+            "statement": "from app.graphql.types import StockAdjustmentType, WarehousePickingSlipType, WarehousePickingLineType, StockBatchType"
+          }
+        ],
         "mid_file_imports": [],
         "delayed_module_imports": [],
         "nested_imports": []
@@ -4193,54 +5081,24 @@
             "line": 10,
             "end_line": 10,
             "kind": "from",
-            "statement": "from app.graphql.resolvers.auth import AuthMutation"
+            "statement": "from app.graphql.resolvers.auth import AuthMutation, _user_to_type"
           },
           {
             "line": 11,
             "end_line": 11,
             "kind": "from",
+            "statement": "from app.graphql.resolvers.orders import OrderQuery"
+          },
+          {
+            "line": 12,
+            "end_line": 12,
+            "kind": "from",
             "statement": "from app.graphql.types import CreateUserInput"
           }
         ],
-        "mid_file_imports": [
-          {
-            "path": "tests/test_auth_rbac.py",
-            "line": 153,
-            "end_line": 153,
-            "scope": "class:TestAuthRBACGuards/function:test_user_to_type_includes_assigned_work_queue",
-            "kind": "from",
-            "statement": "from app.graphql.resolvers.auth import _user_to_type",
-            "category": "nested"
-          },
-          {
-            "path": "tests/test_auth_rbac.py",
-            "line": 185,
-            "end_line": 185,
-            "scope": "class:TestAuthRBACGuards/async_function:test_dashboard_stats_resolves_cleanly",
-            "kind": "from",
-            "statement": "from app.graphql.resolvers.orders import OrderQuery",
-            "category": "nested"
-          }
-        ],
+        "mid_file_imports": [],
         "delayed_module_imports": [],
-        "nested_imports": [
-          {
-            "path": "tests/test_auth_rbac.py",
-            "line": 153,
-            "end_line": 153,
-            "scope": "class:TestAuthRBACGuards/function:test_user_to_type_includes_assigned_work_queue",
-            "kind": "from",
-            "statement": "from app.graphql.resolvers.auth import _user_to_type"
-          },
-          {
-            "path": "tests/test_auth_rbac.py",
-            "line": 185,
-            "end_line": 185,
-            "scope": "class:TestAuthRBACGuards/async_function:test_dashboard_stats_resolves_cleanly",
-            "kind": "from",
-            "statement": "from app.graphql.resolvers.orders import OrderQuery"
-          }
-        ]
+        "nested_imports": []
       },
       "tests/test_delivery_and_orders_rbac.py": {
         "path": "tests/test_delivery_and_orders_rbac.py",
@@ -4523,56 +5381,26 @@
           },
           {
             "line": 10,
-            "end_line": 14,
-            "kind": "from",
-            "statement": "from app.services.inventory_service import allocate_batch_fefo, restore_batch_stock, InsufficientStockError"
-          },
-          {
-            "line": 15,
             "end_line": 15,
             "kind": "from",
+            "statement": "from app.services.inventory_service import allocate_batch_fefo, restore_batch_stock, InsufficientStockError, record_purchase_entry"
+          },
+          {
+            "line": 16,
+            "end_line": 16,
+            "kind": "from",
             "statement": "from app.db.models import StockBatch"
-          }
-        ],
-        "mid_file_imports": [
-          {
-            "path": "tests/test_services.py",
-            "line": 147,
-            "end_line": 147,
-            "scope": "class:TestInventoryService/async_function:test_record_purchase_entry",
-            "kind": "from",
-            "statement": "from app.services.inventory_service import record_purchase_entry",
-            "category": "nested"
           },
           {
-            "path": "tests/test_services.py",
-            "line": 191,
-            "end_line": 191,
-            "scope": "class:TestInvoiceGeneration/function:test_render_html_invoice_statutory_fields",
-            "kind": "from",
-            "statement": "from app.utils.invoice_gen import render_html_invoice",
-            "category": "nested"
-          }
-        ],
-        "delayed_module_imports": [],
-        "nested_imports": [
-          {
-            "path": "tests/test_services.py",
-            "line": 147,
-            "end_line": 147,
-            "scope": "class:TestInventoryService/async_function:test_record_purchase_entry",
-            "kind": "from",
-            "statement": "from app.services.inventory_service import record_purchase_entry"
-          },
-          {
-            "path": "tests/test_services.py",
-            "line": 191,
-            "end_line": 191,
-            "scope": "class:TestInvoiceGeneration/function:test_render_html_invoice_statutory_fields",
+            "line": 17,
+            "end_line": 17,
             "kind": "from",
             "statement": "from app.utils.invoice_gen import render_html_invoice"
           }
-        ]
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
       },
       "tests/test_superadmin_governance.py": {
         "path": "tests/test_superadmin_governance.py",
@@ -4659,6 +5487,44 @@
       "tests/__init__.py": {
         "path": "tests/__init__.py",
         "top_imports": [],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
+      },
+      "tests/graphql/test_auth_failure.py": {
+        "path": "tests/graphql/test_auth_failure.py",
+        "top_imports": [
+          {
+            "line": 8,
+            "end_line": 8,
+            "kind": "from",
+            "statement": "from __future__ import annotations"
+          },
+          {
+            "line": 10,
+            "end_line": 10,
+            "kind": "import",
+            "statement": "import pytest"
+          },
+          {
+            "line": 11,
+            "end_line": 11,
+            "kind": "import",
+            "statement": "import httpx"
+          },
+          {
+            "line": 13,
+            "end_line": 13,
+            "kind": "from",
+            "statement": "from app.main import app"
+          },
+          {
+            "line": 14,
+            "end_line": 14,
+            "kind": "from",
+            "statement": "from app.core.security import create_access_token"
+          }
+        ],
         "mid_file_imports": [],
         "delayed_module_imports": [],
         "nested_imports": []
@@ -4799,21 +5665,26 @@
         ],
         "mid_file_imports": [
           {
-            "line": 16,
-            "end_line": 16,
+            "path": "scripts/regen_schema_snapshot.py",
+            "line": 18,
+            "end_line": 18,
+            "scope": "function:main",
             "kind": "from",
-            "statement": "from app.graphql.schema import schema"
+            "statement": "from app.graphql.schema import schema",
+            "category": "nested"
           }
         ],
-        "delayed_module_imports": [
+        "delayed_module_imports": [],
+        "nested_imports": [
           {
-            "line": 16,
-            "end_line": 16,
+            "path": "scripts/regen_schema_snapshot.py",
+            "line": 18,
+            "end_line": 18,
+            "scope": "function:main",
             "kind": "from",
             "statement": "from app.graphql.schema import schema"
           }
-        ],
-        "nested_imports": []
+        ]
       },
       "scripts/validate_env.py": {
         "path": "scripts/validate_env.py",
@@ -4847,30 +5718,17 @@
             "end_line": 21,
             "kind": "from",
             "statement": "from pathlib import Path"
-          }
-        ],
-        "mid_file_imports": [
+          },
           {
-            "path": "scripts/validate_env.py",
-            "line": 57,
-            "end_line": 57,
-            "scope": "function:_load_dotenv",
-            "kind": "from",
-            "statement": "from dotenv import load_dotenv as _load_dotenv_impl",
-            "category": "nested"
-          }
-        ],
-        "delayed_module_imports": [],
-        "nested_imports": [
-          {
-            "path": "scripts/validate_env.py",
-            "line": 57,
-            "end_line": 57,
-            "scope": "function:_load_dotenv",
+            "line": 23,
+            "end_line": 23,
             "kind": "from",
             "statement": "from dotenv import load_dotenv as _load_dotenv_impl"
           }
-        ]
+        ],
+        "mid_file_imports": [],
+        "delayed_module_imports": [],
+        "nested_imports": []
       },
       "scripts/verify_health.py": {
         "path": "scripts/verify_health.py",

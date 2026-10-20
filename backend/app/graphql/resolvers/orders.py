@@ -3,10 +3,10 @@ Order resolvers — place, confirm, update status, cancel.
 """
 
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timedelta, timezone
+
 
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
@@ -71,7 +71,7 @@ class OrderQuery:
     @strawberry.field
     async def orders(
         self,
-        info: Info,
+        info: strawberry.Info,
         status: str | None = None,
         page: int = 1,
         per_page: int = 20,
@@ -101,7 +101,7 @@ class OrderQuery:
             )
 
     @strawberry.field
-    async def order(self, info: Info, id: uuid.UUID) -> OrderType:
+    async def order(self, info: strawberry.Info, id: uuid.UUID) -> OrderType:
         """Get a single order by ID with tenant isolation."""
         user_id_str, role = _get_caller(info)
         async with async_session_factory() as session:
@@ -120,12 +120,10 @@ class OrderQuery:
             return _order_to_type(order)
 
     @strawberry.field
-    async def dashboard_stats(self, info: Info) -> DashboardStats:
+    async def dashboard_stats(self, info: strawberry.Info) -> DashboardStats:
         """Overview statistics for warehouse dashboard."""
         _get_caller(info)
         async with async_session_factory() as session:
-            from datetime import date, timedelta
-
             total_q = select(func.count(Order.id))
             total_orders = (await session.execute(total_q)).scalar() or 0
 
@@ -174,7 +172,10 @@ class OrderQuery:
 class OrderMutation:
     @strawberry.mutation
     async def place_order(
-        self, info: Info, input: PlaceOrderInput, shopkeeper_id: uuid.UUID | None = None
+        self,
+        info: strawberry.Info,
+        input: PlaceOrderInput,
+        shopkeeper_id: uuid.UUID | None = None,
     ) -> OrderType:
         """Place a new order (shopkeeper places for self; Admin can specify shopkeeper_id)."""
         user_id_str, role = _get_caller(info)
@@ -201,7 +202,9 @@ class OrderMutation:
             return _order_to_type(order)
 
     @strawberry.mutation
-    async def confirm_order(self, info: Info, order_id: uuid.UUID) -> OrderType:
+    async def confirm_order(
+        self, info: strawberry.Info, order_id: uuid.UUID
+    ) -> OrderType:
         """Confirm a placed order (Super Admin, Ops Admin, or Warehouse Staff only)."""
         user_id_str, role = _get_caller(info)
         if role not in (
@@ -226,7 +229,7 @@ class OrderMutation:
 
     @strawberry.mutation
     async def update_order_status(
-        self, info: Info, order_id: uuid.UUID, status: str
+        self, info: strawberry.Info, order_id: uuid.UUID, status: str
     ) -> OrderType:
         """Update order status (Admin or Warehouse staff only)."""
         _, role = _get_caller(info)
@@ -252,7 +255,7 @@ class OrderMutation:
 
     @strawberry.mutation
     async def cancel_order(
-        self, info: Info, order_id: uuid.UUID, reason: str | None = None
+        self, info: strawberry.Info, order_id: uuid.UUID, reason: str | None = None
     ) -> OrderType:
         """Cancel an order (Shopkeeper can cancel only if PLACED; Admin can cancel prior to dispatch)."""
         user_id_str, role = _get_caller(info)
@@ -284,7 +287,9 @@ class OrderMutation:
             return _order_to_type(order)
 
     @strawberry.mutation
-    async def rate_order(self, info: Info, input: RateOrderInput) -> OrderType:
+    async def rate_order(
+        self, info: strawberry.Info, input: RateOrderInput
+    ) -> OrderType:
         """Rate a delivered order (1-5 stars) and submit qualitative feedback."""
         user_id_str, role = _get_caller(info)
         if role != UserRole.SHOPKEEPER.value:
@@ -319,7 +324,7 @@ class OrderMutation:
 
     @strawberry.mutation
     async def dispute_delivery(
-        self, info: Info, order_id: uuid.UUID, reason: str
+        self, info: strawberry.Info, order_id: uuid.UUID, reason: str
     ) -> OrderType:
         """Report delivery dispute / mis-delivered order for administrative investigation."""
         user_id_str, role = _get_caller(info)

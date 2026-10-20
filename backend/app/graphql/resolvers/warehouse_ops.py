@@ -5,7 +5,6 @@ Warehouse Operations: Rack-Ordered Picking Slips, Barcode Verification & Stock A
 import uuid
 from datetime import datetime, timedelta
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -32,7 +31,7 @@ from app.graphql.types import (
 class WarehouseOpsQuery:
     @strawberry.field
     async def warehouse_picking_slip(
-        self, info: Info, order_id: uuid.UUID
+        self, info: strawberry.Info, order_id: uuid.UUID
     ) -> WarehousePickingSlipType:
         """
         Generate picking slip organized by warehouse location (Rack/Bay order).
@@ -141,7 +140,7 @@ class WarehouseOpsQuery:
 
     @strawberry.field
     async def stock_adjustments(
-        self, info: Info, batch_id: uuid.UUID | None = None
+        self, info: strawberry.Info, batch_id: uuid.UUID | None = None
     ) -> list[StockAdjustmentType]:
         """List physical stock audit adjustments with repeated adjustment flags."""
         _, role = _get_caller(info)
@@ -200,7 +199,7 @@ class WarehouseOpsMutation:
     @strawberry.mutation
     async def record_stock_adjustment(
         self,
-        info: Info,
+        info: strawberry.Info,
         batch_id: uuid.UUID,
         adjustment_type: str,
         quantity_delta: int,
@@ -286,7 +285,7 @@ class WarehouseOpsMutation:
     @strawberry.mutation
     async def verify_picking_line_barcode(
         self,
-        info: Info,
+        info: strawberry.Info,
         order_item_id: uuid.UUID,
         scanned_barcode: str,
     ) -> BarcodeVerificationResult:
@@ -366,7 +365,9 @@ class WarehouseOpsMutation:
                 )
 
     @strawberry.mutation
-    async def complete_order_picking(self, info: Info, order_id: uuid.UUID) -> bool:
+    async def complete_order_picking(
+        self, info: strawberry.Info, order_id: uuid.UUID
+    ) -> bool:
         """Mark order picking completed and advance status to PACKED."""
         _, role = _get_caller(info)
         if role not in (

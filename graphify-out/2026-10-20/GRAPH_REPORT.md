@@ -1,16 +1,17 @@
 # Graph Report - pharmacyfantasy  (2026-10-20)
 
 ## Corpus Check
-- 390 files · ~461,473 words
+- 432 files · ~456,726 words
 - Verdict: corpus is large enough that graph structure adds value.
+- Unclassified: 25 file(s) not represented in the graph (top: (none) 8, .gz 2, .example 2)
 
 ## Summary
-- 4906 nodes · 8393 edges · 337 communities (312 shown, 25 thin omitted)
-- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 800 edges (avg confidence: 0.5)
+- 5113 nodes · 8849 edges · 347 communities (311 shown, 22 thin omitted)
+- Extraction: 92% EXTRACTED · 8% INFERRED · 0% AMBIGUOUS · INFERRED: 695 edges (avg confidence: 0.9)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ec06980c`
+- Built from commit: `ab2da99e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -18,38 +19,38 @@
 - search.mjs
 - n
 - push
-- challan.py
+- returns.py
 - get
 - operations.ts
-- SuperAdminGovernanceMutation
+- type
 - dashboard/page.tsx
 - f
 - Accessibility Coding Guidelines
-- execute
+- Base
 - modern-web.mjs
 - types.ts
-- b
+- errors.py
 - Pharmacy Fantasy — Complete Role & Responsibility Specification
 - compilerOptions
 - slice
 - shopkeepers/page.tsx
-- models.py
-- users/page.tsx
+- Order
+- toString
 - Performance
-- User
 - _get_caller
+- graphql/types.py
 - 🔬 Pharmacy Fantasy — Elite UI/UX Audit Report
 - Forms
 - ledger.py
-- save
+- removeModel
 - 2. Role-by-Role Breakdown
-- constructor
-- frontend/package.json
-- session.py
-- apollo-client.ts
+- runKernelFunc
+- TimestampMixin
+- models.py
+- @apollo/client
 - Mandatory Rules
 - Pharmacy Fantasy — Delivery Boy: 200-Point Checklist & Automation Blueprint
-- auth.py
+- AuthMutation
 - inventory_service.py
 - Companion policies (deploy in parallel)
 - Pharmacy Fantasy: 200 Super Admin Checklist + Automation Blueprint
@@ -65,17 +66,17 @@
 - modern-web-guidance/package.json
 - Detailed Guidelines
 - What You Must Do When Invoked
-- logger.ts
+- _user_to_type
 - ⚛️ Frontend Architecture & Component Engineering Guide
 - Dark mode
 - next.config.js
 - next-env.d.ts
-- .record_advance_payment
+- payments.py
 - 🐍 Backend Architecture & Engineering Guide
 - How to implement
 - CSS: Modern Architecture
 - How to implement
-- auth.ts
+- react
 - Common Rejection Reasons
 - Agentic JavaScript Tools
 - Pharmacy Fantasy — Warehouse Staff: 200-Point Checklist & Automation Blueprint
@@ -316,100 +317,111 @@
 - Design Specification: Pharmacy Fantasy Backend State Check Pipeline (`codebase.bat`)
 - validate_env.py
 - devDependencies
-- types.py
+- challan.py
 - order_service.py
 - .eslintrc.json
 - 7a8b9c0d1e2f_add_missing_feature_columns.py
 - graphql-queries.ts
 - codegen.ts
-- app/page.tsx
-- vitest
-- dependencies
+- .assign_user_role
+- test_auth_failure.py
+- frontend/package.json
 - pharmacyfantasy-backend
-- .record_stock_adjustment
+- dataloaders.py
+- index.ts
+- schema.py
+- .register
 - check-best-practices.mjs
-- kpi-chart.tsx
-- forgot-password/page.tsx
+- notifications.py
+- AppError
+- BaseRepository
+- BaseHTTPClient
+- decode_token
+- .dispatch
+- .__init__
+- regen_schema_snapshot.py
 - breadcrumb.tsx
-- checkbox.tsx
-- empty-state.tsx
-- radio.tsx
-- @graphql-codegen/typescript
-- @vitest/coverage-v8
+- test_schema_snapshot.py
+- validation.py
 - vitest.config.mts
+- conftest.py
+- QueryExecutionTimeExtension
+- 💊 Pharmacy Fantasy — Backend Service
+- PageInfo
+- verify_health.py
 
 ## God Nodes (most connected - your core abstractions)
 1. `f()` - 144 edges
 2. `runKernel()` - 122 edges
-3. `push()` - 93 edges
-4. `x()` - 91 edges
+3. `push()` - 95 edges
+4. `x()` - 94 edges
 5. `_get_caller()` - 81 edges
-6. `UserRole` - 62 edges
+6. `UserRole` - 60 edges
 7. `slice()` - 59 edges
-8. `n()` - 57 edges
-9. `o()` - 57 edges
-10. `StockBatch` - 50 edges
+8. `n()` - 54 edges
+9. `Base` - 52 edges
+10. `o()` - 49 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `runAllChecks()` --indirect_call--> `f()`  [INFERRED]
-  frontend/scripts/check-best-practices.mjs → .agents/skills/modern-web-guidance/search.mjs
+- `InvoiceType` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/types.py → .agents/skills/modern-web-guidance/package.json
+- `PaymentType` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/types.py → .agents/skills/modern-web-guidance/package.json
+- `PageInfo` --references--> `type`  [EXTRACTED]
+  backend/app/graphql/common/__init__.py → .agents/skills/modern-web-guidance/package.json
 - `AuthMutation` --references--> `type`  [EXTRACTED]
   backend/app/graphql/resolvers/auth.py → .agents/skills/modern-web-guidance/package.json
 - `AuthQuery` --references--> `type`  [EXTRACTED]
   backend/app/graphql/resolvers/auth.py → .agents/skills/modern-web-guidance/package.json
-- `ChallanMutation` --references--> `type`  [EXTRACTED]
-  backend/app/graphql/resolvers/challan.py → .agents/skills/modern-web-guidance/package.json
-- `ChallanQuery` --references--> `type`  [EXTRACTED]
-  backend/app/graphql/resolvers/challan.py → .agents/skills/modern-web-guidance/package.json
 
 ## Import Cycles
 - None detected.
 
-## Communities (337 total, 25 thin omitted)
+## Communities (347 total, 22 thin omitted)
 
 ### Community 0 - "search.mjs"
 Cohesion: 0.02
-Nodes (101): ad(), array(), arraySync(), backend(), Ck(), clearInstance(), contextIdforContexts(), convertTensorMapToTensorsMap() (+93 more)
+Nodes (100): $a(), ad(), array(), arraySync(), backend(), bd(), clearInstance(), contextIdforContexts() (+92 more)
 
 ### Community 1 - "n"
 Cohesion: 0.07
-Nodes (66): a0(), As(), aw(), bb(), _call(), checkManifestAndWeightFiles(), Cm(), concat() (+58 more)
+Nodes (78): As(), aw(), bb(), bi(), bl(), _build_trie(), a(), ci() (+70 more)
 
 ### Community 2 - "push"
-Cohesion: 0.06
-Nodes (59): add_node(), Ah(), al(), b1(), bpe(), Bs(), C_(), checkTensorForDisposal() (+51 more)
+Cohesion: 0.04
+Nodes (99): add_node(), addStructuredOutputNames(), Ah(), al(), b1(), bpe(), Bs(), C_() (+91 more)
 
-### Community 3 - "challan.py"
-Cohesion: 0.10
-Nodes (36): ChallanItem, ChallanReturn, ChallanReturnItem, DeliveryChallan, _challan_to_type(), ChallanMutation, ChallanQuery, field (+28 more)
+### Community 3 - "returns.py"
+Cohesion: 0.14
+Nodes (22): InvoiceReturn, InvoiceReturnItem, field, Info, mutation, Invoice Return / Credit Note GraphQL resolvers — queries and mutations., List all GST credit notes / invoice returns., Issue an official GST Credit Note for an invoice. (+14 more)
 
 ### Community 4 - "get"
-Cohesion: 0.05
-Nodes (65): Ae(), ao(), ay(), bk(), buffer(), bufferSync(), common_prefix_search(), createTensorFromGPUData() (+57 more)
+Cohesion: 0.06
+Nodes (64): Ae(), ao(), ay(), bk(), buffer(), bufferSync(), bytes(), common_prefix_search() (+56 more)
 
 ### Community 5 - "operations.ts"
 Cohesion: 0.01
 Nodes (133): AccountAuditLogsQuery, AccountAuditLogsQueryVariables, ApplyBulkPriceMutation, ApplyBulkPriceMutationVariables, AssignDeliveryMutation, AssignDeliveryMutationVariables, AssignStaffWorkQueueMutation, AssignStaffWorkQueueMutationVariables (+125 more)
 
-### Community 6 - "SuperAdminGovernanceMutation"
-Cohesion: 0.07
-Nodes (46): AutomationCircuitType, AutomationCircuitBreaker, HighRiskApproval, Product, SupplierReconciliationRecord, SystemGovernancePolicy, field, Info (+38 more)
+### Community 6 - "type"
+Cohesion: 0.08
+Nodes (46): type, AutomationCircuitType, AutomationCircuitBreaker, HighRiskApproval, SupplierReconciliationRecord, SystemGovernancePolicy, field, Info (+38 more)
 
 ### Community 7 - "dashboard/page.tsx"
-Cohesion: 0.06
-Nodes (20): DEMO_ORDERS, REVENUE_DATA, ProgressBar(), ProgressBarProps, StatCard(), StatCardProps, StatusBadge(), StatusBadgeProps (+12 more)
+Cohesion: 0.05
+Nodes (28): DEMO_ORDERS, REVENUE_DATA, EmptyStateProps, DataPoint, FLOW_STEPS, FlowStep, OrderFlowTimeline(), OrderFlowTimelineProps (+20 more)
 
 ### Community 8 - "f"
 Cohesion: 0.05
-Nodes (109): _0(), ab(), aN(), b0(), Bn(), Bw(), c0(), ci() (+101 more)
+Nodes (122): _0(), a0(), ab(), aN(), at(), b(), b0(), Bt() (+114 more)
 
 ### Community 9 - "Accessibility Coding Guidelines"
 Cohesion: 0.04
 Nodes (46): 10. Typography, 11. Motion and Preferences, 12. Modals and Native Dialogs, 13. Testing Validations, 1. Content Navigability and Structure, 2. Semantic HTML and ARIA, 3. Accessible Names and Descriptions, 4. Document Metadata and Language (+38 more)
 
-### Community 10 - "execute"
+### Community 10 - "Base"
 Cohesion: 0.09
-Nodes (37): addStructuredOutputNames(), ax(), cd(), checkInputs(), checkInputShapeAndType(), checkOutputs(), cloneTensorList(), cloneTensorMap() (+29 more)
+Nodes (43): Base, Invoice, OrderItem, Payment, Product, ShopkeeperProfile, StockAdjustment, StockBatch (+35 more)
 
 ### Community 11 - "modern-web.mjs"
 Cohesion: 0.17
@@ -419,45 +431,45 @@ Nodes (23): bucketizeLatency(), constructor(), detectOS(), determineAgent(), #en
 Cohesion: 0.02
 Nodes (124): AccountAuditLogType, AdvancePaymentType, AuthPayload, AutomationCircuitType, AutomationJobType, BarcodeVerificationResult, BulkPricePreviewItem, BulkPriceSimulationResult (+116 more)
 
-### Community 13 - "b"
+### Community 13 - "errors.py"
 Cohesion: 0.08
-Nodes (51): assign(), b(), bd(), be(), bi(), cb(), Cr(), databaseAction() (+43 more)
+Nodes (26): AuthenticationError, ForbiddenError, GraphQLAppError, handle_graphql_error(), NotFoundError, Any, Exception, Sanitized GraphQL error handling and custom domain error hierarchy. (+18 more)
 
 ### Community 14 - "Pharmacy Fantasy — Complete Role & Responsibility Specification"
 Cohesion: 0.04
 Nodes (48): 10. Final recommended structure, 1. 👑 Super Admin — Complete Responsibilities, 2. 🛡️ Operations Admin — Complete Responsibilities, 3. 📦 Warehouse Staff — Complete Responsibilities, 4. 🛵 Delivery Boy — Complete Responsibilities, 5. 🏪 Retail Shopkeeper — Complete Responsibilities, 6. How all five roles work together, 7. Permission matrix — who can do what? (+40 more)
 
 ### Community 15 - "compilerOptions"
-Cohesion: 0.07
-Nodes (26): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+18 more)
+Cohesion: 0.11
+Nodes (18): compilerOptions, allowJs, esModuleInterop, incremental, isolatedModules, jsx, lib, module (+10 more)
 
 ### Community 16 - "slice"
-Cohesion: 0.08
-Nodes (37): clean_text(), convert_tokens_to_string(), d0(), decode_chain(), embed(), encode(), encode_text(), getCompilationKey() (+29 more)
+Cohesion: 0.06
+Nodes (50): _call(), checkManifestAndWeightFiles(), Ck(), clean_text(), convert_tokens_to_string(), decode(), decode_chain(), embed() (+42 more)
 
 ### Community 17 - "shopkeepers/page.tsx"
+Cohesion: 0.10
+Nodes (15): DeliveryItem, FAILURE_REASONS, RosterShift, BatchItem, DEMO_SHOPKEEPERS, Shopkeeper, SideDrawer(), SideDrawerProps (+7 more)
+
+### Community 18 - "Order"
+Cohesion: 0.08
+Nodes (49): DeliveryAssignment, DeliveryRoster, DeliveryStatus, NonDeliveryReason, Order, OrderStatus, GraphQL types for delivery assignments and challans., _delivery_to_type() (+41 more)
+
+### Community 19 - "toString"
 Cohesion: 0.11
-Nodes (16): DeliveriesPage(), DeliveryItem, FAILURE_REASONS, RosterShift, BatchItem, DEMO_SHOPKEEPERS, Shopkeeper, SideDrawer() (+8 more)
-
-### Community 18 - "models.py"
-Cohesion: 0.09
-Nodes (64): Base, Declarative base for all SQLAlchemy models., DeliveryAssignment, DeliveryRoster, DeliveryStatus, Invoice, LedgerEntryType, NonDeliveryReason (+56 more)
-
-### Community 19 - "users/page.tsx"
-Cohesion: 0.13
-Nodes (15): DashboardPage(), ProductItem, ProductsPage(), UserItem, UsersPage(), getStoredUser(), ACCOUNT_AUDIT_LOGS_QUERY, APPLY_BULK_PRICE_MUTATION (+7 more)
+Nodes (27): be(), Bn(), de(), el(), Ep(), fd(), hr(), ie() (+19 more)
 
 ### Community 20 - "Performance"
 Cohesion: 0.05
 Nodes (42): Code Examples, Code Examples, Code Examples, Code Examples, Code Examples, Code Examples, Code Examples, Code Examples (+34 more)
 
-### Community 21 - "User"
+### Community 21 - "_get_caller"
 Cohesion: 0.08
-Nodes (43): AccountAuditLogType, AutomationJobType, AccountAuditLog, AutomationJob, JobStatus, Notification, User, _job_to_type() (+35 more)
+Nodes (43): AccountAuditLogType, AutomationJobType, AccountAuditLog, AutomationJob, JobStatus, Notification, _get_caller(), Return (user_id, role) from Authorization header or test context. (+35 more)
 
-### Community 22 - "_get_caller"
-Cohesion: 0.06
-Nodes (50): _get_caller(), Return (user_id, role) from Authorization header or test context., _delivery_to_type(), field, Info, mutation, UUID, Returns shift summary, delivered/failed counts, and cash remittance totals. (+42 more)
+### Community 22 - "graphql/types.py"
+Cohesion: 0.07
+Nodes (41): GraphQL input types for authentication and user management., GraphQL inputs for order placement and status updates., GraphQL types for orders and fulfillment tracking., _order_to_type(), OrderMutation, field, Info, mutation (+33 more)
 
 ### Community 23 - "🔬 Pharmacy Fantasy — Elite UI/UX Audit Report"
 Cohesion: 0.04
@@ -468,32 +480,32 @@ Cohesion: 0.05
 Nodes (36): 10. Usability Testing and Analytics, 11. Multi-Page Forms, 1. Semantic Structure and Form Element, 2. Accessible Labeling and State, 3. Autofill and Input Hints, 4. Constraints and Validation, 5. Responsive Design and Typography, 6. Styling Form Controls (+28 more)
 
 ### Community 25 - "ledger.py"
-Cohesion: 0.06
-Nodes (52): LedgerEntry, ReturnRequest, ReturnRequestStatus, _claim_to_type(), _ledger_to_type(), LedgerMutation, LedgerQuery, field (+44 more)
+Cohesion: 0.08
+Nodes (46): LedgerEntry, LedgerEntryType, ReturnRequest, ReturnRequestStatus, _claim_to_type(), _ledger_to_type(), LedgerMutation, LedgerQuery (+38 more)
 
-### Community 26 - "save"
-Cohesion: 0.10
-Nodes (26): bl(), cl(), delete(), fi(), fl(), ge(), getHandlers(), getInstance() (+18 more)
+### Community 26 - "removeModel"
+Cohesion: 0.13
+Nodes (21): cl(), delete(), fi(), fl(), getHandlers(), getInstance(), getLoadHandlers(), getManager() (+13 more)
 
 ### Community 27 - "2. Role-by-Role Breakdown"
 Cohesion: 0.18
 Nodes (10): 1. Executive Summary: Platform Status Across All 1,000 Points, 2. Role-by-Role Breakdown, 3. Technology Stack & Implementation Mapping, 4. Phase 2 Innovation & Hardware Integration Roadmap (100% Software Scope Complete!), A. Delivery Boy (200 Items), B. Operations Admin (200 Items), C. Retail Shopkeeper (200 Items), D. Super Admin (200 Items) (+2 more)
 
-### Community 28 - "constructor"
-Cohesion: 0.05
-Nodes (55): $a(), addTapeNode(), applyGradients(), Bt(), _build_trie(), bytes(), cast(), checkKernelForMemLeak() (+47 more)
+### Community 28 - "runKernelFunc"
+Cohesion: 0.08
+Nodes (35): addTapeNode(), applyGradients(), assign(), cast(), checkKernelForMemLeak(), En(), epsilon(), floatPrecision() (+27 more)
 
-### Community 29 - "frontend/package.json"
-Cohesion: 0.50
-Nodes (3): name, private, version
+### Community 29 - "TimestampMixin"
+Cohesion: 0.12
+Nodes (15): Mixin adding created_at and updated_at timestamps to models., TimestampMixin, ApiKey, API Key authentication model for external service integrations., API key for machine-to-machine authentication., Domain models package — re-exports from app.db.models and specialized model…, User session model for tracking authenticated state and refresh sessions., Tracks active user sessions and devices. (+7 more)
 
-### Community 30 - "session.py"
-Cohesion: 0.06
-Nodes (41): do_run_migrations(), Alembic env.py — configured for async SQLAlchemy., run_async_migrations(), run_migrations_online(), Application configuration — loaded from environment variables., Settings, get_logger(), Structured logging configuration for Pharmacy Fantasy backend. (+33 more)
+### Community 30 - "models.py"
+Cohesion: 0.04
+Nodes (55): do_run_migrations(), Alembic env.py — configured for async SQLAlchemy., run_async_migrations(), run_migrations_online(), get_settings(), Application configuration — loaded from environment variables., Return cached application settings singleton., Settings (+47 more)
 
-### Community 31 - "apollo-client.ts"
-Cohesion: 0.28
-Nodes (5): metadata, Providers(), apolloClient, authLink, httpLink
+### Community 31 - "@apollo/client"
+Cohesion: 0.12
+Nodes (12): metadata, styles, RegisterRole, styles, Providers(), apolloClient, authLink, httpLink (+4 more)
 
 ### Community 32 - "Mandatory Rules"
 Cohesion: 0.06
@@ -503,13 +515,13 @@ Nodes (34): 10. Prompt API: available in service workers, popup, and side panel,
 Cohesion: 0.12
 Nodes (15): 1. Delivery Boy responsibilities, 2. The 200-item Delivery Boy checklist, 3. How to automate Delivery Boy work, 4. Fifteen high-value automations, 5. Technical architecture for Delivery Boy automation, 6. Essential automation safeguards, 7. Implementation roadmap, ASSIGNED (+7 more)
 
-### Community 34 - "auth.py"
-Cohesion: 0.05
-Nodes (58): AuthPayload, get_current_user_id(), FastAPI dependencies — database session, current user extraction., Extract user ID from JWT bearer token., create_access_token(), create_refresh_token(), decode_token(), hash_password() (+50 more)
+### Community 34 - "AuthMutation"
+Cohesion: 0.22
+Nodes (13): AuthMutation, CreateUserInput, make_mock_info(), asyncio, Operations Admin cannot promote any user to Super Admin., Operations Admin cannot demote or alter a Super Admin user., Retail shopkeeper cannot assign roles., Regression test: Dashboard stats handles timestamps without asyncpg offset-… (+5 more)
 
 ### Community 35 - "inventory_service.py"
-Cohesion: 0.09
-Nodes (34): PurchaseEntry, PurchaseItem, allocate_batch_fefo(), allocate_batches_fefo_multi(), BatchExpiryWarning, get_fefo_batches_for_product(), InsufficientStockError, AsyncSession (+26 more)
+Cohesion: 0.07
+Nodes (37): PurchaseEntry, PurchaseItem, allocate_batch_fefo(), allocate_batches_fefo_multi(), BatchExpiryWarning, get_fefo_batches_for_product(), InsufficientStockError, AsyncSession (+29 more)
 
 ### Community 36 - "Companion policies (deploy in parallel)"
 Cohesion: 0.06
@@ -520,12 +532,12 @@ Cohesion: 0.14
 Nodes (13): 15, 1. Super Admin master checklist — 200 tasks, 3. How to automate the Super Admin's work, 4. The 15 automations I would build first, 5. What the Super Admin dashboard should look like, 6. Implementation order, Automation Control Center, Implementation tracker (+5 more)
 
 ### Community 38 - "main.js"
-Cohesion: 0.46
-Nodes (6): enqueueEvent(), logger(), main(), parseWatchdogArgs(), #sendBatch(), sendShutdownEvent()
+Cohesion: 0.42
+Nodes (7): enqueueEvent(), logger(), main(), onParentDeath(), parseWatchdogArgs(), #sendBatch(), sendShutdownEvent()
 
 ### Community 39 - "$t"
-Cohesion: 0.17
-Nodes (21): Aa(), at(), Co(), dr(), dx(), eh(), Et(), Go() (+13 more)
+Cohesion: 0.11
+Nodes (35): Aa(), ax(), cd(), Co(), Da(), dr(), dx(), eh() (+27 more)
 
 ### Community 40 - "2. Dashboard Workspace Screens"
 Cohesion: 0.10
@@ -567,9 +579,9 @@ Nodes (29): 1. Data Minimization and Purpose Limitation, 2. Transparency and Tru
 Cohesion: 0.07
 Nodes (26): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+18 more)
 
-### Community 50 - "logger.ts"
-Cohesion: 0.60
-Nodes (3): formatMessage(), logger, LogLevel
+### Community 50 - "_user_to_type"
+Cohesion: 0.17
+Nodes (11): GraphQL types for authentication and user accounts., field, Info, User, UserType, List users with optional role and search filtering., Create a new staff or user account directly (Super Admin / Admin)., Return the currently authenticated user. (+3 more)
 
 ### Community 51 - "⚛️ Frontend Architecture & Component Engineering Guide"
 Cohesion: 0.12
@@ -579,9 +591,9 @@ Nodes (15): 1. Architectural Philosophy, 2. Directory Structure & Code Organizat
 Cohesion: 0.07
 Nodes (24): 1. Declare supported schemes in HTML, 2. Apply page-wide color scheme to CSS :root or html, 3. Define light and dark color tokens, 4. Varying images for light and dark mode, Alternative: one custom property per image, Dark mode, Fallback strategies, Fallbacks & browser support for accent-color (+16 more)
 
-### Community 57 - ".record_advance_payment"
-Cohesion: 0.24
-Nodes (9): AdvancePaymentType, _advance_to_type(), field, Info, mutation, UUID, List advance payments, optionally filtered by shopkeeper., Record an advance deposit from a retail shopkeeper. (+1 more)
+### Community 57 - "payments.py"
+Cohesion: 0.22
+Nodes (15): AdvancePaymentType, AdvancePayment, PaymentMethod, _advance_to_type(), PaymentMutation, PaymentQuery, field, Info (+7 more)
 
 ### Community 62 - "🐍 Backend Architecture & Engineering Guide"
 Cohesion: 0.18
@@ -599,9 +611,9 @@ Nodes (21): 10. Transitions & animations, 11. Generated content, 1. Foundations,
 Cohesion: 0.09
 Nodes (21): Allow password pasting, Build a sign-in form that follows best practice, Don't double up inputs, Enable the browser to suggest a strong password, Fallback strategies, Give mobile users the right keyboard, Help save users from accidentally missing inputs, Help users avoid re-entering sign-in data (+13 more)
 
-### Community 68 - "auth.ts"
-Cohesion: 0.09
-Nodes (28): DashboardProps, RegisterRole, styles, AuthGuard(), Props, DashboardNavbar(), NavbarProps, NavSection (+20 more)
+### Community 68 - "react"
+Cohesion: 0.07
+Nodes (31): DashboardPage(), DashboardProps, ProductsPage(), UsersPage(), RecoveryStep, styles, FEATURES, ROLES (+23 more)
 
 ### Community 69 - "Common Rejection Reasons"
 Cohesion: 0.11
@@ -1496,8 +1508,8 @@ Cohesion: 0.17
 Nodes (11): 1. The 200-item Retail Shopkeeper checklist, 2. How to automate the Retail Shopkeeper's work, 3. Fifteen high-value automations, 4. Technical architecture using your existing stack, 5. Essential safeguards, 6. Implementation roadmap, 7. How to measure automation success, Pharmacy Fantasy — Retail Shopkeeper: 200-Point Checklist & Automation Blueprint (+3 more)
 
 ### Community 310 - "FastAPIBestPracticesChecker"
-Cohesion: 0.06
-Nodes (51): AST, AsyncFunctionDef, analyze_file_imports(), _block_is_only_imports_and_pass(), CategorySummary, CheckResult, _collect_delayed_module_imports(), _collect_header_import_nodes() (+43 more)
+Cohesion: 0.05
+Nodes (54): AST, AsyncFunctionDef, analyze_file_imports(), _block_is_only_imports_and_pass(), CategorySummary, CheckResult, _collect_delayed_module_imports(), walk_block() (+46 more)
 
 ### Community 311 - "css-inventory.mjs"
 Cohesion: 0.17
@@ -1508,72 +1520,128 @@ Cohesion: 0.18
 Nodes (10): 1. Overview & Objective, 2. Modes of Operation, 3. Pipeline Steps Specification, 4.1 Master Batch Script: `backend/codebase.bat`, 4.2 GraphQL Schema Snapshot Tools, 4.3 Environment Validator: `backend/scripts/validate_env.py`, 4.4 Best Practices AST Checker: `backend/scripts/api_checker.py` & `check_best_practices.py`, 4. Components & Files to Create (+2 more)
 
 ### Community 313 - "validate_env.py"
-Cohesion: 0.36
-Nodes (9): _is_set(), _load_dotenv(), _load_env_file_plain(), main(), _mask(), _project_root(), Path, Parse simple KEY=VALUE lines without python-dotenv (fallback). (+1 more)
+Cohesion: 0.31
+Nodes (10): _is_set(), _load_dotenv(), _load_env_file_plain(), main(), _mask(), _project_root(), Path, Validate environment variables for Pharmacy Fantasy Backend (preflight / CI).… (+2 more)
 
 ### Community 314 - "devDependencies"
-Cohesion: 0.11
-Nodes (19): eslint, eslint-config-next, devDependencies, eslint, eslint-config-next, @graphql-codegen/cli, @graphql-codegen/typescript-operations, prettier (+11 more)
+Cohesion: 0.15
+Nodes (13): devDependencies, eslint, eslint-config-next, @graphql-codegen/cli, @graphql-codegen/typescript, @graphql-codegen/typescript-operations, prettier, @types/node (+5 more)
 
-### Community 315 - "types.py"
-Cohesion: 0.06
-Nodes (70): type, InvoiceReturn, OrderItem, StockAdjustment, NotificationQuery, PaymentMutation, PaymentQuery, Payment & Advance Deposit GraphQL resolvers — queries and mutations. (+62 more)
+### Community 315 - "challan.py"
+Cohesion: 0.11
+Nodes (34): ChallanItem, ChallanReturn, ChallanReturnItem, DeliveryChallan, _challan_to_type(), ChallanMutation, ChallanQuery, field (+26 more)
 
 ### Community 316 - "order_service.py"
 Cohesion: 0.08
-Nodes (36): create_invoice_for_order(), generate_invoice_number(), AsyncSession, Order, Invoice Service — Handles legal GST invoice creation, calculations, and…, Generate sequential invoice number: INV-YYYYMMDD-XXXX., Generate and save an Invoice record for a confirmed wholesale order., cancel_order() (+28 more)
+Nodes (34): create_invoice_for_order(), generate_invoice_number(), AsyncSession, Invoice Service — Handles legal GST invoice creation, calculations, and…, Generate sequential invoice number: INV-YYYYMMDD-XXXX., Generate and save an Invoice record for a confirmed wholesale order., cancel_order(), confirm_order() (+26 more)
 
 ### Community 318 - "7a8b9c0d1e2f_add_missing_feature_columns.py"
-Cohesion: 0.60
+Cohesion: 0.50
 Nodes (3): add_column_if_not_exists(), upgrade(), Column
 
 ### Community 319 - "graphql-queries.ts"
-Cohesion: 0.07
-Nodes (38): ActiveTab, InvoicesPage(), TaxInvoice, OrderRecord, styles, useAuth(), ASSIGN_DELIVERY_MUTATION, CANCEL_ORDER_MUTATION (+30 more)
+Cohesion: 0.06
+Nodes (46): ActiveTab, TaxInvoice, OrderRecord, ProductItem, UserItem, ACCOUNT_AUDIT_LOGS_QUERY, APPLY_BULK_PRICE_MUTATION, ASSIGN_DELIVERY_MUTATION (+38 more)
 
 ### Community 320 - "codegen.ts"
-Cohesion: 0.29
-Nodes (5): appRoot, config, localCodegenConfig, scalarConfig, schema
+Cohesion: 0.25
+Nodes (6): appRoot, config, localCodegenConfig, scalarConfig, schema, @graphql-codegen/cli
 
-### Community 321 - "app/page.tsx"
-Cohesion: 0.40
-Nodes (3): FEATURES, ROLES, styles
+### Community 321 - ".assign_user_role"
+Cohesion: 0.22
+Nodes (9): DeliveryProfile, mutation, UUID, List retail pharmacies with KYC verification status, credit limits and balances., Super Admin or Operations Admin assigns/changes a user's role. - Super Admin…, Approve, reject, or suspend a retail pharmacy's KYC verification (Admin only)., Adjust or set retail pharmacy credit limit with documented reason (Admin only)., ShopkeeperProfileType (+1 more)
 
-### Community 323 - "dependencies"
-Cohesion: 0.15
-Nodes (13): @apollo/client, dependencies, @apollo/client, graphql, lucide-react, next, react, react-dom (+5 more)
+### Community 322 - "test_auth_failure.py"
+Cohesion: 0.23
+Nodes (11): create_access_token(), asyncio, Integration and GraphQL auth-failure test suite. Tests HTTP GraphQL endpoints…, Verify health endpoint responds with healthy status via ASGI client., Verify executing protected query without authorization token yields auth…, Verify request with malformed or invalid Bearer token fails with 401 or…, Verify shopkeeper token is forbidden from executing superadmin operations (403…, test_graphql_invalid_token_fails() (+3 more)
 
-### Community 328 - ".record_stock_adjustment"
-Cohesion: 0.18
-Nodes (12): field, Info, mutation, UUID, List physical stock audit adjustments with repeated adjustment flags., Record physical stock audit adjustment with mandatory evidence upload and…, Verify physical product barcode against allocated order item. Guarantees that…, Generate picking slip organized by warehouse location (Rack/Bay order).… (+4 more)
+### Community 323 - "frontend/package.json"
+Cohesion: 0.07
+Nodes (25): dependencies, @apollo/client, graphql, lucide-react, next, react, react-dom, name (+17 more)
+
+### Community 325 - "dataloaders.py"
+Cohesion: 0.32
+Nodes (9): GraphQL execution context module with per-request DataLoaders, Request ID…, _batch_load_orders(), _batch_load_products(), _batch_load_users(), DataLoaders, AsyncSession, UUID, Strawberry DataLoaders for batched database reads and GraphQL N+1 prevention. (+1 more)
+
+### Community 326 - "index.ts"
+Cohesion: 0.20
+Nodes (10): InvoicesPage(), AuthState, useAuth(), DashboardStats, DeliveryStatus, Order, OrderStatus, PaymentMethod (+2 more)
+
+### Community 327 - "schema.py"
+Cohesion: 0.09
+Nodes (32): GraphQL queries for authentication and user accounts., GraphQL inputs for catalog and product maintenance., GraphQL types for catalog products and stock batches., AuthQuery, _product_to_type(), ProductMutation, ProductQuery, field (+24 more)
+
+### Community 328 - ".register"
+Cohesion: 0.33
+Nodes (6): AuthPayload, create_refresh_token(), Authenticate any user role (Super Admin, Operations Admin, Warehouse Staff,…, Free, self-service registration without approval for: - 🏪 Retail Shopkeeper…, Exchange a refresh token for new access + refresh tokens., AuthPayload
 
 ### Community 329 - "check-best-practices.mjs"
-Cohesion: 0.26
+Cohesion: 0.24
 Nodes (12): CONFIG_PATH, __dirname, exists(), main(), parseArgs(), readJson(), readText(), REPORTS_DIR (+4 more)
 
-### Community 335 - "kpi-chart.tsx"
-Cohesion: 0.29
-Nodes (7): DataPoint, FLOW_STEPS, FlowStep, OrderFlowTimeline(), OrderFlowTimelineProps, TrendAreaChart(), TrendAreaChartProps
+### Community 330 - "notifications.py"
+Cohesion: 0.15
+Nodes (15): NotificationMutation, NotificationQuery, field, Info, mutation, UUID, Notification resolvers — user alerts, preference toggles, and notification…, Toggle notification channels (In-app, SMS, WhatsApp). (+7 more)
+
+### Community 331 - "AppError"
+Cohesion: 0.24
+Nodes (8): AppError, ForbiddenError, NotFoundError, Exception, Centralized error definitions and utilities., Base application error., UnauthorizedError, ValidationError
+
+### Community 332 - "BaseRepository"
+Cohesion: 0.24
+Nodes (6): BaseRepository, AsyncSession, UUID, Generic CRUD repository for domain entities., Repositories data-access layer., ModelT
+
+### Community 333 - "BaseHTTPClient"
+Cohesion: 0.22
+Nodes (6): BaseHTTPClient, Any, Base HTTP Client with standard timeouts and async utilities., Base HTTP client wrapper around httpx.AsyncClient with automatic tenacity retry., External HTTP service clients package., retry
+
+### Community 334 - "decode_token"
+Cohesion: 0.25
+Nodes (9): get_current_user_id(), HTTPAuthorizationCredentials, Extract user ID from JWT bearer token., decode_token(), get_current_user(), Any, HTTPAuthorizationCredentials, Decode and verify a JWT token. Raises jwt.PyJWTError on failure. (+1 more)
+
+### Community 336 - ".__init__"
+Cohesion: 0.24
+Nodes (9): get_context(), GraphQLContext, Any, AsyncSession, Request, Custom Strawberry GraphQL context providing session, dataloaders, and…, Dependency / context_getter injecting request_id, background_tasks, and…, BackgroundTasks (+1 more)
+
+### Community 343 - "validation.py"
+Cohesion: 0.25
+Nodes (7): Input validation utilities for pharmaceutical entities, GSTIN, and contact…, Validate 15-character Indian GSTIN format., Validate 10-digit Indian mobile number., Validate email address format., validate_email(), validate_gstin(), validate_phone()
+
+### Community 347 - "conftest.py"
+Cohesion: 0.36
+Nodes (7): db_session(), engine(), AsyncSession, UUID, Shared Pytest fixtures for Pharmacy Fantasy backend tests., sample_user_id(), fixture
+
+### Community 348 - "QueryExecutionTimeExtension"
+Cohesion: 0.33
+Nodes (4): QueryExecutionTimeExtension, GraphQL execution extensions for logging and performance monitoring., Logs GraphQL operations exceeding execution time threshold., SchemaExtension
+
+### Community 349 - "💊 Pharmacy Fantasy — Backend Service"
+Cohesion: 0.33
+Nodes (5): API Access Points, Architecture, Local Development Setup, 💊 Pharmacy Fantasy — Backend Service, Quality Assurance & Verification
+
+### Community 350 - "PageInfo"
+Cohesion: 0.50
+Nodes (3): PageInfo, Common GraphQL shared types and pagination helpers., Standard Relay-compatible PageInfo.
 
 ## Knowledge Gaps
-- **2187 isolated node(s):** `name`, `version`, `modern-web-guidance`, `require`, `pharmacyfantasy-backend` (+2182 more)
-  These have ≤1 connection - possible missing edges or undocumented components.
-- **25 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **2201 isolated node(s):** `name`, `version`, `modern-web-guidance`, `require`, `pharmacyfantasy-backend` (+2196 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 2976 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **22 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `_get_caller()` connect `_get_caller` to `auth.py`, `challan.py`, `SuperAdminGovernanceMutation`, `.record_stock_adjustment`, `models.py`, `User`, `ledger.py`, `types.py`, `.record_advance_payment`?**
+- **Why does `Base` connect `Base` to `.assign_user_role`, `returns.py`, `inventory_service.py`, `type`, `Order`, `conftest.py`, `_get_caller`, `ledger.py`, `payments.py`, `challan.py`, `TimestampMixin`, `models.py`?**
+  _High betweenness centrality (0.006) - this node is a cross-community bridge._
+- **Why does `_get_caller()` connect `_get_caller` to `.assign_user_role`, `returns.py`, `type`, `schema.py`, `notifications.py`, `Base`, `decode_token`, `_user_to_type`, `Order`, `graphql/types.py`, `ledger.py`, `challan.py`, `models.py`, `payments.py`?**
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
+- **Why does `StockBatch` connect `Base` to `inventory_service.py`, `returns.py`, `type`, `schema.py`, `Order`, `challan.py`, `models.py`?**
   _High betweenness centrality (0.004) - this node is a cross-community bridge._
-- **Why does `create_invoice_for_order()` connect `order_service.py` to `models.py`?**
-  _High betweenness centrality (0.002) - this node is a cross-community bridge._
+- **Are the 2 inferred relationships involving `push()` (e.g. with `n()` and `r()`) actually correct?**
+  _`push()` has 2 INFERRED edges - model-reasoned connections that need verification._
+- **Are the 2 inferred relationships involving `x()` (e.g. with `a()` and `o()`) actually correct?**
+  _`x()` has 2 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `name`, `version`, `modern-web-guidance` to the rest of the system?**
-  _2187 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _2201 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `search.mjs` be split into smaller, more focused modules?**
-  _Cohesion score 0.016390584132519617 - nodes in this community are weakly interconnected._
-- **Should `n` be split into smaller, more focused modules?**
-  _Cohesion score 0.07086247086247087 - nodes in this community are weakly interconnected._
-- **Should `push` be split into smaller, more focused modules?**
-  _Cohesion score 0.06487434248977206 - nodes in this community are weakly interconnected._
-- **Should `challan.py` be split into smaller, more focused modules?**
-  _Cohesion score 0.09988385598141696 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.015809357744841615 - nodes in this community are weakly interconnected._

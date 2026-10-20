@@ -41,6 +41,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+        sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")
+    except (AttributeError, OSError):
+        pass
+
+
 # ---------------------------------------------------------------------------
 # Resolve paths: this script lives in scripts/; project root is one level up.
 # ---------------------------------------------------------------------------

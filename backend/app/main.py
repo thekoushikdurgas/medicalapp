@@ -2,14 +2,23 @@
 Pharmacy Fantasy — FastAPI Application Entrypoint
 """
 
+from __future__ import annotations
+
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 from strawberry.fastapi import GraphQLRouter
 
 from app.core.config import settings
 from app.core.logger import setup_logging, logger
+from app.core.middleware import (
+    RequestIdMiddleware,
+    MaxBodySizeMiddleware,
+    IdempotencyMiddleware,
+)
 from app.graphql.schema import schema
+from app.graphql.context import get_context
 from app.db.base import Base
 from app.db.session import engine
 from app.db import models  # noqa: F401
@@ -23,8 +32,6 @@ async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
         if conn.dialect.name == "postgresql":
-            from sqlalchemy import text
-
             for table_name, table in Base.metadata.tables.items():
                 for column in table.columns:
                     col_name = column.name
@@ -46,7 +53,10 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# ── CORS ─────────────────────────────────────────────────
+# ── Middlewares ──────────────────────────────────────────
+app.add_middleware(RequestIdMiddleware)
+app.add_middleware(MaxBodySizeMiddleware)
+app.add_middleware(IdempotencyMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -56,7 +66,11 @@ app.add_middleware(
 )
 
 # ── GraphQL ──────────────────────────────────────────────
-graphql_router = GraphQLRouter(schema, graphiql=settings.GRAPHQL_INTROSPECTION_ENABLED)
+graphql_router = GraphQLRouter(
+    schema,
+    context_getter=get_context,
+    graphiql=settings.GRAPHQL_INTROSPECTION_ENABLED,
+)
 app.include_router(graphql_router, prefix="/graphql")
 
 

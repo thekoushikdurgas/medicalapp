@@ -9,7 +9,6 @@ import uuid
 from sqlalchemy import select, func
 
 import strawberry
-from strawberry.types import Info
 
 from app.db.models import (
     AutomationJob,
@@ -52,7 +51,7 @@ class OpsAutomationQuery:
     @strawberry.field
     async def automation_jobs(
         self,
-        info: Info,
+        info: strawberry.Info,
         status: str | None = None,
     ) -> list[AutomationJobType]:
         """Review the automation background job registry (Admin only)."""
@@ -73,7 +72,7 @@ class OpsAutomationQuery:
             return [_job_to_type(j) for j in jobs]
 
     @strawberry.field
-    async def integration_health(self, info: Info) -> IntegrationHealthType:
+    async def integration_health(self, info: strawberry.Info) -> IntegrationHealthType:
         """Monitor integration and API health alerts (Admin only)."""
         _, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
@@ -115,7 +114,7 @@ class OpsAutomationQuery:
 
     @strawberry.field
     async def operations_incident_summary(
-        self, info: Info
+        self, info: strawberry.Info
     ) -> OperationsIncidentSummaryType:
         """Consolidated operations metrics across SLA, staff workload, credit anomalies and inventory."""
         _, caller_role = _get_caller(info)
@@ -171,7 +170,7 @@ class OpsAutomationQuery:
 
     @strawberry.field
     async def account_audit_logs(
-        self, info: Info, user_id: uuid.UUID
+        self, info: strawberry.Info, user_id: uuid.UUID
     ) -> list[AccountAuditLogType]:
         """Fetch account audit trail history for a user."""
         _, caller_role = _get_caller(info)
@@ -217,7 +216,7 @@ class OpsAutomationMutation:
     @strawberry.mutation
     async def retry_failed_job(
         self,
-        info: Info,
+        info: strawberry.Info,
         job_id: uuid.UUID,
     ) -> AutomationJobType:
         """Safely retry an eligible failed background job with idempotency verification."""
@@ -251,7 +250,7 @@ class OpsAutomationMutation:
     @strawberry.mutation
     async def create_automation_job(
         self,
-        info: Info,
+        info: strawberry.Info,
         job_type: str,
         payload: str | None = None,
     ) -> AutomationJobType:
@@ -278,7 +277,7 @@ class OpsAutomationMutation:
     @strawberry.mutation
     async def assign_staff_work_queue(
         self,
-        info: Info,
+        info: strawberry.Info,
         user_id: uuid.UUID,
         work_queue: str,
     ) -> UserType:
@@ -310,7 +309,7 @@ class OpsAutomationMutation:
     @strawberry.mutation
     async def trigger_user_password_reset(
         self,
-        info: Info,
+        info: strawberry.Info,
         user_id: uuid.UUID,
     ) -> bool:
         """Trigger administrative one-time password reset code for user."""
@@ -346,7 +345,7 @@ class OpsAutomationMutation:
     @strawberry.mutation
     async def send_retailer_payment_reminder(
         self,
-        info: Info,
+        info: strawberry.Info,
         shopkeeper_id: uuid.UUID,
     ) -> bool:
         """Send automated SMS/WhatsApp payment reminder to retailer."""
