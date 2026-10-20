@@ -1,0 +1,205 @@
+{
+  "project_root": "E:\\chanchal\\pharmacyfantasy\\frontend",
+  "generated_at": "2026-10-20T00:04:14.746Z",
+  "score": 100,
+  "threshold": 80,
+  "total_points": 24,
+  "passed_points": 24,
+  "failed_points": 0,
+  "categories": {
+    "Project Structure": {
+      "total": 5,
+      "passed": 5
+    },
+    "Security": {
+      "total": 3,
+      "passed": 3
+    },
+    "Quality Tooling": {
+      "total": 5,
+      "passed": 5
+    },
+    "GraphQL & API Contract": {
+      "total": 5,
+      "passed": 5
+    },
+    "Styling / CSS": {
+      "total": 3,
+      "passed": 3
+    },
+    "Code Architecture": {
+      "total": 3,
+      "passed": 3
+    }
+  },
+  "checks": [
+    {
+      "point_number": 1,
+      "category": "Project Structure",
+      "description": "App Router directory present (src/app or app)",
+      "passed": true,
+      "message": "App Router directory present"
+    },
+    {
+      "point_number": 2,
+      "category": "Project Structure",
+      "description": "Essential npm scripts defined (dev, build, lint, typecheck)",
+      "passed": true,
+      "message": "dev: true, build: true, lint: true, typecheck: true"
+    },
+    {
+      "point_number": 3,
+      "category": "Project Structure",
+      "description": "Next.js configuration file exists",
+      "passed": true,
+      "message": "next.config exists"
+    },
+    {
+      "point_number": 4,
+      "category": "Project Structure",
+      "description": "TypeScript configuration (tsconfig.json) exists",
+      "passed": true,
+      "message": "tsconfig.json present"
+    },
+    {
+      "point_number": 5,
+      "category": "Project Structure",
+      "description": "Dedicated UI component library present (src/components/ui)",
+      "passed": true,
+      "message": "UI directory present"
+    },
+    {
+      "point_number": 6,
+      "category": "Security",
+      "description": "No hardcoded API secrets or private keys in source code",
+      "passed": true,
+      "message": "Clean"
+    },
+    {
+      "point_number": 7,
+      "category": "Security",
+      "description": "Route authentication guard present (auth-guard.tsx or middleware.ts)",
+      "passed": true,
+      "message": "Auth guard present"
+    },
+    {
+      "point_number": 8,
+      "category": "Security",
+      "description": "Centralized auth utilities and role definitions (src/lib/auth.ts)",
+      "passed": true,
+      "message": "auth.ts present"
+    },
+    {
+      "point_number": 9,
+      "category": "Quality Tooling",
+      "description": "Modern test runner installed (vitest)",
+      "passed": true,
+      "message": "Vitest installed"
+    },
+    {
+      "point_number": 10,
+      "category": "Quality Tooling",
+      "description": "Test runner npm script configured (npm test)",
+      "passed": true,
+      "message": "npm test: vitest run --passWithNoTests"
+    },
+    {
+      "point_number": 11,
+      "category": "Quality Tooling",
+      "description": "Test coverage npm script configured (npm run test:coverage)",
+      "passed": true,
+      "message": "Coverage script present"
+    },
+    {
+      "point_number": 12,
+      "category": "Quality Tooling",
+      "description": "Unit test suites implemented in src/",
+      "passed": true,
+      "message": "3 test suite(s) found"
+    },
+    {
+      "point_number": 13,
+      "category": "Quality Tooling",
+      "description": "Code formatting configured (prettier + npm run format)",
+      "passed": true,
+      "message": "Prettier formatting configured"
+    },
+    {
+      "point_number": 14,
+      "category": "GraphQL & API Contract",
+      "description": "GraphQL schema snapshot committed for offline typecheck & CI",
+      "passed": true,
+      "message": "Schema snapshot present"
+    },
+    {
+      "point_number": 15,
+      "category": "GraphQL & API Contract",
+      "description": "GraphQL Codegen configuration present (codegen.ts)",
+      "passed": true,
+      "message": "codegen.ts present"
+    },
+    {
+      "point_number": 16,
+      "category": "GraphQL & API Contract",
+      "description": "Codegen npm script present (npm run codegen)",
+      "passed": true,
+      "message": "npm run codegen present"
+    },
+    {
+      "point_number": 17,
+      "category": "GraphQL & API Contract",
+      "description": "Generated GraphQL TypeScript types and operations emitted",
+      "passed": true,
+      "message": "Generated types and operations present"
+    },
+    {
+      "point_number": 18,
+      "category": "GraphQL & API Contract",
+      "description": "Apollo Client configured with cache policies (src/lib/apollo-client.ts)",
+      "passed": true,
+      "message": "apollo-client.ts present"
+    },
+    {
+      "point_number": 19,
+      "category": "Styling / CSS",
+      "description": "Centralized CSS tokens stylesheet present (src/app/globals.css)",
+      "passed": true,
+      "message": "globals.css present"
+    },
+    {
+      "point_number": 20,
+      "category": "Styling / CSS",
+      "description": "Continuous CSS styling inventory tooling configured",
+      "passed": true,
+      "message": "scripts/css-inventory.mjs present"
+    },
+    {
+      "point_number": 21,
+      "category": "Styling / CSS",
+      "description": "Frontend styling and component guidelines documented (STYLE.md)",
+      "passed": true,
+      "message": "STYLE.md present"
+    },
+    {
+      "point_number": 22,
+      "category": "Code Architecture",
+      "description": "Centralized frontend logger utility (src/lib/logger.ts)",
+      "passed": true,
+      "message": "logger.ts present"
+    },
+    {
+      "point_number": 23,
+      "category": "Code Architecture",
+      "description": "Shared domain interfaces and entity types (src/types/index.ts)",
+      "passed": true,
+      "message": "types/index.ts present"
+    },
+    {
+      "point_number": 24,
+      "category": "Code Architecture",
+      "description": "Architecture and Information Blueprint documented (DESIGN.md)",
+      "passed": true,
+      "message": "DESIGN.md present"
+    }
+  ]
+}

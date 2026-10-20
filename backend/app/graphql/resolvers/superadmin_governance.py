@@ -32,7 +32,6 @@ from app.graphql.types import (
     SuperAdminGovernanceOverviewType,
 )
 
-
 DEFAULT_SUBSYSTEMS = [
     ("ALL_AUTOMATION", "Platform-wide master automation pause switch"),
     ("ORDER_FULFILLMENT", "Auto-dispatch, SLA escalations & order router"),

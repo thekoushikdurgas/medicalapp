@@ -28,7 +28,7 @@ async def get_current_user_id(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid token payload",
             )
-        return user_id
+        return str(user_id)
     except pyjwt.PyJWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

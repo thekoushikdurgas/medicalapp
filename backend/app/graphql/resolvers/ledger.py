@@ -42,9 +42,12 @@ def _ledger_to_type(entry: LedgerEntry) -> LedgerRecordType:
 
 
 def _claim_to_type(c: ReturnRequest) -> ReturnClaimType:
-    p_name = c.product.name if getattr(c, "product", None) else None
-    b_num = c.stock_batch.batch_number if getattr(c, "stock_batch", None) else None
-    s_name = c.shopkeeper.full_name if getattr(c, "shopkeeper", None) else None
+    p = getattr(c, "product", None)
+    p_name = p.name if p else None
+    sb = getattr(c, "stock_batch", None)
+    b_num = sb.batch_number if sb else None
+    sk = getattr(c, "shopkeeper", None)
+    s_name = sk.full_name if sk else None
 
     return ReturnClaimType(
         id=c.id,

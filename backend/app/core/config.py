@@ -35,8 +35,18 @@ class Settings(BaseSettings):
     # GST
     DEFAULT_SGST_RATE: float = 2.5
     DEFAULT_CGST_RATE: float = 2.5
-    COMPANY_GSTIN: str = ""
-    COMPANY_NAME: str = ""
+    # Performance & Diagnostics
+    SLOW_QUERY_THRESHOLD: float = 2.0
+    GRAPHQL_INTROSPECTION_ENABLED: bool = True
 
 
-settings = Settings()
+from functools import lru_cache
+
+
+@lru_cache
+def get_settings() -> Settings:
+    """Return cached application settings singleton."""
+    return Settings()
+
+
+settings = get_settings()

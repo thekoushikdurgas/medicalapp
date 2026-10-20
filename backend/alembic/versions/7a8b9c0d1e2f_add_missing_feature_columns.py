@@ -17,38 +17,46 @@ branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
 
+def add_column_if_not_exists(table_name: str, column: sa.Column) -> None:
+    bind = op.get_bind()
+    inspector = sa.inspect(bind)
+    existing_columns = [c["name"] for c in inspector.get_columns(table_name)]
+    if column.name not in existing_columns:
+        op.add_column(table_name, column)
+
+
 def upgrade() -> None:
     # 1. users
-    op.execute('ALTER TABLE users ADD COLUMN IF NOT EXISTS assigned_work_queue VARCHAR(50);')
+    add_column_if_not_exists('users', sa.Column('assigned_work_queue', sa.String(50), nullable=True))
 
     # 2. shopkeeper_profiles
-    op.execute("ALTER TABLE shopkeeper_profiles ADD COLUMN IF NOT EXISTS verification_status VARCHAR(50) NOT NULL DEFAULT 'VERIFIED';")
-    op.execute('ALTER TABLE shopkeeper_profiles ADD COLUMN IF NOT EXISTS verification_notes TEXT;')
-    op.execute('ALTER TABLE shopkeeper_profiles ADD COLUMN IF NOT EXISTS credit_limit_reason TEXT;')
-    op.execute('ALTER TABLE shopkeeper_profiles ADD COLUMN IF NOT EXISTS notification_preferences VARCHAR(255) DEFAULT \'{"in_app":true,"sms":false,"whatsapp":true}\';')
+    add_column_if_not_exists('shopkeeper_profiles', sa.Column('verification_status', sa.String(50), nullable=False, server_default='VERIFIED'))
+    add_column_if_not_exists('shopkeeper_profiles', sa.Column('verification_notes', sa.Text(), nullable=True))
+    add_column_if_not_exists('shopkeeper_profiles', sa.Column('credit_limit_reason', sa.Text(), nullable=True))
+    add_column_if_not_exists('shopkeeper_profiles', sa.Column('notification_preferences', sa.String(255), nullable=True, server_default='{"in_app":true,"sms":false,"whatsapp":true}'))
 
     # 3. products
-    op.execute('ALTER TABLE products ADD COLUMN IF NOT EXISTS barcode VARCHAR(50);')
+    add_column_if_not_exists('products', sa.Column('barcode', sa.String(50), nullable=True))
 
     # 4. stock_batches
-    op.execute("ALTER TABLE stock_batches ADD COLUMN IF NOT EXISTS rack_location VARCHAR(50) DEFAULT 'Rack A - Bay 01';")
-    op.execute('ALTER TABLE stock_batches ADD COLUMN IF NOT EXISTS barcode VARCHAR(50);')
+    add_column_if_not_exists('stock_batches', sa.Column('rack_location', sa.String(50), nullable=True, server_default='Rack A - Bay 01'))
+    add_column_if_not_exists('stock_batches', sa.Column('barcode', sa.String(50), nullable=True))
 
     # 5. orders
-    op.execute('ALTER TABLE orders ADD COLUMN IF NOT EXISTS rating INTEGER;')
-    op.execute('ALTER TABLE orders ADD COLUMN IF NOT EXISTS feedback_text TEXT;')
+    add_column_if_not_exists('orders', sa.Column('rating', sa.Integer(), nullable=True))
+    add_column_if_not_exists('orders', sa.Column('feedback_text', sa.Text(), nullable=True))
 
     # 6. order_items
-    op.execute('ALTER TABLE order_items ADD COLUMN IF NOT EXISTS is_picked BOOLEAN NOT NULL DEFAULT FALSE;')
-    op.execute('ALTER TABLE order_items ADD COLUMN IF NOT EXISTS barcode_verified BOOLEAN NOT NULL DEFAULT FALSE;')
+    add_column_if_not_exists('order_items', sa.Column('is_picked', sa.Boolean(), nullable=False, server_default=sa.false()))
+    add_column_if_not_exists('order_items', sa.Column('barcode_verified', sa.Boolean(), nullable=False, server_default=sa.false()))
 
     # 7. delivery_assignments
-    op.execute('ALTER TABLE delivery_assignments ADD COLUMN IF NOT EXISTS delivery_otp VARCHAR(6);')
-    op.execute('ALTER TABLE delivery_assignments ADD COLUMN IF NOT EXISTS cash_collected NUMERIC(12, 2) NOT NULL DEFAULT 0.0;')
-    op.execute('ALTER TABLE delivery_assignments ADD COLUMN IF NOT EXISTS upi_collected NUMERIC(12, 2) NOT NULL DEFAULT 0.0;')
-    op.execute('ALTER TABLE delivery_assignments ADD COLUMN IF NOT EXISTS payment_reference VARCHAR(100);')
-    op.execute('ALTER TABLE delivery_assignments ADD COLUMN IF NOT EXISTS failure_reason VARCHAR(50);')
-    op.execute('ALTER TABLE delivery_assignments ADD COLUMN IF NOT EXISTS failure_photo_url VARCHAR(500);')
+    add_column_if_not_exists('delivery_assignments', sa.Column('delivery_otp', sa.String(6), nullable=True))
+    add_column_if_not_exists('delivery_assignments', sa.Column('cash_collected', sa.Numeric(12, 2), nullable=False, server_default='0.0'))
+    add_column_if_not_exists('delivery_assignments', sa.Column('upi_collected', sa.Numeric(12, 2), nullable=False, server_default='0.0'))
+    add_column_if_not_exists('delivery_assignments', sa.Column('payment_reference', sa.String(100), nullable=True))
+    add_column_if_not_exists('delivery_assignments', sa.Column('failure_reason', sa.String(50), nullable=True))
+    add_column_if_not_exists('delivery_assignments', sa.Column('failure_photo_url', sa.String(500), nullable=True))
 
 
 def downgrade() -> None:

@@ -12,7 +12,7 @@ from app.core.logger import setup_logging, logger
 from app.graphql.schema import schema
 from app.db.base import Base
 from app.db.session import engine
-import app.db.models  # noqa: F401
+from app.db import models  # noqa: F401
 
 setup_logging()
 logger.info(f"Starting {settings.APP_NAME} in {settings.APP_ENV} mode")
@@ -24,6 +24,7 @@ async def lifespan(app: FastAPI):
         await conn.run_sync(Base.metadata.create_all)
         if conn.dialect.name == "postgresql":
             from sqlalchemy import text
+
             for table_name, table in Base.metadata.tables.items():
                 for column in table.columns:
                     col_name = column.name
@@ -32,7 +33,9 @@ async def lifespan(app: FastAPI):
                     try:
                         await conn.execute(text(sql))
                     except Exception as ex:
-                        logger.warning(f"Auto-sync notice for {table_name}.{col_name}: {ex}")
+                        logger.warning(
+                            f"Auto-sync notice for {table_name}.{col_name}: {ex}"
+                        )
     yield
 
 
@@ -53,7 +56,7 @@ app.add_middleware(
 )
 
 # ── GraphQL ──────────────────────────────────────────────
-graphql_router = GraphQLRouter(schema)
+graphql_router = GraphQLRouter(schema, graphiql=settings.GRAPHQL_INTROSPECTION_ENABLED)
 app.include_router(graphql_router, prefix="/graphql")
 
 

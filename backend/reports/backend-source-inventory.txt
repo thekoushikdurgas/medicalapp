@@ -1,9 +1,11 @@
 PHARMACY FANTASY BACKEND - Python modules
-Generated: Tue 10/20/2026  5:00:11.17
+Generated: Tue 10/20/2026  6:07:32.87
 
 === app ===
 E:\chanchal\pharmacyfantasy\backend\app\main.py
 E:\chanchal\pharmacyfantasy\backend\app\__init__.py
+E:\chanchal\pharmacyfantasy\backend\app\clients\base.py
+E:\chanchal\pharmacyfantasy\backend\app\clients\__init__.py
 E:\chanchal\pharmacyfantasy\backend\app\core\config.py
 E:\chanchal\pharmacyfantasy\backend\app\core\deps.py
 E:\chanchal\pharmacyfantasy\backend\app\core\logger.py
@@ -13,9 +15,12 @@ E:\chanchal\pharmacyfantasy\backend\app\db\base.py
 E:\chanchal\pharmacyfantasy\backend\app\db\models.py
 E:\chanchal\pharmacyfantasy\backend\app\db\session.py
 E:\chanchal\pharmacyfantasy\backend\app\db\__init__.py
+E:\chanchal\pharmacyfantasy\backend\app\graphql\context.py
+E:\chanchal\pharmacyfantasy\backend\app\graphql\extensions.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\schema.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\types.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\__init__.py
+E:\chanchal\pharmacyfantasy\backend\app\graphql\common\__init__.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\resolvers\auth.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\resolvers\challan.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\resolvers\delivery.py
@@ -29,6 +34,9 @@ E:\chanchal\pharmacyfantasy\backend\app\graphql\resolvers\returns.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\resolvers\superadmin_governance.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\resolvers\warehouse_ops.py
 E:\chanchal\pharmacyfantasy\backend\app\graphql\resolvers\__init__.py
+E:\chanchal\pharmacyfantasy\backend\app\models\__init__.py
+E:\chanchal\pharmacyfantasy\backend\app\repositories\base.py
+E:\chanchal\pharmacyfantasy\backend\app\repositories\__init__.py
 E:\chanchal\pharmacyfantasy\backend\app\scripts\reset_clean_db.py
 E:\chanchal\pharmacyfantasy\backend\app\scripts\seed_demo_data.py
 E:\chanchal\pharmacyfantasy\backend\app\scripts\seed_superadmin.py
@@ -41,8 +49,11 @@ E:\chanchal\pharmacyfantasy\backend\app\services\order_service.py
 E:\chanchal\pharmacyfantasy\backend\app\services\payment_service.py
 E:\chanchal\pharmacyfantasy\backend\app\services\return_service.py
 E:\chanchal\pharmacyfantasy\backend\app\services\__init__.py
+E:\chanchal\pharmacyfantasy\backend\app\utils\external_errors.py
 E:\chanchal\pharmacyfantasy\backend\app\utils\gst.py
 E:\chanchal\pharmacyfantasy\backend\app\utils\invoice_gen.py
+E:\chanchal\pharmacyfantasy\backend\app\utils\logger.py
+E:\chanchal\pharmacyfantasy\backend\app\utils\validation.py
 E:\chanchal\pharmacyfantasy\backend\app\utils\__init__.py
 
 === scripts ===
@@ -50,8 +61,10 @@ E:\chanchal\pharmacyfantasy\backend\scripts\api_checker.py
 E:\chanchal\pharmacyfantasy\backend\scripts\check_best_practices.py
 E:\chanchal\pharmacyfantasy\backend\scripts\regen_schema_snapshot.py
 E:\chanchal\pharmacyfantasy\backend\scripts\validate_env.py
+E:\chanchal\pharmacyfantasy\backend\scripts\verify_health.py
 
 === tests ===
+E:\chanchal\pharmacyfantasy\backend\tests\conftest.py
 E:\chanchal\pharmacyfantasy\backend\tests\test_auth_rbac.py
 E:\chanchal\pharmacyfantasy\backend\tests\test_delivery_and_orders_rbac.py
 E:\chanchal\pharmacyfantasy\backend\tests\test_gst.py

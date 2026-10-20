@@ -11,7 +11,12 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,json,css}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,json,css}\"",
     "clean": "node -e \"['.next','out','dist'].forEach((p)=>require('fs').rmSync(p,{recursive:true,force:true}))\"",
-    "test": "jest"
+    "test": "vitest run --passWithNoTests",
+    "test:coverage": "vitest run --coverage",
+    "css:inventory": "node scripts/css-inventory.mjs",
+    "codegen": "graphql-codegen --config codegen.ts",
+    "codegen:local": "graphql-codegen --config codegen.local.ts",
+    "check:best-practices": "node scripts/check-best-practices.mjs"
   },
   "dependencies": {
     "@apollo/client": "^3.11.0",
@@ -22,12 +27,17 @@
     "react-dom": "^18.3.0"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^7.4.6",
+    "@graphql-codegen/typescript": "^6.1.2",
+    "@graphql-codegen/typescript-operations": "^6.1.10",
     "@types/node": "^22.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
+    "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.0",
     "prettier": "^3.9.10",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vitest": "^5.0.5"
   }
 }

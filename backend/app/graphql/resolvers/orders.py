@@ -31,8 +31,9 @@ from app.services import order_service
 
 def _order_to_type(order: Order) -> OrderType:
     otp = None
-    if getattr(order, "delivery", None) and order.delivery.delivery_otp:
-        otp = order.delivery.delivery_otp
+    delivery = getattr(order, "delivery", None)
+    if delivery is not None and getattr(delivery, "delivery_otp", None):
+        otp = delivery.delivery_otp
 
     eta = None
     if order.status == OrderStatus.DISPATCHED:

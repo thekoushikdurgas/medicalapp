@@ -10,6 +10,7 @@ import os
 
 from sqlalchemy import select
 
+from app.core.logger import logger
 from app.core.security import hash_password
 from app.db.models import User, UserRole
 from app.db.session import async_session_factory
@@ -25,7 +26,7 @@ async def seed():
         # Check if super admin already exists
         result = await session.execute(select(User).where(User.email == admin_email))
         if result.scalar_one_or_none():
-            print(f"Super Admin ({admin_email}) already exists. Skipping.")
+            logger.info(f"Super Admin ({admin_email}) already exists. Skipping.")
             return
 
         admin = User(
@@ -38,8 +39,8 @@ async def seed():
         )
         session.add(admin)
         await session.commit()
-        print(f"Super Admin created: {admin_email} / {admin_password}")
-        print("⚠️  Change the password immediately in production!")
+        logger.info(f"Super Admin created: {admin_email} / {admin_password}")
+        logger.warning("Change the password immediately in production!")
 
 
 if __name__ == "__main__":

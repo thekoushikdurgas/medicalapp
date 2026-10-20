@@ -41,9 +41,31 @@ async def run_async_migrations() -> None:
         prefix="sqlalchemy.",
         poolclass=pool.NullPool,
     )
-    async with connectable.connect() as connection:
-        await connection.run_sync(do_run_migrations)
-    await connectable.dispose()
+    try:
+        async with connectable.connect() as connection:
+            await connection.run_sync(do_run_migrations)
+        await connectable.dispose()
+    except (ConnectionRefusedError, OSError) as exc:
+        import sys
+        url = config.get_main_option("sqlalchemy.url")
+        print(
+            "\n" + "=" * 70 +
+            f"\nDATABASE CONNECTION FAILED: {url}\n" +
+            "=" * 70 +
+            f"\nCould not connect to the database server. Detailed error: {exc}\n\n"
+            "To resolve this, choose one of the following:\n"
+            "  1. Start local PostgreSQL via Docker:\n"
+            "     docker compose up -d postgres\n\n"
+            "  2. Or tunnel to the remote staging PostgreSQL database:\n"
+            "     ssh -i contact360app.pem -N -L 5432:localhost:5432 ubuntu@13.223.50.113\n\n"
+            "  3. Or run migrations directly on the remote server:\n"
+            "     ssh -i contact360app.pem ubuntu@13.223.50.113 \"sudo docker exec -i pf-backend alembic upgrade head\"\n\n"
+            "  4. Or for local zero-dependency SQLite development, set:\n"
+            "     DATABASE_URL=sqlite+aiosqlite:///./pharmacyfantasy.db in backend/.env\n" +
+            "=" * 70 + "\n",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
 
 def run_migrations_online() -> None:

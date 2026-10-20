@@ -2,6 +2,7 @@
 Return Service — Handles GST credit notes, invoice returns, tax reversals, and retailer ledger credit.
 """
 
+from typing import Any
 import uuid
 from datetime import date
 from sqlalchemy import select, func
@@ -31,7 +32,7 @@ async def generate_credit_note_number(session: AsyncSession) -> str:
 async def create_invoice_return(
     session: AsyncSession,
     invoice_id: uuid.UUID,
-    return_items: list[dict],
+    return_items: list[dict[str, Any]],
     restock_status: str,  # "RESTOCKED" or "QUARANTINED"
     reason: str | None,
     created_by: uuid.UUID,
@@ -116,8 +117,9 @@ async def create_invoice_return(
             )
             batch = b_res.scalar_one_or_none()
             if batch:
-                batch.quantity_available += pl["quantity"]
-                batch.quantity_sold = max(0, batch.quantity_sold - pl["quantity"])
+                qty = int(str(pl["quantity"]))
+                batch.quantity_available += qty
+                batch.quantity_sold = max(0, batch.quantity_sold - qty)
 
     # Credit retailer's outstanding balance
     if invoice.order:

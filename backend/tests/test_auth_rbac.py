@@ -190,10 +190,11 @@ class TestAuthRBACGuards:
         mock_result.scalar.return_value = 15
         mock_session.execute.return_value = mock_result
 
-        with patch("app.graphql.resolvers.orders.async_session_factory") as mock_factory:
+        with patch(
+            "app.graphql.resolvers.orders.async_session_factory"
+        ) as mock_factory:
             mock_factory.return_value.__aenter__.return_value = mock_session
             stats = await OrderQuery().dashboard_stats(info)
             assert stats.total_orders == 15
             assert stats.pending_orders == 15
             assert stats.today_sales == 15.0
-

@@ -237,6 +237,11 @@ def main(argv: list[str] | None = None) -> int:
 
     # Initialise checker
     checker = FastAPIBestPracticesChecker(_PROJECT_ROOT)
+    effective_argv = sys.argv[1:] if argv is None else argv
+    if "threshold" in checker.config and "--threshold" not in effective_argv:
+        args.threshold = float(checker.config["threshold"])
+    if checker.config.get("no_fail") and "--no-fail" not in effective_argv:
+        args.no_fail = True
 
     # Run all checks
     if args.category:

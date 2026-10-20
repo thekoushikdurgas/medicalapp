@@ -11,6 +11,7 @@ import os
 import uuid
 
 from sqlalchemy import text, select, func
+from app.core.logger import logger
 from app.core.security import hash_password
 from app.db.base import Base
 from app.db.models import User, UserRole
@@ -22,11 +23,11 @@ async def reset_and_seed():
     admin_password = os.getenv("SUPERADMIN_PASSWORD", "admin123")
     admin_name = os.getenv("SUPERADMIN_NAME", "Super Admin")
 
-    print("[*] Ensuring database tables exist...")
+    logger.info("Ensuring database tables exist...")
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    print("[*] Truncating all data tables (removing all users and records)...")
+    logger.info("Truncating all data tables (removing all users and records)...")
     tables_to_truncate = [
         "payments",
         "delivery_assignments",
@@ -47,10 +48,10 @@ async def reset_and_seed():
             f"TRUNCATE TABLE {', '.join(tables_to_truncate)} RESTART IDENTITY CASCADE;"
         )
         await conn.execute(text(truncate_sql))
-    print("    -> All data tables truncated cleanly.")
+    logger.info("All data tables truncated cleanly.")
 
     if admin_email:
-        print(f"[*] Provisioning Super Admin: {admin_email}...")
+        logger.info(f"Provisioning Super Admin: {admin_email}...")
         async with async_session_factory() as session:
             super_admin = User(
                 id=uuid.uuid4(),
@@ -66,17 +67,12 @@ async def reset_and_seed():
 
             # Verification query
             user_count = await session.scalar(select(func.count()).select_from(User))
-            print("\n" + "=" * 50)
-            print("✅ DATABASE CLEANUP & SUPER ADMIN INITIALIZED")
-            print("=" * 50)
-            print(f"• Active Users in DB: {user_count}")
-            print(f"• Super Admin Email:  {admin_email}")
-            print(f"• Super Admin Role:   {UserRole.SUPER_ADMIN.value}")
-            print("=" * 50 + "\n")
+            logger.info("DATABASE CLEANUP & SUPER ADMIN INITIALIZED")
+            logger.info(f"Active Users in DB: {user_count}")
+            logger.info(f"Super Admin Email:  {admin_email}")
+            logger.info(f"Super Admin Role:   {UserRole.SUPER_ADMIN.value}")
     else:
-        print("\n" + "=" * 50)
-        print("✅ DATABASE PURGED — 0 USERS REMAINING")
-        print("=" * 50 + "\n")
+        logger.info("DATABASE PURGED — 0 USERS REMAINING")
 
 
 if __name__ == "__main__":

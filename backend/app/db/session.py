@@ -2,11 +2,12 @@
 SQLAlchemy async engine and session factory.
 """
 
+from typing import Any
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.core.config import settings
 
-engine_kwargs = {"echo": settings.DEBUG}
+engine_kwargs: dict[str, Any] = {"echo": settings.DEBUG}
 if "sqlite" in settings.DATABASE_URL:
     engine_kwargs["connect_args"] = {"check_same_thread": False}
 else:

@@ -27,6 +27,12 @@ All styling must be guided by the design tokens declared in `src/app/globals.css
    - Use `text-wrap: balance` for headings and titles.
    - Use `overflow-wrap: break-word` and `scrollbar-color` for custom tabular scrollbars.
 
+3. **Inline Styles Baseline & Inventory Gate**:
+   - **Baseline:** 1506 dynamic/intentional `style={{` lines across `src/`.
+   - Max audit threshold: `CSS_INLINE_SRC_MAX=1600`.
+   - Continuous auditing via `scripts/css-inventory.mjs` (`npm run css:inventory`).
+   - Static layout styles (`display: flex`, `padding`, `margin`, `border`) must be moved to `src/app/globals.css` utility or component classes.
+
 ---
 
 ## 2. React & TypeScript Component Patterns

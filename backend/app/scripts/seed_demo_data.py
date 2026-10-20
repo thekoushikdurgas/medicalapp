@@ -12,6 +12,8 @@ import uuid
 from datetime import date, datetime, timedelta
 
 from sqlalchemy import select
+
+from app.core.logger import logger
 from app.core.security import hash_password
 from app.db.base import Base
 from app.db.models import (
@@ -35,7 +37,7 @@ from app.utils.gst import calculate_line_total, calculate_invoice_totals
 
 
 async def seed_all():
-    print("[*] Initializing database schema...")
+    logger.info("Initializing database schema...")
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
@@ -45,12 +47,12 @@ async def seed_all():
             select(User).where(User.role == UserRole.SUPER_ADMIN)
         )
         if existing_admin.scalar_one_or_none():
-            print(
-                "[INFO] Database already has an active Super Admin. Skipping demo seeding."
+            logger.info(
+                "Database already has an active Super Admin. Skipping demo seeding."
             )
             return
 
-        print("[*] Seeding system users...")
+        logger.info("Seeding system users...")
         now = datetime.utcnow()
 
         # 1. Users
@@ -183,7 +185,7 @@ async def seed_all():
         )
 
         # 2. Products from real invoices
-        print("[*] Seeding products & warehouse stock batches...")
+        logger.info("Seeding products & warehouse stock batches...")
         products_data = [
             {
                 "name": "AZITHRAL 500MG TAB",
@@ -373,7 +375,7 @@ async def seed_all():
         await session.flush()
 
         # 3. Create realistic Orders mirroring real invoices
-        print("[*] Seeding demo orders, invoices, and delivery assignments...")
+        logger.info("Seeding demo orders, invoices, and delivery assignments...")
 
         # Order 1: DISPATCHED / OUT FOR DELIVERY (Mirroring Bill A004448)
         p_azithral = created_products[0][0]
@@ -642,15 +644,13 @@ async def seed_all():
         # Commit everything
         await session.commit()
 
-        print("\n=== Seed Completed Successfully! ===")
-        print("------------------------------------------------------------")
-        print("Super Admin:   superadmin@pharmacyfantasy.com / admin123")
-        print("Admin:         admin@pharmacyfantasy.com       / admin123")
-        print("Warehouse:     warehouse@pharmacyfantasy.com   / warehouse123")
-        print("Delivery Boy:  delivery@pharmacyfantasy.com    / delivery123")
-        print("Shopkeeper 1:  cheapmedical@pharmacyfantasy.com / shop123")
-        print("Shopkeeper 2:  guptapharmacy@pharmacyfantasy.com / shop123")
-        print("------------------------------------------------------------")
+        logger.info("=== Seed Completed Successfully! ===")
+        logger.info("Super Admin:   superadmin@pharmacyfantasy.com / admin123")
+        logger.info("Admin:         admin@pharmacyfantasy.com       / admin123")
+        logger.info("Warehouse:     warehouse@pharmacyfantasy.com   / warehouse123")
+        logger.info("Delivery Boy:  delivery@pharmacyfantasy.com    / delivery123")
+        logger.info("Shopkeeper 1:  cheapmedical@pharmacyfantasy.com / shop123")
+        logger.info("Shopkeeper 2:  guptapharmacy@pharmacyfantasy.com / shop123")
 
 
 if __name__ == "__main__":

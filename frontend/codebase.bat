@@ -301,7 +301,15 @@ if /i "%SKIP_CODEGEN%"=="1" (
     call :color_echo "%BLUE%" "  No npm run codegen in this package  -  skipped."
     set "SECTION2_STATUS=SKIPPED"
   ) else (
-    call :color_echo "%BLUE%" "  Regenerating GraphQL client types..."
+    call :color_echo "%BLUE%" "  Regenerates src/graphql/generated/types.ts from the API schema."
+    call :color_echo "%BLUE%" "  Default: tests\schema_snapshot.graphql (offline snapshot)."
+    call :color_echo "%BLUE%" "  Live: CODEGEN_SCHEMA_URL or npm run codegen:local (:8000 + introspection)."
+    set "CODEGEN_SNAPSHOT_OK=0"
+    if exist "tests\schema_snapshot.graphql" set "CODEGEN_SNAPSHOT_OK=1"
+    if exist "..\backend\tests\schema_snapshot.graphql" set "CODEGEN_SNAPSHOT_OK=1"
+    if "!CODEGEN_SNAPSHOT_OK!"=="0" (
+      call :color_echo "%YELLOW%" "  ! Snapshot missing — codegen may fail unless CODEGEN_SCHEMA_URL is set."
+    )
     call :color_echo "%YELLOW%" "  Running: npm run codegen"
     call npm run codegen
     if errorlevel 1 (

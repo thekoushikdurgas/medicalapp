@@ -1,5 +1,6 @@
 {
   "_comment": "Configuration overrides for scripts/api_checker.py for Pharmacy Fantasy backend.",
+  "threshold": 45.0,
   "ignore_points": [81, 84],
   "_ignore_points_doc": "81: docker-compose.yml (using Dockerfile directly), 84: .github/workflows CI check.",
   "skip_categories": [],

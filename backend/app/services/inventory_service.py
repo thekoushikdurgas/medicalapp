@@ -7,7 +7,7 @@ from datetime import date
 from sqlalchemy import select, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import StockBatch, Product
+from app.db.models import StockBatch, Product, PurchaseEntry, PurchaseItem
 from app.core.logger import logger
 
 
@@ -166,13 +166,11 @@ async def record_purchase_entry(
     entered_by: uuid.UUID,
     items_data: list,
     supplier_gstin: str | None = None,
-) -> tuple[StockBatch, float]:
+) -> PurchaseEntry:
     """
     Ingest inbound supplier purchase bill (e.g. from MAA Medical Agency).
     Creates PurchaseEntry, PurchaseItems, and auto-generates StockBatch records.
     """
-    from app.db.models import PurchaseEntry, PurchaseItem
-
     total_bill_amount = 0.0
     created_batches = []
 

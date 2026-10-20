@@ -38,6 +38,12 @@ def create_refresh_token(data: dict) -> str:
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.JWT_ALGORITHM)
 
 
-def decode_token(token: str) -> dict:
+from typing import Any, cast
+
+
+def decode_token(token: str) -> dict[str, Any]:
     """Decode and verify a JWT token. Raises jwt.PyJWTError on failure."""
-    return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM])
+    return cast(
+        dict[str, Any],
+        jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.JWT_ALGORITHM]),
+    )

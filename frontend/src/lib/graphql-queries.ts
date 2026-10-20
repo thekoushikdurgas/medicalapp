@@ -179,7 +179,7 @@ export const PRODUCTS_QUERY = gql`
 `;
 
 export const PRODUCT_QUERY = gql`
-  query Product($id: ID!) {
+  query Product($id: UUID!) {
     product(id: $id) {
       id
       name

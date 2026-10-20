@@ -40,18 +40,22 @@ def _delivery_to_type(d: DeliveryAssignment) -> DeliveryAssignmentType:
     o_num = d.order.order_number if getattr(d, "order", None) else None
     sk_name = None
     sk_addr = None
-    if getattr(d, "order", None) and getattr(d.order, "shopkeeper_profile", None):
-        sk_name = d.order.shopkeeper_profile.shop_name
-        sk_addr = d.order.shopkeeper_profile.shop_address
+    order_obj = getattr(d, "order", None)
+    if order_obj is not None:
+        sk_user = getattr(order_obj, "shopkeeper", None)
+        sk_prof = getattr(sk_user, "shopkeeper_profile", None) if sk_user else None
+        if sk_prof:
+            sk_name = getattr(sk_prof, "shop_name", None)
+            sk_addr = getattr(sk_prof, "shop_address", None)
 
     status_str = (
         d.status.value
-        if hasattr(d.status, "value")
+        if d.status is not None and hasattr(d.status, "value")
         else (str(d.status) if d.status else DeliveryStatus.ASSIGNED.value)
     )
     f_reason = (
         d.failure_reason.value
-        if hasattr(d.failure_reason, "value")
+        if d.failure_reason is not None and hasattr(d.failure_reason, "value")
         else (str(d.failure_reason) if d.failure_reason else None)
     )
 
