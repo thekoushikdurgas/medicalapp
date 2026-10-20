@@ -7,7 +7,6 @@ import uuid
 from sqlalchemy import select
 
 import strawberry
-from strawberry.types import Info
 
 from app.db.models import Notification, ShopkeeperProfile
 from app.db.session import async_session_factory
@@ -23,7 +22,7 @@ class NotificationQuery:
     @strawberry.field
     async def notifications(
         self,
-        info: Info,
+        info: strawberry.Info,
         is_read: bool | None = None,
     ) -> list[NotificationType]:
         """Fetch notifications for the authenticated user."""
@@ -52,7 +51,7 @@ class NotificationQuery:
             ]
 
     @strawberry.field
-    async def notification_preferences(self, info: Info) -> str:
+    async def notification_preferences(self, info: strawberry.Info) -> str:
         """Fetch JSON notification channel preferences (in_app, sms, whatsapp)."""
         user_id_str, _ = _get_caller(info)
         user_id = uuid.UUID(user_id_str)
@@ -72,7 +71,7 @@ class NotificationMutation:
     @strawberry.mutation
     async def mark_notification_as_read(
         self,
-        info: Info,
+        info: strawberry.Info,
         notification_id: uuid.UUID,
     ) -> bool:
         """Mark a notification as read."""
@@ -97,7 +96,7 @@ class NotificationMutation:
     @strawberry.mutation
     async def update_notification_preferences(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: UpdateNotificationPreferencesInput,
     ) -> bool:
         """Toggle notification channels (In-app, SMS, WhatsApp)."""

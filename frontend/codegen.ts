@@ -43,7 +43,13 @@ const scalarConfig = {
 
 const config: CodegenConfig = {
   schema,
-  documents: ["src/lib/graphql-queries.ts", "src/graphql/documents/**/*.graphql"],
+  documents: [
+    "src/lib/graphql-queries.ts",
+    "src/graphql/documents/**/*.graphql",
+  ],
+  hooks: {
+    afterAllFileWrite: ["prettier --write"],
+  },
   generates: {
     "src/graphql/generated/types.ts": {
       plugins: ["typescript"],

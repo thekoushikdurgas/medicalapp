@@ -5,7 +5,6 @@ Super Admin Governance, Dry-Run Price/Catalog Simulation, Automation Circuit Bre
 import uuid
 from datetime import datetime
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -46,7 +45,7 @@ class SuperAdminGovernanceQuery:
     @strawberry.field
     async def simulate_bulk_price_update(
         self,
-        info: Info,
+        info: strawberry.Info,
         action: str,
         value: float,
         category: str | None = None,
@@ -156,7 +155,9 @@ class SuperAdminGovernanceQuery:
             )
 
     @strawberry.field
-    async def automation_circuits(self, info: Info) -> list[AutomationCircuitType]:
+    async def automation_circuits(
+        self, info: strawberry.Info
+    ) -> list[AutomationCircuitType]:
         """View all platform automation circuit breakers and emergency pause states."""
         _, role = _get_caller(info)
         if role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
@@ -196,7 +197,7 @@ class SuperAdminGovernanceQuery:
 
     @strawberry.field
     async def high_risk_approvals(
-        self, info: Info, status: str | None = None
+        self, info: strawberry.Info, status: str | None = None
     ) -> list[HighRiskApprovalType]:
         """List high-risk administrative approval requests (Two-Man Rule queue)."""
         _, role = _get_caller(info)
@@ -242,7 +243,7 @@ class SuperAdminGovernanceQuery:
 
     @strawberry.field
     async def super_admin_governance_overview(
-        self, info: Info
+        self, info: strawberry.Info
     ) -> SuperAdminGovernanceOverviewType:
         """
         Consolidated Super Admin governance overview (Checklist Domains A, C, D, F, J, K, L).
@@ -406,7 +407,7 @@ class SuperAdminGovernanceMutation:
     @strawberry.mutation
     async def apply_bulk_price_update(
         self,
-        info: Info,
+        info: strawberry.Info,
         action: str,
         value: float,
         reason: str,
@@ -519,7 +520,7 @@ class SuperAdminGovernanceMutation:
     @strawberry.mutation
     async def toggle_automation_circuit(
         self,
-        info: Info,
+        info: strawberry.Info,
         subsystem: str,
         paused: bool,
         reason: str | None = None,
@@ -572,7 +573,7 @@ class SuperAdminGovernanceMutation:
     @strawberry.mutation
     async def request_high_risk_approval(
         self,
-        info: Info,
+        info: strawberry.Info,
         action_type: str,
         description: str,
         target_id: str | None = None,
@@ -619,7 +620,7 @@ class SuperAdminGovernanceMutation:
     @strawberry.mutation
     async def review_high_risk_approval(
         self,
-        info: Info,
+        info: strawberry.Info,
         request_id: uuid.UUID,
         approve: bool,
         reason: str | None = None,
@@ -714,7 +715,7 @@ class SuperAdminGovernanceMutation:
             )
 
     @strawberry.mutation
-    async def toggle_mfa_enforcement(self, info: Info, enable: bool) -> bool:
+    async def toggle_mfa_enforcement(self, info: strawberry.Info, enable: bool) -> bool:
         """Toggle mandatory Multi-Factor Authentication (MFA) for privileged administrator accounts (Super Admin only)."""
         caller_id, role = _get_caller(info)
         if role != UserRole.SUPER_ADMIN.value:
@@ -756,7 +757,7 @@ class SuperAdminGovernanceMutation:
     @strawberry.mutation
     async def resolve_supplier_reconciliation(
         self,
-        info: Info,
+        info: strawberry.Info,
         record_id: str,
         status: str,
         notes: str | None = None,

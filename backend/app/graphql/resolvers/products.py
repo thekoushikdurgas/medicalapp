@@ -5,7 +5,6 @@ Product & inventory resolvers.
 import uuid
 
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
@@ -115,7 +114,9 @@ class ProductQuery:
 @strawberry.type
 class ProductMutation:
     @strawberry.mutation
-    async def add_product(self, info: Info, input: ProductInput) -> ProductType:
+    async def add_product(
+        self, info: strawberry.Info, input: ProductInput
+    ) -> ProductType:
         """Add a new product to the catalog (Super Admin, Admin, or Warehouse only)."""
         _, role = _get_caller(info)
         if role not in (
@@ -146,7 +147,7 @@ class ProductMutation:
 
     @strawberry.mutation
     async def add_stock_batch(
-        self, info: Info, input: StockBatchInput
+        self, info: strawberry.Info, input: StockBatchInput
     ) -> StockBatchType:
         """Add a stock batch for a product (Super Admin, Admin, or Warehouse only)."""
         _, role = _get_caller(info)

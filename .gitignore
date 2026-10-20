@@ -1,7 +1,4 @@
 # ── Environment & Secrets ────────────────────────────────────
-.env
-.env.*
-.env.local
 .env.*.local
 *.pem
 *.key
@@ -39,7 +36,6 @@ out/
 *.tsbuildinfo
 
 # ── IDE ──────────────────────────────────────────────────────
-.vscode/
 .idea/
 *.swp
 *.swo
@@ -53,3 +49,4 @@ docker-compose.override.yml
 # ── Logs ─────────────────────────────────────────────────────
 logs/
 *.log
+config.bat

@@ -20,6 +20,8 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv as _load_dotenv_impl
+
 
 def _project_root() -> Path:
     return Path(__file__).resolve().parent.parent
@@ -53,11 +55,9 @@ def _load_dotenv(env_path: Path) -> None:
     """Load .env via python-dotenv if installed, else fallback."""
     if not env_path.is_file():
         return
-    try:
-        from dotenv import load_dotenv as _load_dotenv_impl
-
+    if _load_dotenv_impl is not None:
         _load_dotenv_impl(env_path, override=True)
-    except ImportError:
+    else:
         _load_env_file_plain(env_path)
 
 

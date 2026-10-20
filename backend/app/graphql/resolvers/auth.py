@@ -3,8 +3,8 @@ Auth resolvers — login, registration, user management, and role assignment.
 """
 
 import uuid
+import jwt
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select, or_, func
 from sqlalchemy.orm import selectinload
 
@@ -46,7 +46,7 @@ def _user_to_type(user: User) -> UserType:
     )
 
 
-def _get_caller(info: Info) -> tuple[str, str]:
+def _get_caller(info: strawberry.Info) -> tuple[str, str]:
     """Return (user_id, role) from Authorization header or test context."""
     context = info.context
     request = (
@@ -67,25 +67,28 @@ def _get_caller(info: Info) -> tuple[str, str]:
         )
         if user_id and role:
             return str(user_id), str(role)
-        raise Exception("Not authenticated")
+        raise Exception("Not authenticated: 401 UNAUTHORIZED")
 
     auth_header = request.headers.get("authorization", "")
     if not auth_header.startswith("Bearer "):
-        raise Exception("Not authenticated")
+        raise Exception("Not authenticated: 401 UNAUTHORIZED")
 
     token = auth_header.split(" ", 1)[1]
-    payload = decode_token(token)
+    try:
+        payload = decode_token(token)
+    except jwt.PyJWTError:
+        raise Exception("Invalid or expired authentication token: 401 UNAUTHORIZED")
     user_id = payload.get("sub")
     role = payload.get("role")
     if not user_id or not role:
-        raise Exception("Invalid token claims")
+        raise Exception("Invalid token claims: 401 UNAUTHORIZED")
     return user_id, role
 
 
 @strawberry.type
 class AuthQuery:
     @strawberry.field
-    async def me(self, info: Info) -> UserType:
+    async def me(self, info: strawberry.Info) -> UserType:
         """Return the currently authenticated user."""
         user_id, _ = _get_caller(info)
 
@@ -99,7 +102,7 @@ class AuthQuery:
     @strawberry.field
     async def users(
         self,
-        info: Info,
+        info: strawberry.Info,
         role: str | None = None,
         search: str | None = None,
         page: int = 1,
@@ -137,7 +140,7 @@ class AuthQuery:
     @strawberry.field
     async def shopkeepers(
         self,
-        info: Info,
+        info: strawberry.Info,
         search: str | None = None,
         status: str | None = None,
         page: int = 1,
@@ -336,7 +339,7 @@ class AuthMutation:
 
     @strawberry.mutation
     async def assign_user_role(
-        self, info: Info, user_id: uuid.UUID, new_role: str
+        self, info: strawberry.Info, user_id: uuid.UUID, new_role: str
     ) -> UserType:
         """
         Super Admin or Operations Admin assigns/changes a user's role.
@@ -347,7 +350,7 @@ class AuthMutation:
         caller_id, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
             raise Exception(
-                "Permission denied: You are not authorized to assign roles."
+                "Permission denied (403 FORBIDDEN): You are not authorized to assign roles."
             )
 
         valid_roles = [r.value for r in UserRole]
@@ -414,7 +417,9 @@ class AuthMutation:
             return _user_to_type(user)
 
     @strawberry.mutation
-    async def create_user(self, info: Info, input: CreateUserInput) -> UserType:
+    async def create_user(
+        self, info: strawberry.Info, input: CreateUserInput
+    ) -> UserType:
         """Create a new staff or user account directly (Super Admin / Admin)."""
         caller_id, caller_role = _get_caller(info)
         if caller_role not in (UserRole.SUPER_ADMIN.value, UserRole.ADMIN.value):
@@ -514,7 +519,7 @@ class AuthMutation:
     @strawberry.mutation
     async def update_shopkeeper_kyc(
         self,
-        info: Info,
+        info: strawberry.Info,
         shopkeeper_id: uuid.UUID,
         status: str,
         notes: str | None = None,
@@ -599,7 +604,7 @@ class AuthMutation:
     @strawberry.mutation
     async def update_shopkeeper_credit_limit(
         self,
-        info: Info,
+        info: strawberry.Info,
         shopkeeper_id: uuid.UUID,
         new_limit: float,
         reason: str,

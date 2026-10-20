@@ -4,7 +4,6 @@ Invoice Return / Credit Note GraphQL resolvers — queries and mutations.
 
 import uuid
 import strawberry
-from strawberry.types import Info
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
@@ -57,7 +56,7 @@ class ReturnQuery:
     @strawberry.field
     async def invoice_returns(
         self,
-        info: Info,
+        info: strawberry.Info,
         page: int = 1,
         per_page: int = 50,
     ) -> list[InvoiceReturnType]:
@@ -81,7 +80,7 @@ class ReturnMutation:
     @strawberry.mutation
     async def create_invoice_return(
         self,
-        info: Info,
+        info: strawberry.Info,
         input: CreateInvoiceReturnInput,
     ) -> InvoiceReturnType:
         """Issue an official GST Credit Note for an invoice."""
